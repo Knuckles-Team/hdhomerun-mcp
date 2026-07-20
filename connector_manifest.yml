@@ -1,0 +1,223 @@
+connector: hdhomerun-mcp
+ontology_source: hdhomerun
+schema_version: '1'
+resources:
+- name: Channel
+  label: HDHomeRun Channel
+  id_prefix: channel
+  relations: []
+- name: DiscoveredDevice
+  label: HDHomeRun Discovered Device
+  id_prefix: discovereddevice
+  relations:
+  - name: hasLineup
+    label: has lineup
+    target: Lineup
+    lpg_rel_type: ''
+  - name: hasTuner
+    label: has tuner
+    target: Tuner
+    lpg_rel_type: ''
+- name: Lineup
+  label: HDHomeRun Channel Lineup
+  id_prefix: lineup
+  relations:
+  - name: includesChannel
+    label: includes channel
+    target: Channel
+    lpg_rel_type: ''
+- name: Recording
+  label: HDHomeRun DVR Recording
+  id_prefix: recording
+  relations:
+  - name: recordingMedia
+    label: recording media
+    target: MediaAsset
+    lpg_rel_type: ''
+- name: RecordingRule
+  label: HDHomeRun DVR Recording Rule
+  id_prefix: recordingrule
+  relations:
+  - name: producesRecording
+    label: produces recording
+    target: Recording
+    lpg_rel_type: ''
+- name: Tuner
+  label: HDHomeRun Tuner
+  id_prefix: tuner
+  relations: []
+- name: TunerHost
+  label: HDHomeRun Tuner Host
+  id_prefix: tunerhost
+  relations: []
+actions:
+- id: run_graph_flow
+  name: Graph Flow Execution
+  description: Execute a workflow through the agent's graph orchestration engine
+events: []
+identity:
+  id_field:
+    hdhomerun_channel: GuideNumber
+    hdhomerun_recording_rule: RecordingRuleID
+  title_field:
+    hdhomerun_channel: GuideName
+    hdhomerun_recording_rule: Title
+  text_field:
+    hdhomerun_channel: GuideName
+    hdhomerun_recording_rule: Synopsis
+  updated_field: {}
+permissions:
+  acl_fields: []
+  tenant_field: null
+  read_roles: []
+schema_mappings:
+  Channel:
+    ontology_class: null
+    fields:
+      deviceAuth: xsd:string
+      deviceId: xsd:string
+      guideName: xsd:string
+      guideNumber: xsd:string
+      seriesId: xsd:string
+      tunerCount: xsd:integer
+  DiscoveredDevice:
+    ontology_class: null
+    fields:
+      deviceAuth: xsd:string
+      deviceId: xsd:string
+      guideName: xsd:string
+      guideNumber: xsd:string
+      seriesId: xsd:string
+      tunerCount: xsd:integer
+  Lineup:
+    ontology_class: null
+    fields:
+      deviceAuth: xsd:string
+      deviceId: xsd:string
+      guideName: xsd:string
+      guideNumber: xsd:string
+      seriesId: xsd:string
+      tunerCount: xsd:integer
+  Recording:
+    ontology_class: null
+    fields:
+      deviceAuth: xsd:string
+      deviceId: xsd:string
+      guideName: xsd:string
+      guideNumber: xsd:string
+      seriesId: xsd:string
+      tunerCount: xsd:integer
+  RecordingRule:
+    ontology_class: GovernanceRule
+    fields:
+      deviceAuth: xsd:string
+      deviceId: xsd:string
+      guideName: xsd:string
+      guideNumber: xsd:string
+      seriesId: xsd:string
+      tunerCount: xsd:integer
+  Tuner:
+    ontology_class: null
+    fields:
+      deviceAuth: xsd:string
+      deviceId: xsd:string
+      guideName: xsd:string
+      guideNumber: xsd:string
+      seriesId: xsd:string
+      tunerCount: xsd:integer
+  TunerHost:
+    ontology_class: Server
+    fields:
+      deviceAuth: xsd:string
+      deviceId: xsd:string
+      guideName: xsd:string
+      guideNumber: xsd:string
+      seriesId: xsd:string
+      tunerCount: xsd:integer
+sync:
+- preset: hdhomerun-lineup
+  server: hdhomerun-mcp
+  tool: http_operations
+  action: lineup
+  records_path: ''
+  id_field: GuideNumber
+  title_field: GuideName
+  text_field: GuideName
+  updated_field: null
+  pagination: null
+  doc_type: hdhomerun_channel
+  tool_schema_sha256: null
+  raw:
+    server: hdhomerun-mcp
+    tool: http_operations
+    action: lineup
+    records_path: ''
+    id_field: GuideNumber
+    title_field: GuideName
+    text_field: GuideName
+    updated_field: null
+    doc_type: hdhomerun_channel
+- preset: hdhomerun-recording-rules
+  server: hdhomerun-mcp
+  tool: dvr_operations
+  action: list_rules
+  records_path: rules
+  id_field: RecordingRuleID
+  title_field: Title
+  text_field: Synopsis
+  updated_field: null
+  pagination: null
+  doc_type: hdhomerun_recording_rule
+  tool_schema_sha256: null
+  raw:
+    server: hdhomerun-mcp
+    tool: dvr_operations
+    action: list_rules
+    records_path: rules
+    id_field: RecordingRuleID
+    title_field: Title
+    text_field: Synopsis
+    updated_field: null
+    doc_type: hdhomerun_recording_rule
+provenance:
+  generated_by: scripts/generate_connector_manifests.py
+  generated_at: '2026-07-20T18:01:42Z'
+  source_artifacts:
+  - a2a.json
+  - hdhomerun_mcp/connectors/mcp_source_presets.json
+  - hdhomerun_mcp/ontology/hdhomerun.ttl
+  integrity:
+    algorithm: urdna2015-sha256
+    hash: 07ff38985435eeb186b8e850b9874d6852f5e3db18aba2ff15f7dcdd16a48737
+    triple_count: 65
+  signer: null
+  signature_algorithm: null
+  signing_public_key: null
+  signature: null
+policy:
+  pii_fields: {}
+  tenant_boundary: null
+  rls: []
+review_todos:
+- "policy.rls / policy.tenant_boundary are unset \u2014 no row-level-security predicate has been reviewed\
+  \ for this connector."
+- "provenance is UNSIGNED \u2014 ONTOLOGY_RELEASE_SIGNING_PRIVATE_KEY_REF is not resolvable in this environment\
+  \ (human-gated credential; see agent-utilities AGENTS.md 'Secrets & credential retrieval'). Re-run scripts/generate_connector_manifests.py\
+  \ with the real release key to produce a fleet-trusted signature before this connector is relied on\
+  \ for release evidence."
+- "schema_mappings.Channel.ontology_class = None [UNRESOLVED \u2014 no crosswalk found by any heuristic]\
+  \ \u2014 verify manually before relying on this crosswalk for reasoning/joins."
+- "schema_mappings.DiscoveredDevice.ontology_class = None [UNRESOLVED \u2014 no crosswalk found by any\
+  \ heuristic] \u2014 verify manually before relying on this crosswalk for reasoning/joins."
+- "schema_mappings.Lineup.ontology_class = None [UNRESOLVED \u2014 no crosswalk found by any heuristic]\
+  \ \u2014 verify manually before relying on this crosswalk for reasoning/joins."
+- "schema_mappings.Recording.ontology_class = None [UNRESOLVED \u2014 no crosswalk found by any heuristic]\
+  \ \u2014 verify manually before relying on this crosswalk for reasoning/joins."
+- "schema_mappings.RecordingRule.ontology_class = 'GovernanceRule' [DRAFT \u2014 nearest hub-canonical-class-by-name\
+  \ heuristic (D16 residue; human sign-off required before use)] \u2014 verify manually before relying\
+  \ on this crosswalk for reasoning/joins."
+- "schema_mappings.Tuner.ontology_class = None [UNRESOLVED \u2014 no crosswalk found by any heuristic]\
+  \ \u2014 verify manually before relying on this crosswalk for reasoning/joins."
+- "schema_mappings.TunerHost.ontology_class = 'Server' [DRAFT \u2014 nearest hub-canonical-class-by-name\
+  \ heuristic (D16 residue; human sign-off required before use)] \u2014 verify manually before relying\
+  \ on this crosswalk for reasoning/joins."
