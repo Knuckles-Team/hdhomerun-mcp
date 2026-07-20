@@ -1,0 +1,22 @@
+{
+  "name": "hdhomerun-mcp-agent",
+  "type": "agent",
+  "version": "0.1.0",
+  "description": "HDHomeRun HTTP/DVR/Discovery API + hdhomerun_config protocol client + MCP Server + A2A Server",
+  "url": "https://github.com/Knuckles-Team/hdhomerun-mcp/tree/main",
+  "license": "MIT",
+  "capabilities": [
+    {
+      "id": "run_graph_flow",
+      "name": "Graph Flow Execution",
+      "description": "Execute a workflow through the agent's graph orchestration engine"
+    }
+  ],
+  "tools": [
+    {
+      "id": "graph-flow",
+      "type": "flow",
+      "description": "Run complex multi-step workflows via Pydantic-Graph"
+    }
+  ]
+}

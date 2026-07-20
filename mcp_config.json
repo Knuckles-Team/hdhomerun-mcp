@@ -1,0 +1,21 @@
+{
+  "mcpServers": {
+    "hdhomerun-mcp": {
+      "command": "uv",
+      "args": [
+        "run",
+        "hdhomerun-mcp"
+      ],
+      "env": {
+        "MCP_TOOL_MODE": "intent",
+        "CONFIGTOOL": "True",
+        "DISCOVERYTOOL": "True",
+        "DOCTORTOOL": "True",
+        "DVRTOOL": "True",
+        "HDHOMERUN_DEVICE_AUTH": "your_device_auth_here",
+        "HDHOMERUN_URL": "http://hdhomerun.local",
+        "HTTPTOOL": "True"
+      }
+    }
+  }
+}

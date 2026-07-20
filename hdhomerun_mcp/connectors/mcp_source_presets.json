@@ -1,0 +1,25 @@
+{
+  "_comment": "Tier-1 mcp_tool source preset(s) (AU-KG.ingest.mcp-tool-connector). Complements the native push in kg_ingest.py with hub-side pull ingestion.",
+  "hdhomerun-lineup": {
+    "server": "hdhomerun-mcp",
+    "tool": "http_operations",
+    "action": "lineup",
+    "records_path": "",
+    "id_field": "GuideNumber",
+    "title_field": "GuideName",
+    "text_field": "GuideName",
+    "updated_field": null,
+    "doc_type": "hdhomerun_channel"
+  },
+  "hdhomerun-recording-rules": {
+    "server": "hdhomerun-mcp",
+    "tool": "dvr_operations",
+    "action": "list_rules",
+    "records_path": "rules",
+    "id_field": "RecordingRuleID",
+    "title_field": "Title",
+    "text_field": "Synopsis",
+    "updated_field": null,
+    "doc_type": "hdhomerun_recording_rule"
+  }
+}

@@ -1,0 +1,107 @@
+@prefix : <http://knuckles.team/kg#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# HDHomeRun domain model. Classes/properties live in the SHARED : (kg#)
+# namespace; only the owl:Ontology node gets the per-package IRI. Reuses
+# :MediaAsset/:Blob for recorded-stream media rather than redefining them.
+
+:DiscoveredDevice a owl:Class ;
+    rdfs:label "HDHomeRun Discovered Device" ;
+    rdfs:comment "A HDHomeRun device (tuner or record engine) found via local UDP broadcast or the SiliconDust cloud discovery endpoint." .
+
+:Tuner a owl:Class ;
+    rdfs:label "HDHomeRun Tuner" ;
+    rdfs:comment "One physical tuner on a HDHomeRun device, addressed by index (0-based)." .
+
+:TunerHost a owl:Class ;
+    rdfs:label "HDHomeRun Tuner Host" ;
+    rdfs:comment "A HDHomeRun tuner device registered as a Live TV tuner host in a consuming DVR/media-server (e.g. Jellyfin)." .
+
+:Lineup a owl:Class ;
+    rdfs:label "HDHomeRun Channel Lineup" ;
+    rdfs:comment "The set of channels a HDHomeRun device reports via lineup.json for a given tuner source/market." .
+
+:Channel a owl:Class ;
+    rdfs:label "HDHomeRun Channel" ;
+    rdfs:comment "One entry in a HDHomeRun lineup (GuideNumber/GuideName/URL)." .
+
+:RecordingRule a owl:Class ;
+    rdfs:label "HDHomeRun DVR Recording Rule" ;
+    rdfs:comment "A SiliconDust cloud DVR recording rule (Series, Movie, or DateTimeOnly-ChannelOnly)." .
+
+:Recording a owl:Class ;
+    rdfs:label "HDHomeRun DVR Recording" ;
+    rdfs:comment "A completed recording tracked by a local HDHomeRun record engine. Its media payload is modeled via the shared :MediaAsset/:Blob classes, not redefined here." .
+
+:hasTuner a owl:ObjectProperty ;
+    rdfs:label "has tuner" ;
+    rdfs:comment "Links a device to one of its physical tuners." ;
+    rdfs:domain :DiscoveredDevice ;
+    rdfs:range :Tuner .
+
+:hasLineup a owl:ObjectProperty ;
+    rdfs:label "has lineup" ;
+    rdfs:comment "Links a device (or tuner host) to its reported channel lineup." ;
+    rdfs:domain :DiscoveredDevice ;
+    rdfs:range :Lineup .
+
+:includesChannel a owl:ObjectProperty ;
+    rdfs:label "includes channel" ;
+    rdfs:comment "Links a lineup to one of its channel entries." ;
+    rdfs:domain :Lineup ;
+    rdfs:range :Channel .
+
+:producesRecording a owl:ObjectProperty ;
+    rdfs:label "produces recording" ;
+    rdfs:comment "Links a recording rule to a recording it triggered." ;
+    rdfs:domain :RecordingRule ;
+    rdfs:range :Recording .
+
+:recordingMedia a owl:ObjectProperty ;
+    rdfs:label "recording media" ;
+    rdfs:comment "Links a Recording to its stored media payload (reuses the shared :MediaAsset class)." ;
+    rdfs:domain :Recording ;
+    rdfs:range :MediaAsset .
+
+:deviceId a owl:DatatypeProperty ;
+    rdfs:label "device id" ;
+    rdfs:comment "The 8-hex-digit HDHomeRun DeviceID (serial number)." ;
+    rdfs:domain :DiscoveredDevice ;
+    rdfs:range xsd:string .
+
+:deviceAuth a owl:DatatypeProperty ;
+    rdfs:label "device auth" ;
+    rdfs:comment "The device's current DeviceAuth token (rotates on reboot/firmware update — treat as ephemeral, not a stable identifier)." ;
+    rdfs:domain :DiscoveredDevice ;
+    rdfs:range xsd:string .
+
+:tunerCount a owl:DatatypeProperty ;
+    rdfs:label "tuner count" ;
+    rdfs:comment "Number of physical tuners on the device." ;
+    rdfs:domain :DiscoveredDevice ;
+    rdfs:range xsd:integer .
+
+:guideNumber a owl:DatatypeProperty ;
+    rdfs:label "guide number" ;
+    rdfs:comment "The virtual channel number (e.g. '24.1')." ;
+    rdfs:domain :Channel ;
+    rdfs:range xsd:string .
+
+:guideName a owl:DatatypeProperty ;
+    rdfs:label "guide name" ;
+    rdfs:comment "The channel's display name (call sign or network name)." ;
+    rdfs:domain :Channel ;
+    rdfs:range xsd:string .
+
+:seriesId a owl:DatatypeProperty ;
+    rdfs:label "series id" ;
+    rdfs:comment "SiliconDust SeriesID identifying the series/movie a recording rule targets." ;
+    rdfs:domain :RecordingRule ;
+    rdfs:range xsd:string .
+
+<http://knuckles.team/kg/hdhomerun> a owl:Ontology ;
+    rdfs:label "HDHomeRun MCP Ontology" ;
+    rdfs:comment "HDHomeRun tuner/lineup/DVR domain extensions federated into the KG hub." ;
+    owl:imports <http://knuckles.team/kg> .

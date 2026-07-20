@@ -1,0 +1,74 @@
+[build-system]
+requires = [ "setuptools>=80.9.0", "wheel",]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hdhomerun-mcp"
+version = "0.1.0"
+description = "HDHomeRun HTTP/DVR/Discovery API + hdhomerun_config protocol client + MCP Server + A2A Server"
+readme = "README.md"
+classifiers = [ "Development Status :: 4 - Beta", "License :: OSI Approved :: MIT License", "Environment :: Console", "Operating System :: POSIX :: Linux", "Programming Language :: Python :: 3",]
+requires-python = ">=3.11, <3.15"
+dependencies = [ "agent-utilities>=0.51.0", "python-dotenv>=1.0.0", "requests>=2.34.2",]
+[[project.authors]]
+name = "Audel Rouhi"
+email = "knucklessg1@gmail.com"
+
+[project.license]
+text = "MIT"
+
+[project.optional-dependencies]
+mcp = [ "agent-utilities[mcp]>=0.51.0",]
+agent = [ "agent-utilities[agent,logfire]>=0.51.0",]
+all = [ "hdhomerun-mcp[mcp,agent,logfire]>=0.1.0",]
+test = [
+    "pytest-xdist>=3.6.0", "pytest", "pytest-asyncio", "pytest-cov",]
+
+[project.scripts]
+hdhomerun-mcp = "hdhomerun_mcp.mcp_server:mcp_server"
+hdhomerun-agent = "hdhomerun_mcp.agent_server:agent_server"
+
+# Fleet contribution (CONCEPT:OS-5.52 / AU-KG.ontology.federation-provider-leg): advertise this
+# package's skills, prompts, OWL/RDF ontology, and source-connector presets so
+# agent-utilities discovers + federates them without importing this package's agent code.
+[project.entry-points."agent_utilities.skill_providers"]
+hdhomerun-mcp = "hdhomerun_mcp.skills"
+
+[project.entry-points."agent_utilities.prompt_providers"]
+hdhomerun-mcp = "hdhomerun_mcp.prompts"
+
+[project.entry-points."agent_utilities.ontology_providers"]
+hdhomerun-mcp = "hdhomerun_mcp.ontology"
+
+[project.entry-points."agent_utilities.source_connector_providers"]
+hdhomerun-mcp = "hdhomerun_mcp.connectors"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+
+[tool.mypy]
+python_version = "3.10"
+ignore_missing_imports = true
+check_untyped_defs = true
+
+[dependency-groups]
+dev = [
+    "pytest-timeout>=2.4.0",
+]
+
+[tool.setuptools.package-data]
+hdhomerun_mcp = [ "mcp_config.json", "agent_data/**", "prompts/**", "skills/**", "ontology/**", "connectors/**",]
+
+[tool.ruff.lint]
+select = [ "E", "F", "I", "UP", "B",]
+ignore = [ "E402", "E501", "B008",]
+
+[tool.setuptools.packages.find]
+where = [ ".",]
+
+[tool.vulture]
+ignore_names = ["request", "config"]
