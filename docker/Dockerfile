@@ -16,7 +16,7 @@
 #   docker build --target agent -t hdhomerun-mcp:latest .
 #   docker build --target mcp   -t hdhomerun-mcp:mcp    .
 # See agent-packages/CLAUDE.md "Connector recipe" for the tag contract.
-FROM python:3.11-slim AS builder-base
+FROM python:3.14-slim@sha256:cea0e6040540fb2b965b6e7fb5ffa00871e632eef63719f0ea54bca189ce14a6 AS builder-base
 COPY --from=ghcr.io/astral-sh/uv:0.11.7 /uv /uvx /bin/
 ENV UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy \
@@ -38,7 +38,7 @@ FROM builder-base AS builder-agent
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv pip install --system --upgrade --break-system-packages --prerelease=allow hdhomerun-mcp[agent]>=0.1.0
 
-FROM python:3.11-slim AS runtime-base
+FROM python:3.14-slim@sha256:cea0e6040540fb2b965b6e7fb5ffa00871e632eef63719f0ea54bca189ce14a6 AS runtime-base
 ARG HOST=0.0.0.0
 ARG PORT=8000
 ARG TRANSPORT="stdio"
