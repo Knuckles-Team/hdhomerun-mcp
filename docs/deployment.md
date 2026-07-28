@@ -108,6 +108,11 @@ streamable-http listener.
 
 ## Docker Compose
 
+Both Compose definitions load the tracked `.env.example` defaults and then
+overlay an optional repository-root `.env`. Copy `.env.example` to `.env` only
+when the deployment needs local overrides or credentials; Compose validation
+does not require secrets.
+
 ```bash
 docker compose -f docker/mcp.compose.yml up -d      # MCP server only
 docker compose -f docker/agent.compose.yml up -d    # MCP + agent

@@ -1,0 +1,9 @@
+{
+  "algorithm": "agent-utilities:mcp-tool-schema-compat:v1",
+  "connector": "hdhomerun-mcp",
+  "schema_version": "1",
+  "tools": {
+    "dvr_operations": "f7a4aa82d180432e7a08b85127c610cec58d33238a5c0fe3008eea2037e27f1c",
+    "http_operations": "77d4c6fed6858ef287766b76a6b55e871c50020f601ab390cb8089a4f1a2cf91"
+  }
+}
