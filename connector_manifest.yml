@@ -51,6 +51,11 @@ resources:
   id_prefix: tunerhost
   relations: []
 actions:
+- id: epistemic-answer
+  name: Epistemic Answer
+  description: 'Answers epistemic_status/why/what_changed queries over the shared knowledge graph: calibrated
+    confidence, evidence/source citations, belief justification trees, bitemporal valid/tx history, and
+    policy-redaction-aware provenance.'
 - id: run_graph_flow
   name: Graph Flow Execution
   description: Execute a workflow through the agent's graph orchestration engine
@@ -146,7 +151,7 @@ sync:
   updated_field: null
   pagination: null
   doc_type: hdhomerun_channel
-  tool_schema_sha256: null
+  tool_schema_sha256: 77d4c6fed6858ef287766b76a6b55e871c50020f601ab390cb8089a4f1a2cf91
   raw:
     server: hdhomerun-mcp
     tool: http_operations
@@ -168,7 +173,7 @@ sync:
   updated_field: null
   pagination: null
   doc_type: hdhomerun_recording_rule
-  tool_schema_sha256: null
+  tool_schema_sha256: f7a4aa82d180432e7a08b85127c610cec58d33238a5c0fe3008eea2037e27f1c
   raw:
     server: hdhomerun-mcp
     tool: dvr_operations
@@ -181,19 +186,20 @@ sync:
     doc_type: hdhomerun_recording_rule
 provenance:
   generated_by: scripts/generate_connector_manifests.py
-  generated_at: '2026-07-20T18:01:42Z'
+  generated_at: '2026-07-31T04:00:00Z'
   source_artifacts:
   - a2a.json
   - hdhomerun_mcp/connectors/mcp_source_presets.json
+  - hdhomerun_mcp/connectors/tool_schema_fingerprints.json
   - hdhomerun_mcp/ontology/hdhomerun.ttl
   integrity:
     algorithm: urdna2015-sha256
     hash: 07ff38985435eeb186b8e850b9874d6852f5e3db18aba2ff15f7dcdd16a48737
     triple_count: 65
-  signer: null
-  signature_algorithm: null
-  signing_public_key: null
-  signature: null
+  signer: ontology-manifest-generator
+  signature_algorithm: ed25519
+  signing_public_key: QkigdPNpcUU7x7NcSkwCsUXIQpaFncMQbYSoiSgI2SY
+  signature: mlPwafsu6CLVRAn5h9ZkcCk3MDaJ5VY_MZ0u3SIYuoQ0KEQwQBTgFENPiRL3X-4GvDdOicR-zElbjgpDxCeIDg
 policy:
   pii_fields: {}
   tenant_boundary: null
@@ -201,10 +207,6 @@ policy:
 review_todos:
 - "policy.rls / policy.tenant_boundary are unset \u2014 no row-level-security predicate has been reviewed\
   \ for this connector."
-- "provenance is UNSIGNED \u2014 ONTOLOGY_RELEASE_SIGNING_PRIVATE_KEY_REF is not resolvable in this environment\
-  \ (human-gated credential; see agent-utilities AGENTS.md 'Secrets & credential retrieval'). Re-run scripts/generate_connector_manifests.py\
-  \ with the real release key to produce a fleet-trusted signature before this connector is relied on\
-  \ for release evidence."
 - "schema_mappings.Channel.ontology_class = None [UNRESOLVED \u2014 no crosswalk found by any heuristic]\
   \ \u2014 verify manually before relying on this crosswalk for reasoning/joins."
 - "schema_mappings.DiscoveredDevice.ontology_class = None [UNRESOLVED \u2014 no crosswalk found by any\

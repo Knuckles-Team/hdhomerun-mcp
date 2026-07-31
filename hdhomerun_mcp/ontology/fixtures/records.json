@@ -1,0 +1,33 @@
+{
+  "connector": "hdhomerun-mcp",
+  "fixtures": [
+    {
+      "expected": {
+        "acl_state": "quarantine",
+        "id": "fixture-record",
+        "title": "Synthetic certification record"
+      },
+      "preset": "hdhomerun-lineup",
+      "record": {
+        "GuideName": "Synthetic content used only for contract validation.",
+        "GuideNumber": "fixture-record",
+        "acl_public": false
+      }
+    },
+    {
+      "expected": {
+        "acl_state": "quarantine",
+        "id": "fixture-record",
+        "title": "Synthetic certification record"
+      },
+      "preset": "hdhomerun-recording-rules",
+      "record": {
+        "RecordingRuleID": "fixture-record",
+        "Synopsis": "Synthetic content used only for contract validation.",
+        "Title": "Synthetic certification record",
+        "acl_public": false
+      }
+    }
+  ],
+  "schema_version": "1"
+}
