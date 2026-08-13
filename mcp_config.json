@@ -13,6 +13,7 @@
         "DOCTORTOOL": "True",
         "DVRTOOL": "True",
         "HDHOMERUN_DEVICE_AUTH": "your_device_auth_here",
+        "HDHOMERUN_SSL_VERIFY": "True",
         "HDHOMERUN_URL": "http://hdhomerun.local",
         "HTTPTOOL": "True"
       }

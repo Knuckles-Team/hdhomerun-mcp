@@ -89,11 +89,11 @@ domains can be toggled on or off with the listed environment variable. The table
 
 | MCP Tool | Toggle Env Var | Description |
 |----------|----------------|-------------|
-| `hdhomerun_abort_scan` | `GRANULARTOOL` | POST /lineup.post?scan=abort — cancel an in-progress channel scan. |
+| `hdhomerun_abort_scan` | `HTTPTOOL` | POST /lineup.post?scan=abort — cancel an in-progress channel scan. |
 | `hdhomerun_add_datetime_rule` | `DVRTOOL` | Add a DateTimeOnly-ChannelOnly rule (record one specific airing). |
 | `hdhomerun_add_series_rule` | `DVRTOOL` | Add a Series (or Movie) recording rule for a SeriesID. |
 | `hdhomerun_build_live_tv_url` | `DVRTOOL` | Build a record-engine buffered Live TV URL. |
-| `hdhomerun_build_stream_url` | `GRANULARTOOL` | Build a live-stream URL: /{auto\|tuner<n>}/{v<channel>\|ch<freq>[-<program>]}. |
+| `hdhomerun_build_stream_url` | `HTTPTOOL` | Build a live-stream URL: /{auto\|tuner<n>}/{v<channel>\|ch<freq>[-<program>]}. |
 | `hdhomerun_change_rule` | `DVRTOOL` | Modify a rule, or reprioritize it via ``after_recording_rule_id``. |
 | `hdhomerun_check_device_auth` | `DOCTORTOOL` | Invoke the check_device_auth operation. |
 | `hdhomerun_check_device_reachable` | `DOCTORTOOL` | Invoke the check_device_reachable operation. |
@@ -109,13 +109,13 @@ domains can be toggled on or off with the listed environment variable. The table
 | `hdhomerun_discover_local_targeted` | `DISCOVERYTOOL` | Send a DISCOVER_REQ directly to a known IP (works across VLANs). |
 | `hdhomerun_get_channel` | `CONFIGTOOL` | ``/tuner<n>/channel`` — current ``<modulation>:<frequency>`` or ``none``. |
 | `hdhomerun_get_channelmap` | `CONFIGTOOL` | ``/tuner<n>/channelmap`` — the configured channel-to-frequency map. |
-| `hdhomerun_get_discover` | `GRANULARTOOL` | GET /discover.json — FriendlyName/ModelNumber/FirmwareVersion/DeviceID/ |
+| `hdhomerun_get_discover` | `HTTPTOOL` | GET /discover.json — FriendlyName/ModelNumber/FirmwareVersion/DeviceID/ |
 | `hdhomerun_get_filter` | `CONFIGTOOL` | ``/tuner<n>/filter`` — the current PID filter (default ``0x0000-0x1FFF``). |
 | `hdhomerun_get_help` | `CONFIGTOOL` | ``get help`` — the list of get/set item paths this device supports. |
 | `hdhomerun_get_ir_target` | `CONFIGTOOL` | ``/ir/target`` — the configured IR-blaster target IP:port. |
 | `hdhomerun_get_item` | `CONFIGTOOL` | ``hdhomerun_config <id> get <item>`` — raw get of any supported item path. |
-| `hdhomerun_get_lineup` | `GRANULARTOOL` | GET /lineup.{json,xml,m3u} — the channel list. |
-| `hdhomerun_get_lineup_status` | `GRANULARTOOL` | GET /lineup_status.json — scan state. |
+| `hdhomerun_get_lineup` | `HTTPTOOL` | GET /lineup.{json,xml,m3u} — the channel list. |
+| `hdhomerun_get_lineup_status` | `HTTPTOOL` | GET /lineup_status.json — scan state. |
 | `hdhomerun_get_lockkey` | `CONFIGTOOL` | ``/tuner<n>/lockkey`` — current tuner lock owner (``none`` if unlocked). |
 | `hdhomerun_get_program` | `CONFIGTOOL` | ``/tuner<n>/program`` — the current MPEG program (sub-channel) filter. |
 | `hdhomerun_get_record_engine_status` | `DVRTOOL` | GET <storage engine BaseURL>/discover.json — FriendlyName/Version/ |
@@ -144,7 +144,7 @@ domains can be toggled on or off with the listed environment variable. The table
 | `hdhomerun_set_lockkey` | `CONFIGTOOL` | ``/tuner<n>/lockkey`` set/clear — pass ``lock=False`` to release. |
 | `hdhomerun_set_program` | `CONFIGTOOL` | ``/tuner<n>/program`` set — filter to a single program (sub-channel) number. |
 | `hdhomerun_set_target` | `CONFIGTOOL` | ``/tuner<n>/target`` set — e.g. ``udp://192.168.1.100:5000`` or ``rtp://...``. |
-| `hdhomerun_start_scan` | `GRANULARTOOL` | POST /lineup.post?scan=start[&source=<Source>] — begin a channel scan. |
+| `hdhomerun_start_scan` | `HTTPTOOL` | POST /lineup.post?scan=start[&source=<Source>] — begin a channel scan. |
 | `hdhomerun_stop_tuner` | `CONFIGTOOL` | Set ``/tuner<n>/channel none`` — release the tuner. |
 
 </details>
@@ -240,8 +240,6 @@ The MCP Server can be run in `stdio` (local), `streamable-http` (networked), or
 | `TRANSPORT` | `stdio` | options: stdio, streamable-http, sse |
 | `ENABLE_OTEL` | `True` |  |
 | `OTEL_EXPORTER_OTLP_ENDPOINT` | `http://localhost:8080/api/public/otel` |  |
-| `OTEL_EXPORTER_OTLP_PUBLIC_KEY` | `pk-...` |  |
-| `OTEL_EXPORTER_OTLP_SECRET_KEY` | `sk-...` |  |
 | `OTEL_EXPORTER_OTLP_PROTOCOL` | `http/protobuf` |  |
 | `EUNOMIA_TYPE` | `none` | options: none, embedded, remote |
 | `EUNOMIA_POLICY_FILE` | `mcp_policies.json` |  |
@@ -264,11 +262,11 @@ The MCP Server can be run in `stdio` (local), `streamable-http` (networked), or
 | `MCP_DISABLED_TOOLS` | — | Comma-separated tool deny-list |
 | `MCP_ENABLED_TAGS` | — | Comma-separated tag allow-list |
 | `MCP_DISABLED_TAGS` | — | Comma-separated tag deny-list |
-| `MCP_CLIENT_AUTH` | — | Outbound MCP child auth: `oidc-client-credentials` | `basic` | `none` |
+| `MCP_CLIENT_AUTH` | — | Outbound MCP child auth: `oidc-client-credentials` \| `basic` \| `none` |
 | `OIDC_CLIENT_ID` | — | OIDC client id (service-account auth) |
-| `OIDC_CLIENT_SECRET` | — | OIDC client secret (service-account auth) |
+| `OIDC_CLIENT_SECRET_REF` | `secret://identity/oidc-client-secret` | Runtime secret reference for the OIDC service account |
 | `MCP_BASIC_AUTH_USERNAME` | — | HTTP Basic username (`MCP_CLIENT_AUTH=basic`) |
-| `MCP_BASIC_AUTH_PASSWORD` | — | HTTP Basic password (`MCP_CLIENT_AUTH=basic`) |
+| `MCP_BASIC_AUTH_PASSWORD_REF` | `secret://identity/mcp-basic-password` | Runtime secret reference for HTTP Basic auth (`MCP_CLIENT_AUTH=basic`) |
 | `DEBUG` | `False` | Verbose logging |
 | `PYTHONUNBUFFERED` | `1` | Unbuffered stdout (recommended in containers) |
 | `MCP_URL` | `http://localhost:8000/mcp` | URL of the MCP server the agent connects to |
@@ -276,7 +274,7 @@ The MCP Server can be run in `stdio` (local), `streamable-http` (networked), or
 | `MODEL_ID` | `gpt-4o` | Model id for the agent |
 | `ENABLE_WEB_UI` | `True` | Serve the AG-UI web interface |
 
-_20 package + 15 inherited variable(s). Auto-generated from `.env.example` + the shared agent-utilities set — do not edit._
+_18 package + 15 inherited variable(s). Auto-generated from `.env.example` + the shared agent-utilities set — do not edit._
 <!-- ENV-VARS-TABLE:END -->
 
 
@@ -287,11 +285,10 @@ _20 package + 15 inherited variable(s). Auto-generated from `.env.example` + the
 
 <!-- MCP-CONFIG-EXAMPLES:START -->
 
-> **Install the slim `[mcp]` extra.** All examples install `hdhomerun-mcp[mcp]` — the
-> MCP-server extra that pulls only the FastMCP / FastAPI tooling (`agent-utilities[mcp]`).
-> It deliberately **excludes** the heavy agent runtime (`pydantic-ai`, the epistemic-graph
-> engine, `dspy`, `llama-index`), so `uvx` / container installs are far smaller. Use the
-> full `[agent]` extra only when you need the integrated Pydantic AI agent.
+> **Install the connector-focused `[mcp]` extra.** Examples use `hdhomerun-mcp[mcp]` to add
+> FastMCP / FastAPI through `agent-utilities[mcp]`; the required Agent Utilities core
+> still carries `epistemic-graph[full]`. The `[agent-runtime]` extra additionally
+> enables model orchestration.
 
 #### stdio Transport (local IDEs — Cursor, Claude Desktop, VS Code)
 
@@ -312,6 +309,7 @@ _20 package + 15 inherited variable(s). Auto-generated from `.env.example` + the
         "DOCTORTOOL": "True",
         "DVRTOOL": "True",
         "HDHOMERUN_DEVICE_AUTH": "your_device_auth_here",
+        "HDHOMERUN_SSL_VERIFY": "True",
         "HDHOMERUN_URL": "http://hdhomerun.local",
         "HTTPTOOL": "True"
       }
@@ -319,6 +317,10 @@ _20 package + 15 inherited variable(s). Auto-generated from `.env.example` + the
   }
 }
 ```
+
+Runtime references require an alias-aware launcher such as GraphOS. Other
+launchers must omit those entries and inject the resolved values through their
+own runtime secret boundary.
 
 #### Streamable-HTTP Transport (networked / production)
 
@@ -338,7 +340,7 @@ _20 package + 15 inherited variable(s). Auto-generated from `.env.example` + the
       ],
       "env": {
         "TRANSPORT": "streamable-http",
-        "HOST": "0.0.0.0",
+        "HOST": "127.0.0.1",
         "PORT": "8000",
         "MCP_TOOL_MODE": "intent",
         "CONFIGTOOL": "True",
@@ -346,6 +348,7 @@ _20 package + 15 inherited variable(s). Auto-generated from `.env.example` + the
         "DOCTORTOOL": "True",
         "DVRTOOL": "True",
         "HDHOMERUN_DEVICE_AUTH": "your_device_auth_here",
+        "HDHOMERUN_SSL_VERIFY": "True",
         "HDHOMERUN_URL": "http://hdhomerun.local",
         "HTTPTOOL": "True"
       }
@@ -366,25 +369,33 @@ Alternatively, connect to a pre-deployed Streamable-HTTP instance by `url`:
 }
 ```
 
-Deploying the Streamable-HTTP server via Docker:
+Run a reviewed container image as a least-privilege stdio child (no
+listener or published port):
 
 ```bash
-docker run -d \
-  --name hdhomerun-mcp-mcp \
-  -p 8000:8000 \
-  -e TRANSPORT=streamable-http \
-  -e HOST=0.0.0.0 \
-  -e PORT=8000 \
+docker run -i --rm \
+  --read-only \
+  --cap-drop=ALL \
+  --security-opt=no-new-privileges \
+  --pids-limit=256 \
+  --tmpfs /tmp:rw,noexec,nosuid,nodev,size=64m \
+  -e TRANSPORT=stdio \
   -e MCP_TOOL_MODE=intent \
   -e CONFIGTOOL=True \
   -e DISCOVERYTOOL=True \
   -e DOCTORTOOL=True \
   -e DVRTOOL=True \
   -e HDHOMERUN_DEVICE_AUTH=your_device_auth_here \
+  -e HDHOMERUN_SSL_VERIFY=True \
   -e HDHOMERUN_URL=http://hdhomerun.local \
   -e HTTPTOOL=True \
-  knucklessg1/hdhomerun-mcp:mcp
+  registry.example.invalid/hdhomerun-mcp@sha256:<digest> hdhomerun-mcp
 ```
+
+For containerized network HTTP, supply an authenticated TLS ingress (or
+direct server TLS), exact `MCP_ALLOWED_HOSTS`, and an exact trusted-proxy
+CIDR policy through the operator-owned deployment profile. The generator
+does not emit an unauthenticated non-loopback listener.
 
 _Auto-generated from the code-read env surface (`MCP_TOOL_MODE` + package vars) — do not edit._
 <!-- MCP-CONFIG-EXAMPLES:END -->

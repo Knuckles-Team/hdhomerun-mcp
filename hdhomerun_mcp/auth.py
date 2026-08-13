@@ -66,7 +66,6 @@ def get_client(
                 config=config,
                 audience=(config or {}).get("audience", base_url),
                 scopes=(config or {}).get("delegated_scopes", "api"),
-                verify=verify,
             )
             identity = get_user_identity()
             logger.info(
