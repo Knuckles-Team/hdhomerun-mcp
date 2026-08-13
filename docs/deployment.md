@@ -92,17 +92,17 @@ docker compose -f docker/mcp.compose.yml up -d
 ### 4. Remote URL (deployed behind Caddy)
 
 When the server is deployed remotely and published through Caddy on the internal
-`*.arpa` zone, connect with the `"url"` key — no local process or image required:
+a deployment-selected HTTPS hostname, connect with the `"url"` key — no local process or image required:
 
 ```json
 {
   "mcpServers": {
-    "hdhomerun-mcp": { "url": "http://hdhomerun-mcp.arpa/mcp" }
+    "hdhomerun-mcp": { "url": "https://hdhomerun-mcp.example.invalid/mcp" }
   }
 }
 ```
 
-Caddy reverse-proxies `http://hdhomerun-mcp.arpa` to the container's `:8000`
+Caddy reverse-proxies `https://hdhomerun-mcp.example.invalid` to the container's `:8000`
 streamable-http listener.
 <!-- END GENERATED: deployment-options -->
 

@@ -1,0 +1,31 @@
+schema_version: '1'
+connector: hdhomerun-mcp
+ontology_source: hdhomerun
+sync:
+- preset: hdhomerun-lineup
+  server: hdhomerun-mcp
+  tool: http_operations
+  action: lineup
+  records_path: ''
+  id_field: GuideNumber
+  title_field: GuideName
+  text_field: GuideName
+  updated_field: null
+  doc_type: hdhomerun_channel
+  tool_schema_sha256: 77d4c6fed6858ef287766b76a6b55e871c50020f601ab390cb8089a4f1a2cf91
+- preset: hdhomerun-recording-rules
+  server: hdhomerun-mcp
+  tool: dvr_operations
+  action: list_rules
+  records_path: rules
+  id_field: RecordingRuleID
+  title_field: Title
+  text_field: Synopsis
+  updated_field: null
+  doc_type: hdhomerun_recording_rule
+  tool_schema_sha256: f7a4aa82d180432e7a08b85127c610cec58d33238a5c0fe3008eea2037e27f1c
+governance:
+  default_acl: quarantine
+  identity: opaque-reference
+  tenant: required-at-materialization
+  provenance: required-at-materialization

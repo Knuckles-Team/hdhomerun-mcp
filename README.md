@@ -278,7 +278,7 @@ _18 package + 15 inherited variable(s). Auto-generated from `.env.example` + the
 <!-- ENV-VARS-TABLE:END -->
 
 
-*   `HDHOMERUN_URL`: The HDHomeRun device base URL (e.g. `http://10.0.132.114` or `http://hdhomerun.arpa`).
+*   `HDHOMERUN_URL`: The HDHomeRun device base URL (e.g. `https://hdhomerun-device.example.invalid`).
 *   `HDHOMERUN_DEVICE_AUTH`: The device's `DeviceAuth` token (only needed for SiliconDust cloud DVR calls; rotates on reboot/firmware update — do not hardcode).
 
 ### MCP Configuration Examples
@@ -412,7 +412,7 @@ copy-paste `mcp_config.json` for all four transports — **stdio**, **streamable
 - **Local container / uv** — launch the server from `mcp_config.json` via `uvx`,
   `docker run`, or `podman run`, or point at a local streamable-http container by `url`.
 - **Remote URL** — connect to a server deployed behind Caddy at
-  `http://hdhomerun-mcp.arpa/mcp` using the `"url"` key.
+  `https://hdhomerun-mcp.example.invalid/mcp` using the `"url"` key.
 <!-- END GENERATED: additional-deployment-options -->
 
 ## Container images (`:mcp` vs `:agent`)
@@ -450,3 +450,19 @@ Full documentation is published to the GitHub Pages site and mirrored under `doc
 - [Deployment](docs/deployment.md)
 - [Platform](docs/platform.md)
 - [Concept Registry](docs/concepts.md)
+
+<!-- GOVERNED-CAPABILITY:START -->
+## Governed capability contract
+
+This package ships a compact canonical skill surface with specialist procedures
+kept as referenced workflows. The current MCP tools, skill metadata,
+`connector_manifest.yml`, ontology, mappings, shapes, fixtures, migrations,
+tool-schema fingerprints, and certification metadata form one versioned
+capability contract. Validate them together; do not rely on stale tool names or
+historical per-task skill wrappers.
+
+Runtime endpoints, credentials, certificate trust, tenant identity, retention,
+and observability policy are deployment inputs and are never packaged values.
+See [Configuration, trust, and privacy](docs/configuration.md) before enabling a
+network transport, connector ingestion, GraphOS delegation, or trace export.
+<!-- GOVERNED-CAPABILITY:END -->

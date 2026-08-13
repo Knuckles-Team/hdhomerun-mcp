@@ -1,0 +1,37 @@
+{
+  "api_version": "graphos.io/v1",
+  "artifacts": {
+    "a2a.json": "5902591b4903d49019f71e74dfc31e963315a25ab3b34aaf24327273bab87c85",
+    "connector_manifest.yml": "fe9afda15ae63835ffb230623a9675e7a72d266bc5a4689cc07e2e1112d81ada",
+    "hdhomerun_mcp/connectors/mcp_source_presets.json": "407f3743a204420d26ec0c93e97d2b7bd3a2d61d7c3c3fe1e479279107bc455f",
+    "hdhomerun_mcp/connectors/tool_schema_fingerprints.json": "f329fd62e581d5e62375ca2985fee023fea5ea1df5a3d27049e340d143107557",
+    "hdhomerun_mcp/ontology/fixtures/records.json": "5ea68572b9acda1b107c225f557b00309d02cef8d89d1387c5a4a1e94c68dd63",
+    "hdhomerun_mcp/ontology/hdhomerun.ttl": "7856d621f5e1eb4aa5457224d493af50bfb009502bd5df90d789551f221aae6f",
+    "hdhomerun_mcp/ontology/mappings/source.yaml": "08ba7ffffdce35254a10e3000bdf2e85dea076a8f22bb78b27f92f56bdfe5f3f",
+    "hdhomerun_mcp/ontology/migrations/manifest.json": "35cb946efcd658cc018bff1a952d20d1f1067ec7deaa82135a06ddd966a84625",
+    "hdhomerun_mcp/ontology/shapes/connector.shacl.ttl": "ede6633a08e846c7895eab6f82fbb5cf349235cc6ee9afe14a3dc60e2abebf7c"
+  },
+  "checks": {
+    "declared_tool_schema": "passed",
+    "manifest_integrity": "passed",
+    "privacy_contract": "passed",
+    "shacl_parse": "passed",
+    "synthetic_fixture_contract": "passed"
+  },
+  "compatibility": {
+    "agent_utilities": ">=2.1.0,<3",
+    "bundle_schema": "2",
+    "epistemic_graph": ">=2.23.1,<3"
+  },
+  "connector": "hdhomerun-mcp",
+  "kind": "ConnectorSourceAttestation",
+  "live_certified": false,
+  "mode": "offline-source",
+  "schema_version": "2",
+  "signature": "JTJxE-UGRs3MStAiSMQGtHLhvoRoT0bFzsUnqbd6yZeTN5bdsgPJjiHme5fzikO8QuyXTQ2hMx1-am-DvsDMBQ",
+  "signature_algorithm": "ed25519",
+  "signer": "ontology-manifest-generator",
+  "signing_public_key": "QkigdPNpcUU7x7NcSkwCsUXIQpaFncMQbYSoiSgI2SY",
+  "status": "source-validated",
+  "validated_at": "2026-07-28T10:14:00Z"
+}

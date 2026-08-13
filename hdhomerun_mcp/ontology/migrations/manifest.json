@@ -1,0 +1,6 @@
+{
+  "connector": "hdhomerun-mcp",
+  "current_ontology_source": "hdhomerun",
+  "migrations": [],
+  "schema_version": "1"
+}
