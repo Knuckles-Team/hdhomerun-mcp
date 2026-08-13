@@ -16,7 +16,7 @@ PRIME, SCRIBE, SERVIO, EXTEND, EXPAND, or DUAL) sits on your LAN and exposes:
   both on **port 65001** (UDP for discovery, TCP for control).
 
 Point `HDHOMERUN_URL` at the device's IP or a stable hostname
-(`http://10.0.132.114` or `http://hdhomerun.arpa` behind an ingress/reverse
+(`https://hdhomerun-device.example.invalid` behind an ingress/reverse
 proxy) — no software install is required on the network side.
 
 ## Optional: SiliconDust DVR record engine
