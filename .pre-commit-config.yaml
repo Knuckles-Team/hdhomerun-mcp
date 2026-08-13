@@ -84,7 +84,13 @@ repos:
     pass_filenames: true
   - id: lane-guard
     name: Lane guard — canonical checkout read-only + stray CARGO_TARGET_DIR (D-CP-3/D-CP-4 reach)
-    entry: bash -c 'repo=$(dirname "$(git rev-parse --path-format=absolute --git-common-dir)"); root=${AGENT_UTILITIES_ROOT:-"$(dirname "$repo")/agent-utilities"}; python3 "$root/scripts/check_lane_guard.py"'
+    # D-W5AGB-2-class copy-paste bug: the previous formula computed
+    # AGENT_UTILITIES_ROOT as .../agent-packages/agents/agent-utilities (does
+    # not exist, one dirname() level short of the real location) instead of
+    # .../agent-packages/agent-utilities. Hardcoded to match the already-working
+    # check-mermaid/check-stubs siblings below, which use the identical
+    # absolute path for the identical reason.
+    entry: bash -c 'root=${AGENT_UTILITIES_ROOT:-/home/apps/workspace/agent-packages/agent-utilities}; python3 "$root/scripts/check_lane_guard.py"'
     language: system
     pass_filenames: false
     always_run: true
