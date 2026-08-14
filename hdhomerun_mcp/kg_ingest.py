@@ -7,7 +7,7 @@ its OWN data into the ONE engine, in every modality that applies (the
 (:Blob/:MediaAsset). Thin mapper over the shared primitive
 ``agent_utilities.knowledge_graph.memory.native_ingest`` — imported GUARDED so
 it no-ops with no KG stack / no reachable engine (never raises). Node ids:
-``hdhomerun:<class>:<id>``; ``type`` values match ``ontology/hdhomerun.ttl``.
+``hdhomerun:<class>:<id>``; ``node_type`` values match ``ontology/hdhomerun.ttl``.
 """
 
 from __future__ import annotations
@@ -41,7 +41,7 @@ def ingest_device(info: dict[str, Any]) -> dict[str, int] | None:
         return None
     entity = {
         "id": f"{_DOMAIN}:device:{device_id}",
-        "type": "DiscoveredDevice",
+        "node_type": "DiscoveredDevice",
         "name": info.get("FriendlyName"),
         "deviceId": device_id,
         "tunerCount": info.get("TunerCount"),
@@ -60,13 +60,13 @@ def ingest_lineup(
         return None
     lineup_id = f"{_DOMAIN}:lineup:{device_id}"
     entities: list[dict[str, Any]] = [
-        {"id": lineup_id, "type": "Lineup", "name": f"Lineup for {device_id}"}
+        {"id": lineup_id, "node_type": "Lineup", "name": f"Lineup for {device_id}"}
     ]
     relationships: list[dict[str, Any]] = [
         {
             "source": f"{_DOMAIN}:device:{device_id}",
             "target": lineup_id,
-            "type": "hasLineup",
+            "relationship": "hasLineup",
         }
     ]
     for chan in channels or []:
@@ -77,14 +77,18 @@ def ingest_lineup(
         entities.append(
             {
                 "id": channel_id,
-                "type": "Channel",
+                "node_type": "Channel",
                 "name": chan.get("GuideName"),
                 "guideNumber": guide_number,
                 "guideName": chan.get("GuideName"),
             }
         )
         relationships.append(
-            {"source": lineup_id, "target": channel_id, "type": "includesChannel"}
+            {
+                "source": lineup_id,
+                "target": channel_id,
+                "relationship": "includesChannel",
+            }
         )
     return ni.ingest_entities(entities, relationships, source=_SOURCE, domain=_DOMAIN)
 
@@ -102,7 +106,7 @@ def ingest_recording_rules(rules: list[dict[str, Any]]) -> dict[str, int] | None
         entities.append(
             {
                 "id": f"{_DOMAIN}:rule:{rule_id}",
-                "type": "RecordingRule",
+                "node_type": "RecordingRule",
                 "name": rule.get("Title"),
                 "seriesId": rule.get("SeriesID"),
             }

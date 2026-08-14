@@ -37,7 +37,7 @@ def test_ingest_device_maps_and_pushes(monkeypatch):
     res = kg_ingest.ingest_device({"DeviceID": "10ACFCDE", "TunerCount": 4})
     assert res == {"nodes": 1, "edges": 0}
     assert fake.entities[0]["id"] == "hdhomerun:device:10ACFCDE"
-    assert fake.entities[0]["type"] == "DiscoveredDevice"
+    assert fake.entities[0]["node_type"] == "DiscoveredDevice"
 
 
 @pytest.mark.concept("HDHR-kg.ingest.native-push")
@@ -48,9 +48,15 @@ def test_ingest_lineup_maps_channels_and_edges(monkeypatch):
     channels = [{"GuideNumber": "24.1", "GuideName": "KVUE-DT"}]
     res = kg_ingest.ingest_lineup("10ACFCDE", channels)
     assert res == {"nodes": 2, "edges": 2}
-    types = {e["id"]: e["type"] for e in fake.entities}
+    types = {e["id"]: e["node_type"] for e in fake.entities}
     assert types["hdhomerun:lineup:10ACFCDE"] == "Lineup"
     assert types["hdhomerun:channel:10ACFCDE:24.1"] == "Channel"
+    rel_types = {(r["source"], r["target"]): r["relationship"] for r in fake.relationships}
+    assert rel_types[("hdhomerun:device:10ACFCDE", "hdhomerun:lineup:10ACFCDE")] == "hasLineup"
+    assert (
+        rel_types[("hdhomerun:lineup:10ACFCDE", "hdhomerun:channel:10ACFCDE:24.1")]
+        == "includesChannel"
+    )
 
 
 @pytest.mark.concept("HDHR-kg.ingest.native-push")
