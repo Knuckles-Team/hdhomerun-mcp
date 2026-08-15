@@ -30,8 +30,8 @@ services:
         max-file: "3"
 
   hdhomerun-mcp-agent:
-    # Full agent runtime image (default target, pushed as :latest).
-    image: knucklessg1/hdhomerun-mcp:latest
+    # Full agent runtime image (default target, pushed as :1.1.0).
+    image: knucklessg1/hdhomerun-mcp:1.1.0
     container_name: hdhomerun-mcp-agent
     hostname: hdhomerun-mcp-agent
     restart: always

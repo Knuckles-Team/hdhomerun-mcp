@@ -422,16 +422,16 @@ One multi-stage `docker/Dockerfile` builds two right-sized images, selected by `
 | Image tag | Build target | Contents | Entrypoint |
 |-----------|--------------|----------|------------|
 | `knucklessg1/hdhomerun-mcp:mcp` | `--target mcp` | `hdhomerun-mcp[mcp]` — **slim**, no engine/`pydantic-ai`/`dspy`/`llama-index` | `hdhomerun-mcp` |
-| `knucklessg1/hdhomerun-mcp:latest` | `--target agent` (default) | `hdhomerun-mcp[agent]` — **full** agent runtime + epistemic-graph engine | `hdhomerun-agent` |
+| `knucklessg1/hdhomerun-mcp:1.1.0` | `--target agent` (default) | `hdhomerun-mcp[agent]` — **full** agent runtime + epistemic-graph engine | `hdhomerun-agent` |
 
 ```bash
 docker build --target mcp   -t knucklessg1/hdhomerun-mcp:mcp    docker/   # slim MCP server
-docker build --target agent -t knucklessg1/hdhomerun-mcp:latest docker/   # full agent
+docker build --target agent -t knucklessg1/hdhomerun-mcp:1.1.0 docker/   # full agent
 ```
 
 ## Knowledge-graph database (`epistemic-graph`)
 
-The full agent (`[agent]` / `:latest`) embeds the **epistemic-graph** engine (pulled in via
+The full agent (`[agent]` / `:1.1.0`) embeds the **epistemic-graph** engine (pulled in via
 `agent-utilities[agent]`). For production — or to share one knowledge graph across multiple
 agents — run **epistemic-graph as its own database container** and point the agent at it.
 Deployment recipes (single-node + Raft HA), connection config, and the full database
