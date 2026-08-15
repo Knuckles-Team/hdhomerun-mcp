@@ -68,7 +68,7 @@ daemonless runtime):
         "-e", "TRANSPORT=stdio",
         "-e", "HDHOMERUN_URL=https://service.example.com",
         "-e", "HDHOMERUN_DEVICE_AUTH=your_token",
-        "knucklessg1/hdhomerun-mcp:latest"
+        "knucklessg1/hdhomerun-mcp:1.1.0"
       ]
     }
   }

@@ -13,7 +13,7 @@
 #                              pydantic-ai, dspy, llama-index, tree-sitter). The slim
 #                              variant. Push as the :mcp / :mcp-<version> tag.
 #
-#   docker build --target agent -t hdhomerun-mcp:latest .
+#   docker build --target agent -t hdhomerun-mcp:1.1.0 .
 #   docker build --target mcp   -t hdhomerun-mcp:mcp    .
 # See agent-packages/CLAUDE.md "Connector recipe" for the tag contract.
 FROM python:3.14-slim@sha256:cea0e6040540fb2b965b6e7fb5ffa00871e632eef63719f0ea54bca189ce14a6 AS builder-base
