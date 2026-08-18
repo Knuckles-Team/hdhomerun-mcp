@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://knuckles-team.github.io/hdhomerun-mcp/usage/">
       
       
-        <link rel="prev" href="../deployment/">
+        <link rel="prev" href="../configuration/">
       
       
         <link rel="next" href="../platform/">
@@ -310,6 +310,25 @@
   
   
   
+  
+    <li class="md-tabs__item">
+      <a href="../configuration/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Configuration, trust, and privacy
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
     
   
   
@@ -512,6 +531,33 @@
     
   
     Deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration, trust, and privacy
   
 
     
@@ -823,12 +869,12 @@ modules, each independently togglable with a <code>*TOOL</code> environment flag
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="n">info</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_discover</span><span class="p">()</span>
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="n">lineup</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_lineup</span><span class="p">()</span>
 </span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="n">status</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_lineup_status</span><span class="p">()</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="n">client</span><span class="o">.</span><span class="n">start_scan</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="s2">&quot;Antenna&quot;</span><span class="p">)</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="n">url</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">build_stream_url</span><span class="p">(</span><span class="s2">&quot;24.1&quot;</span><span class="p">,</span> <span class="n">tuner</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="n">client</span><span class="o">.</span><span class="n">start_scan</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="s2">"Antenna"</span><span class="p">)</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="n">url</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">build_stream_url</span><span class="p">(</span><span class="s2">"24.1"</span><span class="p">,</span> <span class="n">tuner</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
 </span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
 </span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="c1"># Discovery</span>
 </span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="n">devices</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">discover_local_broadcast</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mf">2.0</span><span class="p">)</span>     <span class="c1"># may be empty across VLANs</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="n">devices</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">discover_cloud</span><span class="p">(</span><span class="n">device_id</span><span class="o">=</span><span class="s2">&quot;10ACFCDE&quot;</span><span class="p">)</span>       <span class="c1"># cloud fallback</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="n">devices</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">discover_cloud</span><span class="p">(</span><span class="n">device_id</span><span class="o">=</span><span class="s2">"10ACFCDE"</span><span class="p">)</span>       <span class="c1"># cloud fallback</span>
 </span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>
 </span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="c1"># hdhomerun_config binary control protocol (TCP :65001)</span>
 </span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="n">tuner_status</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_tuner_status</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
@@ -838,11 +884,11 @@ modules, each independently togglable with a <code>*TOOL</code> environment flag
 </span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="n">rules</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">list_recording_rules</span><span class="p">()</span>
 </span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>
 </span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="c1"># Doctor</span>
-</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="n">report</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">run_doctor</span><span class="p">(</span><span class="n">signal_channels</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;24.1&quot;</span><span class="p">])</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="n">report</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">run_doctor</span><span class="p">(</span><span class="n">signal_channels</span><span class="o">=</span><span class="p">[</span><span class="s2">"24.1"</span><span class="p">])</span>
 </span></code></pre></div>
 <h2 id="as-a-cli">As a CLI<a class="headerlink" href="#as-a-cli" title="Permanent link">&para;</a></h2>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">HDHOMERUN_URL</span><span class="o">=</span><span class="s2">&quot;http://10.0.132.114&quot;</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">HDHOMERUN_DEVICE_AUTH</span><span class="o">=</span><span class="s2">&quot;your_device_auth&quot;</span><span class="w">   </span><span class="c1"># only needed for DVR cloud calls</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">HDHOMERUN_URL</span><span class="o">=</span><span class="s2">"http://10.0.132.114"</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">HDHOMERUN_DEVICE_AUTH</span><span class="o">=</span><span class="s2">"your_device_auth"</span><span class="w">   </span><span class="c1"># only needed for DVR cloud calls</span>
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>hdhomerun-mcp<span class="w"> </span>--transport<span class="w"> </span>stdio
 </span></code></pre></div>
 
@@ -882,7 +928,7 @@ modules, each independently togglable with a <code>*TOOL</code> environment flag
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../deployment/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Deployment">
+          <a href="../configuration/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Configuration, trust, and privacy">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -892,7 +938,7 @@ modules, each independently togglable with a <code>*TOOL</code> environment flag
                 Previous
               </span>
               <div class="md-ellipsis">
-                Deployment
+                Configuration, trust, and privacy
               </div>
             </div>
           </a>
