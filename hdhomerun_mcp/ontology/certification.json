@@ -1,8 +1,7 @@
 {
   "api_version": "graphos.io/v1",
   "artifacts": {
-    "a2a.json": "c5e6743540de56d6f8d575d1164e7adc50a44f66d8afb201aa3e952604419455",
-    "connector_manifest.yml": "e28fa93e146420a1086cbd9ef737059d407da4c7125acbbac8142ad88a02e22f",
+    "connector_manifest.yml": "33009b70ebfd0855f16ebaec1ff57eba2aae2e51bcf92454148b1e652c5ce0f0",
     "hdhomerun_mcp/connectors/mcp_source_presets.json": "407f3743a204420d26ec0c93e97d2b7bd3a2d61d7c3c3fe1e479279107bc455f",
     "hdhomerun_mcp/connectors/tool_schema_fingerprints.json": "f329fd62e581d5e62375ca2985fee023fea5ea1df5a3d27049e340d143107557",
     "hdhomerun_mcp/ontology/fixtures/records.json": "5ea68572b9acda1b107c225f557b00309d02cef8d89d1387c5a4a1e94c68dd63",
@@ -19,19 +18,19 @@
     "synthetic_fixture_contract": "passed"
   },
   "compatibility": {
-    "agent_utilities": ">=2.1.0,<3",
+    "agent_utilities": ">=2.4.0,<3",
     "bundle_schema": "2",
-    "epistemic_graph": ">=2.23.0,<3"
+    "epistemic_graph": ">=2.26.0,<3"
   },
   "connector": "hdhomerun-mcp",
   "kind": "ConnectorSourceAttestation",
   "live_certified": false,
   "mode": "offline-source",
   "schema_version": "2",
-  "signature": "uJs-RiWb1sNKOg4iPoddFyMNwukPotslU1hItezcgDuIRVsuxOYMSdo08TwZuGEADSu1nIwtxyFOjjPve-CGAw",
-  "signature_algorithm": "ed25519",
-  "signer": "ontology-manifest-generator",
-  "signing_public_key": "QkigdPNpcUU7x7NcSkwCsUXIQpaFncMQbYSoiSgI2SY",
+  "signature": null,
+  "signature_algorithm": "none",
+  "signer": "UNSIGNED-PREVIEW",
+  "signing_public_key": "",
   "status": "source-validated",
-  "validated_at": "2026-07-31T04:00:00Z"
+  "validated_at": "2026-08-21T04:30:39Z"
 }
