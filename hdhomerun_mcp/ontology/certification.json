@@ -1,7 +1,7 @@
 {
   "api_version": "graphos.io/v1",
   "artifacts": {
-    "connector_manifest.yml": "33009b70ebfd0855f16ebaec1ff57eba2aae2e51bcf92454148b1e652c5ce0f0",
+    "connector_manifest.yml": "f781447b904f3ab284e605b8256d4b970b4abce7301b2d0eefd4c8ff2421ada7",
     "hdhomerun_mcp/connectors/mcp_source_presets.json": "407f3743a204420d26ec0c93e97d2b7bd3a2d61d7c3c3fe1e479279107bc455f",
     "hdhomerun_mcp/connectors/tool_schema_fingerprints.json": "f329fd62e581d5e62375ca2985fee023fea5ea1df5a3d27049e340d143107557",
     "hdhomerun_mcp/ontology/fixtures/records.json": "5ea68572b9acda1b107c225f557b00309d02cef8d89d1387c5a4a1e94c68dd63",
@@ -18,9 +18,9 @@
     "synthetic_fixture_contract": "passed"
   },
   "compatibility": {
-    "agent_utilities": ">=2.4.0,<3",
+    "agent_utilities": ">=2.5.0,<3",
     "bundle_schema": "2",
-    "epistemic_graph": ">=2.26.0,<3"
+    "epistemic_graph": ">=2.27.0,<3"
   },
   "connector": "hdhomerun-mcp",
   "kind": "ConnectorSourceAttestation",
@@ -32,5 +32,5 @@
   "signer": "UNSIGNED-PREVIEW",
   "signing_public_key": "",
   "status": "source-validated",
-  "validated_at": "2026-08-21T04:30:39Z"
+  "validated_at": "2026-08-26T13:42:55Z"
 }
