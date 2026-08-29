@@ -24,6 +24,70 @@ ACTIONS = {
 }
 
 
+async def _list_recording_rules(client, kwargs: dict) -> dict:
+    return {"rules": await run_blocking(client.list_recording_rules, **kwargs)}
+
+
+async def _add_series_rule(client, kwargs: dict) -> dict:
+    return {"rules": await run_blocking(client.add_series_rule, **kwargs)}
+
+
+async def _add_datetime_rule(client, kwargs: dict) -> dict:
+    return {"rules": await run_blocking(client.add_datetime_rule, **kwargs)}
+
+
+async def _change_rule(client, kwargs: dict) -> dict:
+    return {"rules": await run_blocking(client.change_rule, **kwargs)}
+
+
+async def _delete_rule(client, kwargs: dict) -> dict:
+    return {"rules": await run_blocking(client.delete_rule, **kwargs)}
+
+
+async def _record_engine_status(client, kwargs: dict) -> dict:
+    return await run_blocking(client.get_record_engine_status, **kwargs)
+
+
+async def _recorded_files(client, kwargs: dict) -> dict:
+    return {"files": await run_blocking(client.get_recorded_files, **kwargs)}
+
+
+async def _poke_record_engine(client, kwargs: dict) -> dict:
+    client.poke_record_engine(**kwargs)
+    return {"status": "poked"}
+
+
+async def _delete_recording(client, kwargs: dict) -> dict:
+    client.delete_recording(**kwargs)
+    return {"status": "deleted"}
+
+
+async def _live_tv_url(client, kwargs: dict) -> dict:
+    return {"url": client.build_live_tv_url(**kwargs)}
+
+
+async def _ingest_recording_rules(client, kwargs: dict) -> dict:
+    rules = await run_blocking(client.list_recording_rules, **kwargs)
+    return {"ingested": kg_ingest.ingest_recording_rules(rules)}
+
+
+# Action name -> handler. Keeps `dvr_operations` itself to a single
+# lookup-and-call instead of an N-way if/elif chain over `action`.
+DVR_ACTION_HANDLERS = {
+    "list_rules": _list_recording_rules,
+    "add_series_rule": _add_series_rule,
+    "add_datetime_rule": _add_datetime_rule,
+    "change_rule": _change_rule,
+    "delete_rule": _delete_rule,
+    "record_engine_status": _record_engine_status,
+    "recorded_files": _recorded_files,
+    "poke": _poke_record_engine,
+    "delete_recording": _delete_recording,
+    "live_tv_url": _live_tv_url,
+    "ingest_rules": _ingest_recording_rules,
+}
+
+
 def register_dvr_tools(mcp: FastMCP):
     """Register dvr tag dynamic tools."""
 
@@ -69,29 +133,7 @@ def register_dvr_tools(mcp: FastMCP):
             return resolved
         action = resolved
 
-        if action == "list_rules":
-            return {"rules": await run_blocking(client.list_recording_rules, **kwargs)}
-        if action == "add_series_rule":
-            return {"rules": await run_blocking(client.add_series_rule, **kwargs)}
-        if action == "add_datetime_rule":
-            return {"rules": await run_blocking(client.add_datetime_rule, **kwargs)}
-        if action == "change_rule":
-            return {"rules": await run_blocking(client.change_rule, **kwargs)}
-        if action == "delete_rule":
-            return {"rules": await run_blocking(client.delete_rule, **kwargs)}
-        if action == "record_engine_status":
-            return await run_blocking(client.get_record_engine_status, **kwargs)
-        if action == "recorded_files":
-            return {"files": await run_blocking(client.get_recorded_files, **kwargs)}
-        if action == "poke":
-            client.poke_record_engine(**kwargs)
-            return {"status": "poked"}
-        if action == "delete_recording":
-            client.delete_recording(**kwargs)
-            return {"status": "deleted"}
-        if action == "live_tv_url":
-            return {"url": client.build_live_tv_url(**kwargs)}
-        if action == "ingest_rules":
-            rules = await run_blocking(client.list_recording_rules, **kwargs)
-            return {"ingested": kg_ingest.ingest_recording_rules(rules)}
-        return {"error": f"Unhandled action: {action}"}
+        handler = DVR_ACTION_HANDLERS.get(action)
+        if handler is None:
+            return {"error": f"Unhandled action: {action}"}
+        return await handler(client, kwargs)
