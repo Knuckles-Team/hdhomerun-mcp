@@ -71,3 +71,29 @@ def test_get_client_delegation_uses_canonical_oidc_transport():
         assert client_a is client_b
         assert client_a.url == "http://10.0.132.114"
     auth_module._client = None
+
+
+@pytest.mark.concept("HDHR-http.api.json-interface")
+def test_get_client_delegation_failure_raises_token_exchange_error():
+    """A broken OIDC token exchange surfaces as a clear RuntimeError, not a
+    raw exception or a silently-cached partial client.
+
+    CONCEPT:HDHR-http.api.json-interface
+    """
+    auth_module._client = None
+    config = {"audience": "https://hdhomerun.example/api"}
+    with (
+        patch(
+            "agent_utilities.mcp.delegated_auth.is_delegation_enabled",
+            return_value=True,
+        ),
+        patch(
+            "agent_utilities.mcp.delegated_auth.get_delegated_token",
+            side_effect=Exception("token exchange broke"),
+        ),
+    ):
+        with pytest.raises(RuntimeError) as exc_info:
+            get_client(config=config)
+    assert "Token exchange failed" in str(exc_info.value)
+    assert auth_module._client is None
+    auth_module._client = None
