@@ -1,6 +1,7 @@
 import json
 
-from agent_utilities.mcp_utilities import resolve_action, run_blocking
+from agent_utilities.mcp.action_dispatch import resolve_action
+from agent_utilities.mcp.concurrency import run_blocking
 from fastmcp import Context, FastMCP
 from fastmcp.dependencies import Depends
 from pydantic import Field
@@ -17,6 +18,57 @@ ACTIONS = {
     "stream_url",
     "ingest_device",
     "ingest_lineup",
+}
+
+
+async def _discover(client, kwargs: dict) -> dict:
+    return await run_blocking(client.get_discover, **kwargs)
+
+
+async def _lineup(client, kwargs: dict) -> dict:
+    return await run_blocking(client.get_lineup, **kwargs)
+
+
+async def _lineup_status(client, kwargs: dict) -> dict:
+    return await run_blocking(client.get_lineup_status, **kwargs)
+
+
+async def _scan_start(client, kwargs: dict) -> dict:
+    client.start_scan(**kwargs)
+    return {"status": "scan started"}
+
+
+async def _scan_abort(client, kwargs: dict) -> dict:
+    client.abort_scan()
+    return {"status": "scan aborted"}
+
+
+async def _stream_url(client, kwargs: dict) -> dict:
+    return {"url": client.build_stream_url(**kwargs)}
+
+
+async def _ingest_device(client, kwargs: dict) -> dict:
+    info = await run_blocking(client.get_discover)
+    return {"ingested": kg_ingest.ingest_device(info)}
+
+
+async def _ingest_lineup(client, kwargs: dict) -> dict:
+    info = await run_blocking(client.get_discover)
+    channels = await run_blocking(client.get_lineup)
+    return {"ingested": kg_ingest.ingest_lineup(info.get("DeviceID"), channels)}
+
+
+# Action name -> handler. Keeps `http_operations` itself to a single
+# lookup-and-call instead of an N-way if/elif chain over `action`.
+HTTP_ACTION_HANDLERS = {
+    "discover": _discover,
+    "lineup": _lineup,
+    "lineup_status": _lineup_status,
+    "scan_start": _scan_start,
+    "scan_abort": _scan_abort,
+    "stream_url": _stream_url,
+    "ingest_device": _ingest_device,
+    "ingest_lineup": _ingest_lineup,
 }
 
 
@@ -59,25 +111,7 @@ def register_http_tools(mcp: FastMCP):
             return resolved
         action = resolved
 
-        if action == "discover":
-            return await run_blocking(client.get_discover, **kwargs)
-        if action == "lineup":
-            return await run_blocking(client.get_lineup, **kwargs)
-        if action == "lineup_status":
-            return await run_blocking(client.get_lineup_status, **kwargs)
-        if action == "scan_start":
-            client.start_scan(**kwargs)
-            return {"status": "scan started"}
-        if action == "scan_abort":
-            client.abort_scan()
-            return {"status": "scan aborted"}
-        if action == "stream_url":
-            return {"url": client.build_stream_url(**kwargs)}
-        if action == "ingest_device":
-            info = await run_blocking(client.get_discover)
-            return {"ingested": kg_ingest.ingest_device(info)}
-        if action == "ingest_lineup":
-            info = await run_blocking(client.get_discover)
-            channels = await run_blocking(client.get_lineup)
-            return {"ingested": kg_ingest.ingest_lineup(info.get("DeviceID"), channels)}
-        return {"error": f"Unhandled action: {action}"}
+        handler = HTTP_ACTION_HANDLERS.get(action)
+        if handler is None:
+            return {"error": f"Unhandled action: {action}"}
+        return await handler(client, kwargs)

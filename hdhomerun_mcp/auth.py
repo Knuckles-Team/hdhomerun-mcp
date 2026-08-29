@@ -32,6 +32,55 @@ logger = get_logger(__name__)
 _client = None
 
 
+def _resolve_delegated_client(
+    config: dict | None, base_url: str, verify: bool
+) -> ApiClientSystem:
+    """Path 1: OIDC Delegation (RFC 8693 Token Exchange)."""
+    from agent_utilities.mcp.delegated_auth import (
+        get_delegated_token,
+        get_user_identity,
+    )
+
+    try:
+        delegated_token = get_delegated_token(
+            config=config,
+            audience=(config or {}).get("audience", base_url),
+            scopes=(config or {}).get("delegated_scopes", "api"),
+        )
+        identity = get_user_identity()
+        logger.info(
+            "Using OIDC delegated token",
+            extra={"user_email": identity.get("email"), "url": base_url},
+        )
+        return ApiClientSystem(url=base_url, device_auth=delegated_token, verify=verify)
+    except Exception as e:
+        logger.error(
+            "OIDC delegation failed",
+            extra={"error_type": type(e).__name__, "error_message": str(e)},
+        )
+        raise RuntimeError(f"Token exchange failed: {str(e)}") from e
+
+
+def _resolve_fixed_credentials_client(
+    base_url: str, device_auth: str, verify: bool
+) -> ApiClientSystem:
+    """Path 2: Fixed Credentials (HDHOMERUN_URL + optional HDHOMERUN_DEVICE_AUTH)."""
+    logger.info("Using fixed credentials")
+    try:
+        return ApiClientSystem(url=base_url, device_auth=device_auth, verify=verify)
+    except (AuthError, UnauthorizedError) as e:
+        raise RuntimeError(
+            f"AUTHENTICATION ERROR: The credentials provided are not valid for '{base_url}'. "
+            f"Please check your HDHOMERUN_DEVICE_AUTH and HDHOMERUN_URL environment variables. "
+            f"Error details: {str(e)}"
+        ) from e
+    except Exception as e:
+        raise RuntimeError(
+            f"AUTHENTICATION ERROR: Failed to instantiate client. "
+            f"Error details: {str(e)}"
+        ) from e
+
+
 def get_client(
     url: str | None = None,
     token: str | None = None,
@@ -53,50 +102,11 @@ def get_client(
     if verify is None:
         verify = setting("HDHOMERUN_SSL_VERIFY", True)
 
-    from agent_utilities.mcp.delegated_auth import (
-        get_delegated_token,
-        get_user_identity,
-        is_delegation_enabled,
-    )
+    from agent_utilities.mcp.delegated_auth import is_delegation_enabled
 
-    # --- Path 1: OIDC Delegation (RFC 8693 Token Exchange) ---
     if is_delegation_enabled(config):
-        try:
-            delegated_token = get_delegated_token(
-                config=config,
-                audience=(config or {}).get("audience", base_url),
-                scopes=(config or {}).get("delegated_scopes", "api"),
-            )
-            identity = get_user_identity()
-            logger.info(
-                "Using OIDC delegated token",
-                extra={"user_email": identity.get("email"), "url": base_url},
-            )
-            _client = ApiClientSystem(
-                url=base_url, device_auth=delegated_token, verify=verify
-            )
-            return _client
-        except Exception as e:
-            logger.error(
-                "OIDC delegation failed",
-                extra={"error_type": type(e).__name__, "error_message": str(e)},
-            )
-            raise RuntimeError(f"Token exchange failed: {str(e)}") from e
+        _client = _resolve_delegated_client(config, base_url, verify)
+        return _client
 
-    # --- Path 2: Fixed Credentials (HDHOMERUN_URL + optional HDHOMERUN_DEVICE_AUTH) ---
-    logger.info("Using fixed credentials")
-    try:
-        _client = ApiClientSystem(url=base_url, device_auth=device_auth, verify=verify)
-    except (AuthError, UnauthorizedError) as e:
-        raise RuntimeError(
-            f"AUTHENTICATION ERROR: The credentials provided are not valid for '{base_url}'. "
-            f"Please check your HDHOMERUN_DEVICE_AUTH and HDHOMERUN_URL environment variables. "
-            f"Error details: {str(e)}"
-        ) from e
-    except Exception as e:
-        raise RuntimeError(
-            f"AUTHENTICATION ERROR: Failed to instantiate client. "
-            f"Error details: {str(e)}"
-        ) from e
-
+    _client = _resolve_fixed_credentials_client(base_url, device_auth, verify)
     return _client
