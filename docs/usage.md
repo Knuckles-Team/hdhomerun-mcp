@@ -24,7 +24,7 @@ Every tool takes `action` plus a JSON string `params_json`. See
 ```python
 from hdhomerun_mcp.auth import get_client
 
-client = get_client()  # reads HDHOMERUN_URL / HDHOMERUN_DEVICE_AUTH / HDHOMERUN_SSL_VERIFY
+client = get_client()  # reads HDHOMERUN_URL / HDHOMERUN_DEVICE_AUTH / HDHOMERUN_TLS_PROFILE
 
 # HTTP JSON API
 info = client.get_discover()

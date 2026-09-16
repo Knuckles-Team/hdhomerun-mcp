@@ -45,7 +45,7 @@ Connect via the `mcp-client` skill against the **`hdhomerun-mcp`** MCP server.
 | Variable | Required | Notes |
 |----------|----------|-------|
 | `HDHOMERUN_URL` | ✅ | Device base URL, e.g. `http://10.0.132.114` or `http://hdhomerun.arpa` |
-| `HDHOMERUN_SSL_VERIFY` | optional | TLS verification (local devices are plain HTTP) |
+| `HDHOMERUN_TLS_PROFILE` / `HDHOMERUN_TLS_PROFILE_REF` | optional | Named outbound TLS policy (local devices are plain HTTP; only the cloud recording-rules API is affected; verification is mandatory) |
 | `HTTPTOOL` | optional | Toggle this tool domain (default enabled) |
 
 ## Tools & actions

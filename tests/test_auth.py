@@ -1,3 +1,4 @@
+import os
 from unittest.mock import patch
 
 import pytest
@@ -47,29 +48,64 @@ def test_get_client_delegation_uses_canonical_oidc_transport():
         ),
         patch("hdhomerun_mcp.auth.ApiClientSystem") as client_cls,
     ):
-        get_client(url="http://hdhomerun.local", config=config, verify=False)
+        get_client(url="http://hdhomerun.local", config=config)
 
     delegated.assert_called_once_with(
         config=config,
         audience="https://hdhomerun.example/api",
         scopes="dvr.read",
     )
-    client_cls.assert_called_once_with(
-        url="http://hdhomerun.local",
-        device_auth="delegated-token",
-        verify=False,
-    )
+    _, client_kwargs = client_cls.call_args
+    assert client_kwargs["url"] == "http://hdhomerun.local"
+    assert client_kwargs["device_auth"] == "delegated-token"
+    assert client_kwargs["tls_profile"].verify_enabled is True
     auth_module._client = None
     with patch("hdhomerun_mcp.auth.setting") as mock_setting:
         mock_setting.side_effect = lambda name, default=None: {
             "HDHOMERUN_URL": "http://10.0.132.114",
             "HDHOMERUN_DEVICE_AUTH": "abc",
-            "HDHOMERUN_SSL_VERIFY": True,
         }.get(name, default)
         client_a = get_client()
         client_b = get_client()
         assert client_a is client_b
         assert client_a.url == "http://10.0.132.114"
+    auth_module._client = None
+
+
+@pytest.mark.concept("HDHR-http.api.json-interface")
+def test_get_client_verifies_by_default():
+    """No TLS env vars configured -> the resolved profile still verifies."""
+    auth_module._client = None
+    with patch.dict(os.environ, {"HDHOMERUN_URL": "https://hdhomerun.local"}, clear=True):
+        client = get_client()
+        assert client.tls_profile.verify_enabled is True
+        assert client._session.verify is True
+    auth_module._client = None
+
+
+@pytest.mark.concept("HDHR-http.api.json-interface")
+def test_get_client_honors_named_tls_profile():
+    """``HDHOMERUN_TLS_PROFILE`` selects a named profile from the catalog —
+    proving the documented env var is actually wired end-to-end (this only
+    matters for the SiliconDust cloud recording-rules API)."""
+    auth_module._client = None
+    catalog = (
+        '{"profiles": {"private-pki": {"system_trust": false, '
+        '"ca_directory": "/etc/ssl/certs"}}}'
+    )
+    with patch.dict(
+        os.environ,
+        {
+            "HDHOMERUN_URL": "http://10.0.132.114",
+            "HDHOMERUN_TLS_PROFILE": "private-pki",
+            "TLS_PROFILES": catalog,
+        },
+        clear=True,
+    ):
+        client = get_client()
+        assert client.tls_profile.verify_enabled is True
+        assert client.tls_profile.name == "private-pki"
+        assert client.tls_profile.system_trust is False
     auth_module._client = None
 
 
