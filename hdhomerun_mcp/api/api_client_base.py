@@ -15,6 +15,10 @@ from typing import Any
 import requests
 from agent_utilities.base_utilities import get_logger
 from agent_utilities.core.exceptions import ParameterError
+from agent_utilities.core.transport_security import (
+    ResolvedTLSProfile,
+    resolve_configured_tls_profile,
+)
 
 logger = get_logger(__name__)
 
@@ -28,8 +32,9 @@ class HDHomeRunApiBase:
         url: Device base URL, e.g. ``http://10.0.132.114`` (no trailing slash).
         device_auth: Optional ``DeviceAuth`` string(s) for cloud DVR calls
             (concatenated when a device has multiple tuners' auth strings).
-        verify: TLS certificate verification (local devices are plain HTTP;
-            kept for parity with the fleet's env-var convention).
+        tls_profile: Resolved TLS policy for the SiliconDust cloud recording-
+            rules API (``https://api.hdhomerun.com``); local tuner/record-engine
+            devices are plain HTTP, where ``verify`` has no effect either way.
         timeout: Per-request timeout in seconds.
     """
 
@@ -37,14 +42,14 @@ class HDHomeRunApiBase:
         self,
         url: str | None = None,
         device_auth: str | None = None,
-        verify: bool = True,
+        tls_profile: ResolvedTLSProfile | None = None,
         timeout: int = DEFAULT_TIMEOUT,
     ):
         self.url = (url or "").rstrip("/")
         self.device_auth = device_auth
-        self.verify = verify
+        self.tls_profile = tls_profile or resolve_configured_tls_profile("hdhomerun")
         self.timeout = timeout
-        self._session = requests.Session()
+        self._session = self.tls_profile.configure_requests_session(requests.Session())
 
     def _get(self, path_or_url: str, **kwargs) -> requests.Response:
         url = (
@@ -53,7 +58,6 @@ class HDHomeRunApiBase:
             else f"{self.url}{path_or_url}"
         )
         kwargs.setdefault("timeout", self.timeout)
-        kwargs.setdefault("verify", self.verify)
         response = self._session.get(url, **kwargs)
         response.raise_for_status()
         return response
@@ -65,10 +69,14 @@ class HDHomeRunApiBase:
             else f"{self.url}{path_or_url}"
         )
         kwargs.setdefault("timeout", self.timeout)
-        kwargs.setdefault("verify", self.verify)
         response = self._session.post(url, **kwargs)
         response.raise_for_status()
         return response
+
+    def close(self) -> None:
+        """Release transport resources and runtime-only TLS material."""
+        self._session.close()
+        self.tls_profile.cleanup()
 
     def _get_json(self, path_or_url: str, **kwargs) -> Any:
         response = self._get(path_or_url, **kwargs)

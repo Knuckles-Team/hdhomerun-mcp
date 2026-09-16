@@ -25,6 +25,10 @@ instance from ``hdhomerun_instances`` in
 from agent_utilities.base_utilities import get_logger
 from agent_utilities.core.config import setting
 from agent_utilities.core.exceptions import AuthError, UnauthorizedError
+from agent_utilities.core.transport_security import (
+    ResolvedTLSProfile,
+    resolve_configured_tls_profile,
+)
 
 from .api import ApiClientSystem
 
@@ -33,7 +37,7 @@ _client = None
 
 
 def _resolve_delegated_client(
-    config: dict | None, base_url: str, verify: bool
+    config: dict | None, base_url: str, tls_profile: ResolvedTLSProfile
 ) -> ApiClientSystem:
     """Path 1: OIDC Delegation (RFC 8693 Token Exchange)."""
     from agent_utilities.mcp.delegated_auth import (
@@ -52,7 +56,9 @@ def _resolve_delegated_client(
             "Using OIDC delegated token",
             extra={"user_email": identity.get("email"), "url": base_url},
         )
-        return ApiClientSystem(url=base_url, device_auth=delegated_token, verify=verify)
+        return ApiClientSystem(
+            url=base_url, device_auth=delegated_token, tls_profile=tls_profile
+        )
     except Exception as e:
         logger.error(
             "OIDC delegation failed",
@@ -62,12 +68,14 @@ def _resolve_delegated_client(
 
 
 def _resolve_fixed_credentials_client(
-    base_url: str, device_auth: str, verify: bool
+    base_url: str, device_auth: str, tls_profile: ResolvedTLSProfile
 ) -> ApiClientSystem:
     """Path 2: Fixed Credentials (HDHOMERUN_URL + optional HDHOMERUN_DEVICE_AUTH)."""
     logger.info("Using fixed credentials")
     try:
-        return ApiClientSystem(url=base_url, device_auth=device_auth, verify=verify)
+        return ApiClientSystem(
+            url=base_url, device_auth=device_auth, tls_profile=tls_profile
+        )
     except (AuthError, UnauthorizedError) as e:
         raise RuntimeError(
             f"AUTHENTICATION ERROR: The credentials provided are not valid for '{base_url}'. "
@@ -84,14 +92,18 @@ def _resolve_fixed_credentials_client(
 def get_client(
     url: str | None = None,
     token: str | None = None,
-    verify: bool | None = None,
+    tls_profile: ResolvedTLSProfile | None = None,
     config: dict | None = None,
 ) -> ApiClientSystem:
     """Get or create a singleton API client (OIDC delegation or fixed credentials).
 
     Credentials resolve through the shared config layer (the one XDG
     ``config.json`` / env) at call time, not frozen at import. ``token`` here
-    doubles as the device's ``DeviceAuth`` string (cloud DVR calls only).
+    doubles as the device's ``DeviceAuth`` string (cloud DVR calls only). TLS
+    only matters for the SiliconDust cloud recording-rules API — local tuner
+    devices are plain HTTP — and is resolved through the shared AgentConfig
+    transport profile (``HDHOMERUN_TLS_PROFILE``/``HDHOMERUN_TLS_PROFILE_REF``);
+    verification is always on.
     """
     global _client
     if _client is not None:
@@ -99,14 +111,18 @@ def get_client(
 
     base_url = url or setting("HDHOMERUN_URL", "http://hdhomerun.local")
     device_auth = token or setting("HDHOMERUN_DEVICE_AUTH", "")
-    if verify is None:
-        verify = setting("HDHOMERUN_SSL_VERIFY", True)
+    if tls_profile is None:
+        tls_profile = resolve_configured_tls_profile(
+            "hdhomerun",
+            profile_name=setting("HDHOMERUN_TLS_PROFILE", "") or None,
+            profile_ref=setting("HDHOMERUN_TLS_PROFILE_REF", "") or None,
+        )
 
     from agent_utilities.mcp.delegated_auth import is_delegation_enabled
 
     if is_delegation_enabled(config):
-        _client = _resolve_delegated_client(config, base_url, verify)
+        _client = _resolve_delegated_client(config, base_url, tls_profile)
         return _client
 
-    _client = _resolve_fixed_credentials_client(base_url, device_auth, verify)
+    _client = _resolve_fixed_credentials_client(base_url, device_auth, tls_profile)
     return _client

@@ -246,7 +246,8 @@ The MCP Server can be run in `stdio` (local), `streamable-http` (networked), or
 | `EUNOMIA_REMOTE_URL` | `http://eunomia-server:8000` |  |
 | `HDHOMERUN_URL` | `http://hdhomerun.local` |  |
 | `HDHOMERUN_DEVICE_AUTH` | `your_device_auth_here` |  |
-| `HDHOMERUN_SSL_VERIFY` | `True` |  |
+| `HDHOMERUN_TLS_PROFILE` | — | Named outbound TLS policy from AgentConfig; only matters for the SiliconDust cloud recording-rules API (local tuner devices are plain HTTP). Verification is mandatory and cannot be disabled. |
+| `HDHOMERUN_TLS_PROFILE_REF` | — |  |
 | `MCP_TOOL_MODE` | `condensed` |  |
 | `HTTPTOOL` | `True` |  |
 | `DISCOVERYTOOL` | `True` |  |
@@ -270,11 +271,11 @@ The MCP Server can be run in `stdio` (local), `streamable-http` (networked), or
 | `DEBUG` | `False` | Verbose logging |
 | `PYTHONUNBUFFERED` | `1` | Unbuffered stdout (recommended in containers) |
 | `MCP_URL` | `http://localhost:8000/mcp` | URL of the MCP server the agent connects to |
-| `PROVIDER` | `openai` | LLM provider for the agent |
-| `MODEL_ID` | `gpt-4o` | Model id for the agent |
+| `PROVIDER` | — | Operator-configured LLM provider for the agent |
+| `MODEL_ID` | — | Operator-configured model id for the agent |
 | `ENABLE_WEB_UI` | `True` | Serve the AG-UI web interface |
 
-_18 package + 15 inherited variable(s). Auto-generated from `.env.example` + the shared agent-utilities set — do not edit._
+_19 package + 15 inherited variable(s). Auto-generated from `.env.example` + the shared agent-utilities set — do not edit._
 <!-- ENV-VARS-TABLE:END -->
 
 
@@ -309,7 +310,6 @@ _18 package + 15 inherited variable(s). Auto-generated from `.env.example` + the
         "DOCTORTOOL": "True",
         "DVRTOOL": "True",
         "HDHOMERUN_DEVICE_AUTH": "your_device_auth_here",
-        "HDHOMERUN_SSL_VERIFY": "True",
         "HDHOMERUN_URL": "http://hdhomerun.local",
         "HTTPTOOL": "True"
       }
@@ -348,7 +348,6 @@ own runtime secret boundary.
         "DOCTORTOOL": "True",
         "DVRTOOL": "True",
         "HDHOMERUN_DEVICE_AUTH": "your_device_auth_here",
-        "HDHOMERUN_SSL_VERIFY": "True",
         "HDHOMERUN_URL": "http://hdhomerun.local",
         "HTTPTOOL": "True"
       }
@@ -386,7 +385,6 @@ docker run -i --rm \
   -e DOCTORTOOL=True \
   -e DVRTOOL=True \
   -e HDHOMERUN_DEVICE_AUTH=your_device_auth_here \
-  -e HDHOMERUN_SSL_VERIFY=True \
   -e HDHOMERUN_URL=http://hdhomerun.local \
   -e HTTPTOOL=True \
   registry.example.invalid/hdhomerun-mcp@sha256:<digest> hdhomerun-mcp
