@@ -151,7 +151,7 @@ sync:
   updated_field: null
   pagination: null
   doc_type: hdhomerun_channel
-  tool_schema_sha256: 77d4c6fed6858ef287766b76a6b55e871c50020f601ab390cb8089a4f1a2cf91
+  tool_schema_sha256: b8e99dedba3c28c46e724c9ae4fbd80ae2c10b3ebbf7385221260f14510946a4
   raw:
     server: hdhomerun-mcp
     tool: http_operations
@@ -173,7 +173,7 @@ sync:
   updated_field: null
   pagination: null
   doc_type: hdhomerun_recording_rule
-  tool_schema_sha256: f7a4aa82d180432e7a08b85127c610cec58d33238a5c0fe3008eea2037e27f1c
+  tool_schema_sha256: 11aef731736f9c8632159da32b957ae1938ff66ba57186720680635c7b3b00a2
   raw:
     server: hdhomerun-mcp
     tool: dvr_operations

@@ -1,4 +1,5 @@
 import json
+from typing import Literal
 
 from agent_utilities.mcp.action_dispatch import resolve_action
 from agent_utilities.mcp.concurrency import run_blocking
@@ -93,7 +94,19 @@ def register_dvr_tools(mcp: FastMCP):
 
     @mcp.tool(tags={"dvr"})
     async def dvr_operations(
-        action: str = Field(
+        action: Literal[
+            "add_datetime_rule",
+            "add_series_rule",
+            "change_rule",
+            "delete_recording",
+            "delete_rule",
+            "ingest_rules",
+            "list_rules",
+            "live_tv_url",
+            "poke",
+            "record_engine_status",
+            "recorded_files",
+        ] = Field(
             description="Action to perform. Must be one of: 'list_rules', "
             "'add_series_rule', 'add_datetime_rule', 'change_rule', "
             "'delete_rule', 'record_engine_status', 'recorded_files', 'poke', "

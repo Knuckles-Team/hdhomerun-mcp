@@ -1,4 +1,5 @@
 import json
+from typing import Literal
 
 from agent_utilities.mcp.action_dispatch import resolve_action
 from agent_utilities.mcp.concurrency import run_blocking
@@ -77,7 +78,16 @@ def register_http_tools(mcp: FastMCP):
 
     @mcp.tool(tags={"http"})
     async def http_operations(
-        action: str = Field(
+        action: Literal[
+            "discover",
+            "ingest_device",
+            "ingest_lineup",
+            "lineup",
+            "lineup_status",
+            "scan_abort",
+            "scan_start",
+            "stream_url",
+        ] = Field(
             description="Action to perform. Must be one of: "
             "'discover', 'lineup', 'lineup_status', 'scan_start', 'scan_abort', "
             "'stream_url'."
