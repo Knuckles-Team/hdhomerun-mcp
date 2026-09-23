@@ -92,7 +92,18 @@ DVR_ACTION_HANDLERS = {
 def register_dvr_tools(mcp: FastMCP):
     """Register dvr tag dynamic tools."""
 
-    @mcp.tool(tags={"dvr"})
+    @mcp.tool(
+        tags={"dvr"},
+        annotations={
+            "readOnlyHint": False,
+            "destructiveHint": True,
+            "idempotentHint": False,
+            "openWorldHint": True,
+        },
+        meta={
+            "eg.annotations": {"modalities_in": ["text"], "modalities_out": ["text"]}
+        },
+    )
     async def dvr_operations(
         action: Literal[
             "add_datetime_rule",

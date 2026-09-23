@@ -76,7 +76,18 @@ HTTP_ACTION_HANDLERS = {
 def register_http_tools(mcp: FastMCP):
     """Register http tag dynamic tools."""
 
-    @mcp.tool(tags={"http"})
+    @mcp.tool(
+        tags={"http"},
+        annotations={
+            "readOnlyHint": True,
+            "destructiveHint": False,
+            "idempotentHint": True,
+            "openWorldHint": True,
+        },
+        meta={
+            "eg.annotations": {"modalities_in": ["text"], "modalities_out": ["text"]}
+        },
+    )
     async def http_operations(
         action: Literal[
             "discover",
