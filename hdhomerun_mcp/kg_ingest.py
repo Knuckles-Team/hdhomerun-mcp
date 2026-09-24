@@ -4,10 +4,20 @@ CONCEPT:AU-KG.ingest.enterprise-source-extractor. The package natively pushes
 its OWN data into the ONE engine, in every modality that applies (the
 "maximum ingestion" bar): typed OWL nodes (:DiscoveredDevice/:Lineup/
 :Channel/:RecordingRule), documents (:Document), and raw blobs
-(:Blob/:MediaAsset). Thin mapper over the shared primitive
-``agent_utilities.knowledge_graph.memory.native_ingest`` — imported GUARDED so
-it no-ops with no KG stack / no reachable engine (never raises). Node ids:
-``hdhomerun:<class>:<id>``; ``node_type`` values match ``ontology/hdhomerun.ttl``.
+(:Blob/:MediaAsset). Node ids: ``hdhomerun:<class>:<id>``; ``node_type``
+values match ``ontology/hdhomerun.ttl``.
+
+SDK GAP (EH-481/SDK-GAPS.md): this used to be a thin, GUARDED mapper over
+``agent_utilities.knowledge_graph.memory.native_ingest`` — a free function
+that no-ops (never raises) with no KG stack / no reachable engine. The SDK's
+only epistemic-graph write path, ``agent_connector_sdk.sinks.epistemic_graph.
+EpistemicGraphSink``, requires a verified client plus a
+``PackImportAuthorityResolver`` wired at the connector's composition root;
+this connector does not have that wiring, and the SDK has no equivalent
+guarded free-function primitive. Until the SDK gap is filled, ``_primitive()``
+returns ``None`` unconditionally so every ``ingest_*`` call below stays a safe
+no-op — the MCP tool call sites that invoke them keep working, they just do
+not write to the graph yet.
 """
 
 from __future__ import annotations
@@ -22,13 +32,8 @@ _DOMAIN = "hdhomerun"
 
 
 def _primitive():
-    """The shared native_ingest module, or None when unavailable."""
-    try:
-        from agent_utilities.knowledge_graph.memory import native_ingest
-    except Exception as e:  # noqa: BLE001 — KG stack absent
-        logger.debug("native ingest unavailable: %s", e)
-        return None
-    return native_ingest
+    """No native ingest primitive is wired yet; see the SDK-GAPS note above."""
+    return None
 
 
 def ingest_device(info: dict[str, Any]) -> dict[str, int] | None:

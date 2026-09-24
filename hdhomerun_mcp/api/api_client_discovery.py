@@ -25,7 +25,7 @@ from pathlib import Path
 from typing import Any
 
 import requests
-from agent_utilities.base_utilities import get_logger
+from agent_connector_sdk.utilities import get_logger
 
 from . import protocol
 from .api_client_base import HDHomeRunApiBase

@@ -51,8 +51,13 @@ def test_ingest_lineup_maps_channels_and_edges(monkeypatch):
     types = {e["id"]: e["node_type"] for e in fake.entities}
     assert types["hdhomerun:lineup:10ACFCDE"] == "Lineup"
     assert types["hdhomerun:channel:10ACFCDE:24.1"] == "Channel"
-    rel_types = {(r["source"], r["target"]): r["relationship"] for r in fake.relationships}
-    assert rel_types[("hdhomerun:device:10ACFCDE", "hdhomerun:lineup:10ACFCDE")] == "hasLineup"
+    rel_types = {
+        (r["source"], r["target"]): r["relationship"] for r in fake.relationships
+    }
+    assert (
+        rel_types[("hdhomerun:device:10ACFCDE", "hdhomerun:lineup:10ACFCDE")]
+        == "hasLineup"
+    )
     assert (
         rel_types[("hdhomerun:lineup:10ACFCDE", "hdhomerun:channel:10ACFCDE:24.1")]
         == "includesChannel"

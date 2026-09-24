@@ -26,7 +26,7 @@ import time
 from typing import Any
 
 import requests
-from agent_utilities.base_utilities import get_logger
+from agent_connector_sdk.utilities import get_logger
 
 from .api_client_config import HDHomeRunApiConfig
 from .api_client_discovery import DISCOVERY_CACHE_PATH, read_discovery_cache

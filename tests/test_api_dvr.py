@@ -26,7 +26,9 @@ def test_add_series_rule_params(client):
     response.json.return_value = [{"RecordingRuleID": "1"}]
     response.raise_for_status.return_value = None
     with patch.object(client._session, "get", return_value=response) as mock_get:
-        client.add_series_rule(series_id="11579711", channel_only="2.1|702", recent_only=True)
+        client.add_series_rule(
+            series_id="11579711", channel_only="2.1|702", recent_only=True
+        )
     params = mock_get.call_args.kwargs["params"]
     assert params["Cmd"] == "add"
     assert params["SeriesID"] == "11579711"
@@ -37,7 +39,7 @@ def test_add_series_rule_params(client):
 @pytest.mark.concept("HDHR-dvr.cloud.recording-rules")
 def test_delete_rule_without_auth_raises(client):
     """Missing DeviceAuth (client + call site) raises a clear parameter error. CONCEPT:HDHR-dvr.cloud.recording-rules"""
-    from agent_utilities.core.exceptions import ParameterError
+    from agent_connector_sdk.exceptions import ParameterError
 
     client.device_auth = None
     with pytest.raises(ParameterError):
@@ -50,7 +52,9 @@ def test_delete_recording_requires_post(client):
     response = MagicMock()
     response.raise_for_status.return_value = None
     with patch.object(client._session, "post", return_value=response) as mock_post:
-        client.delete_recording("http://10.20.20.162:4999/recorded/cmd/1", rerecord=True)
+        client.delete_recording(
+            "http://10.20.20.162:4999/recorded/cmd/1", rerecord=True
+        )
     assert mock_post.call_args.kwargs["params"] == {"cmd": "delete", "rerecord": "1"}
 
 

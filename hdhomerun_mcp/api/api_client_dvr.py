@@ -141,7 +141,7 @@ class HDHomeRunApiDvr(HDHomeRunApiBase):
     def _require_device_auth(self, device_auth: str | None) -> str:
         auth = device_auth or self.device_auth
         if not auth:
-            from agent_utilities.core.exceptions import ParameterError
+            from agent_connector_sdk.exceptions import ParameterError
 
             raise ParameterError(
                 "DeviceAuth is required for the DVR cloud API. Set HDHOMERUN_DEVICE_AUTH "

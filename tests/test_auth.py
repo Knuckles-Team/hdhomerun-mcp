@@ -2,9 +2,20 @@ import os
 from unittest.mock import patch
 
 import pytest
+from agent_connector_sdk.auth.delegation import DelegationSettings
+from agent_connector_sdk.auth.tokens import AccessToken
 
 import hdhomerun_mcp.auth as auth_module
 from hdhomerun_mcp.auth import get_client
+
+_DELEGATION_SETTINGS = DelegationSettings(
+    enabled=True,
+    token_endpoint="https://idp.example/token",
+    client_id="hdhomerun-mcp",
+    client_secret_ref="env://HDHOMERUN_OIDC_CLIENT_SECRET",
+    audience="https://hdhomerun.example/api",
+    scopes="dvr.read",
+)
 
 
 @pytest.mark.concept("HDHR-http.api.json-interface")
@@ -27,34 +38,25 @@ def test_get_client_singleton():
 
 @pytest.mark.concept("HDHR-http.api.json-interface")
 def test_get_client_delegation_uses_canonical_oidc_transport():
-    """Delegation leaves TLS policy to agent-utilities' canonical OIDC client."""
+    """Delegation leaves TLS policy to the SDK's canonical OIDC client."""
     auth_module._client = None
-    config = {
-        "audience": "https://hdhomerun.example/api",
-        "delegated_scopes": "dvr.read",
-    }
+    fake_token = AccessToken("delegated-token", 300.0, 0.0)
     with (
-        patch(
-            "agent_utilities.mcp.delegated_auth.is_delegation_enabled",
-            return_value=True,
+        patch.object(
+            DelegationSettings, "from_settings", return_value=_DELEGATION_SETTINGS
         ),
+        patch("hdhomerun_mcp.auth.current_user_token", return_value="user-token"),
+        patch("hdhomerun_mcp.auth.current_user_identity", return_value="actor:test"),
         patch(
-            "agent_utilities.mcp.delegated_auth.get_delegated_token",
-            return_value="delegated-token",
+            "hdhomerun_mcp.auth.exchange_token", return_value=fake_token
         ) as delegated,
-        patch(
-            "agent_utilities.mcp.delegated_auth.get_user_identity",
-            return_value={"identity_ref": "actor:test"},
-        ),
         patch("hdhomerun_mcp.auth.ApiClientSystem") as client_cls,
     ):
-        get_client(url="http://hdhomerun.local", config=config)
+        get_client(url="http://hdhomerun.local")
 
-    delegated.assert_called_once_with(
-        config=config,
-        audience="https://hdhomerun.example/api",
-        scopes="dvr.read",
-    )
+    delegated.assert_called_once()
+    _, delegated_kwargs = delegated.call_args
+    assert delegated_kwargs["subject_token"] == "user-token"
     _, client_kwargs = client_cls.call_args
     assert client_kwargs["url"] == "http://hdhomerun.local"
     assert client_kwargs["device_auth"] == "delegated-token"
@@ -76,7 +78,9 @@ def test_get_client_delegation_uses_canonical_oidc_transport():
 def test_get_client_verifies_by_default():
     """No TLS env vars configured -> the resolved profile still verifies."""
     auth_module._client = None
-    with patch.dict(os.environ, {"HDHOMERUN_URL": "https://hdhomerun.local"}, clear=True):
+    with patch.dict(
+        os.environ, {"HDHOMERUN_URL": "https://hdhomerun.local"}, clear=True
+    ):
         client = get_client()
         assert client.tls_profile.verify_enabled is True
         assert client._session.verify is True
@@ -117,19 +121,18 @@ def test_get_client_delegation_failure_raises_token_exchange_error():
     CONCEPT:HDHR-http.api.json-interface
     """
     auth_module._client = None
-    config = {"audience": "https://hdhomerun.example/api"}
     with (
-        patch(
-            "agent_utilities.mcp.delegated_auth.is_delegation_enabled",
-            return_value=True,
+        patch.object(
+            DelegationSettings, "from_settings", return_value=_DELEGATION_SETTINGS
         ),
+        patch("hdhomerun_mcp.auth.current_user_token", return_value="user-token"),
         patch(
-            "agent_utilities.mcp.delegated_auth.get_delegated_token",
+            "hdhomerun_mcp.auth.exchange_token",
             side_effect=Exception("token exchange broke"),
         ),
     ):
         with pytest.raises(RuntimeError) as exc_info:
-            get_client(config=config)
+            get_client()
     assert "Token exchange failed" in str(exc_info.value)
     assert auth_module._client is None
     auth_module._client = None
