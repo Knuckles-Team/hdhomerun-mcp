@@ -1,20 +1,11 @@
 # syntax=docker/dockerfile:1
-# Two right-sized images from ONE Dockerfile, selected by build --target. Both are
-# slim multi-stage (build in a builder, ship only /usr/local — no dev-tools/source):
+# One slim multi-stage image (build in a builder, ship only /usr/local — no
+# dev-tools/source): the MCP server. The agent-runtime (A2A) build target was
+# retired with hdhomerun_mcp/agent_server.py (EH-481 policy: agent_server.py +
+# its console script are retired fleet-wide) -- this connector now ships only
+# the MCP server.
 #
-#   --target agent  (DEFAULT)  installs hdhomerun-mcp[agent] = the FULL runtime
-#                              (agent-utilities[agent]: engine + pydantic-ai + dspy +
-#                              skills). Because [agent] also includes [mcp], this image
-#                              can run EITHER the agent OR the mcp server. Push as the
-#                              default tags: latest / main / <version>.
-#
-#   --target mcp               installs hdhomerun-mcp[mcp]   = MCP-server tooling ONLY
-#                              (agent-utilities[mcp]: fastmcp/fastapi — NO engine,
-#                              pydantic-ai, dspy, llama-index, tree-sitter). The slim
-#                              variant. Push as the :mcp / :mcp-<version> tag.
-#
-#   docker build --target agent -t hdhomerun-mcp:1.1.0 .
-#   docker build --target mcp   -t hdhomerun-mcp:mcp    .
+#   docker build --target mcp -t hdhomerun-mcp:1.1.0 .
 # See agent-packages/CLAUDE.md "Connector recipe" for the tag contract.
 FROM python:3.14-slim@sha256:cea0e6040540fb2b965b6e7fb5ffa00871e632eef63719f0ea54bca189ce14a6 AS builder-base
 COPY --from=ghcr.io/astral-sh/uv:0.11.7 /uv /uvx /bin/
@@ -33,11 +24,6 @@ FROM builder-base AS builder-mcp
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv pip install --system --upgrade --break-system-packages --prerelease=allow hdhomerun-mcp[mcp]>=1.1.0
 
-# Full agent runtime dependency closure.
-FROM builder-base AS builder-agent
-RUN --mount=type=cache,target=/root/.cache/uv \
-    uv pip install --system --upgrade --break-system-packages --prerelease=allow hdhomerun-mcp[agent]>=1.1.0
-
 FROM python:3.14-slim@sha256:cea0e6040540fb2b965b6e7fb5ffa00871e632eef63719f0ea54bca189ce14a6 AS runtime-base
 ARG HOST=0.0.0.0
 ARG PORT=8000
@@ -54,12 +40,7 @@ ENV HOST=${HOST} \
     UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy
 
-# Slim image: MCP server only.
+# MCP server image (the only image this connector ships).
 FROM runtime-base AS mcp
 COPY --from=builder-mcp /usr/local /usr/local
 CMD ["hdhomerun-mcp"]
-
-# Full image (DEFAULT target): agent runtime; can also run the mcp server.
-FROM runtime-base AS agent
-COPY --from=builder-agent /usr/local /usr/local
-CMD ["hdhomerun-agent"]
