@@ -3,7 +3,6 @@ from unittest.mock import patch
 
 import pytest
 from agent_connector_sdk.auth.delegation import DelegationSettings
-from agent_connector_sdk.auth.tokens import AccessToken
 
 import hdhomerun_mcp.auth as auth_module
 from hdhomerun_mcp.auth import get_client
@@ -40,23 +39,19 @@ def test_get_client_singleton():
 def test_get_client_delegation_uses_canonical_oidc_transport():
     """Delegation leaves TLS policy to the SDK's canonical OIDC client."""
     auth_module._client = None
-    fake_token = AccessToken("delegated-token", 300.0, 0.0)
     with (
         patch.object(
             DelegationSettings, "from_settings", return_value=_DELEGATION_SETTINGS
         ),
-        patch("hdhomerun_mcp.auth.current_user_token", return_value="user-token"),
         patch("hdhomerun_mcp.auth.current_user_identity", return_value="actor:test"),
         patch(
-            "hdhomerun_mcp.auth.exchange_token", return_value=fake_token
+            "hdhomerun_mcp.auth.delegated_token", return_value="delegated-token"
         ) as delegated,
         patch("hdhomerun_mcp.auth.ApiClientSystem") as client_cls,
     ):
         get_client(url="http://hdhomerun.local")
 
-    delegated.assert_called_once()
-    _, delegated_kwargs = delegated.call_args
-    assert delegated_kwargs["subject_token"] == "user-token"
+    delegated.assert_called_once_with(_DELEGATION_SETTINGS)
     _, client_kwargs = client_cls.call_args
     assert client_kwargs["url"] == "http://hdhomerun.local"
     assert client_kwargs["device_auth"] == "delegated-token"
@@ -125,9 +120,8 @@ def test_get_client_delegation_failure_raises_token_exchange_error():
         patch.object(
             DelegationSettings, "from_settings", return_value=_DELEGATION_SETTINGS
         ),
-        patch("hdhomerun_mcp.auth.current_user_token", return_value="user-token"),
         patch(
-            "hdhomerun_mcp.auth.exchange_token",
+            "hdhomerun_mcp.auth.delegated_token",
             side_effect=Exception("token exchange broke"),
         ),
     ):
