@@ -817,7 +817,7 @@ PARITY_MANIFEST convention of documenting the omission for
 managed/hardware-only backing systems, e.g. <code>clarity-api</code>).</p>
 <h2 id="the-backing-platform-is-a-physical-network-tuner">The backing platform is a physical network tuner<a class="headerlink" href="#the-backing-platform-is-a-physical-network-tuner" title="Permanent link">&para;</a></h2>
 <p>A <a href="https://www.silicondust.com/">SiliconDust HDHomeRun</a> unit (FLEX, CONNECT,
-PRIME, SCRIBE, SERVIO, EXTEND, EXPAND, or DUAL) sits on your LAN and exposes:</p>
+PRIME, SCRIBE, SERVIO, EXTEND, EXPAND, or DUAL) sits on the operator's LAN and exposes:</p>
 <ul>
 <li>The <strong>HTTP JSON API</strong> on its normal HTTP port (discover.json/lineup.json/etc).</li>
 <li>Streaming video on <strong>TCP 5004</strong>.</li>
@@ -828,7 +828,7 @@ PRIME, SCRIBE, SERVIO, EXTEND, EXPAND, or DUAL) sits on your LAN and exposes:</p
 (<code>https://hdhomerun-device.example.invalid</code> behind an ingress/reverse
 proxy) — no software install is required on the network side.</p>
 <h2 id="optional-silicondust-dvr-record-engine">Optional: SiliconDust DVR record engine<a class="headerlink" href="#optional-silicondust-dvr-record-engine" title="Permanent link">&para;</a></h2>
-<p>If you also run a SiliconDust DVR record engine (HDHomeRun SCRIBE/SERVIO
+<p>If the operator also run a SiliconDust DVR record engine (HDHomeRun SCRIBE/SERVIO
 hardware, or the desktop/NAS record-engine software), it is itself another
 device on the network with its own <code>BaseURL</code>/<code>discover.json</code> — see
 <code>hdhr-dvr-ops</code> for its local API surface. There is likewise no container image
