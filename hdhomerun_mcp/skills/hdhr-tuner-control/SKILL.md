@@ -6,7 +6,7 @@ description: >-
   hdhomerun_config TCP control protocol (port 65001 — a DIFFERENT wire
   protocol from the HTTP JSON API) through the hdhomerun-mcp MCP server:
   per-tuner status/vstatus/streaminfo/debug, channel/channelmap/filter/program/
-  target get-set, tuner lock, IR target, lineup location, and /sys/* firmware
+  target get-set, tuner lock, IR target, lineup location, and /sys/ firmware
   info. Use when the agent needs raw signal metrics (ss/snq/seq), to tune a
   physical RF channel directly, set a PID/program filter, or stream to a UDP/
   RTP target — the same operations the official hdhomerun_config CLI performs.
