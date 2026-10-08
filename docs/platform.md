@@ -8,7 +8,7 @@ managed/hardware-only backing systems, e.g. `clarity-api`).
 ## The backing platform is a physical network tuner
 
 A [SiliconDust HDHomeRun](https://www.silicondust.com/) unit (FLEX, CONNECT,
-PRIME, SCRIBE, SERVIO, EXTEND, EXPAND, or DUAL) sits on your LAN and exposes:
+PRIME, SCRIBE, SERVIO, EXTEND, EXPAND, or DUAL) sits on the operator's LAN and exposes:
 
 - The **HTTP JSON API** on its normal HTTP port (discover.json/lineup.json/etc).
 - Streaming video on **TCP 5004**.
@@ -21,7 +21,7 @@ proxy) — no software install is required on the network side.
 
 ## Optional: SiliconDust DVR record engine
 
-If you also run a SiliconDust DVR record engine (HDHomeRun SCRIBE/SERVIO
+If the operator also run a SiliconDust DVR record engine (HDHomeRun SCRIBE/SERVIO
 hardware, or the desktop/NAS record-engine software), it is itself another
 device on the network with its own `BaseURL`/`discover.json` — see
 `hdhr-dvr-ops` for its local API surface. There is likewise no container image

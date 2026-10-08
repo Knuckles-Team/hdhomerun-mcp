@@ -55,7 +55,7 @@ This repository is actively maintained - Contributions are welcome!
   DeviceAuth presence/validity, and discovery-cache freshness — pass/fail with an
   actionable next step per check.
 - **Action-routed MCP tools** — each domain is exposed as a single MCP tool that routes
-  to many underlying operations via an `action` argument, keeping the tool surface small.
+  to multiple underlying operations via an `action` argument, keeping the tool surface small.
 - **Three interfaces, one package** — use it as a Python **API client**, an **MCP server**
   (`stdio` / `streamable-http` / `sse`), or a Pydantic-AI **A2A agent**.
 - **`agent-utilities` native** — built on the shared framework (auth, action router,
@@ -164,7 +164,7 @@ uvx --from "hdhomerun-mcp[agent]" hdhomerun-agent  # A2A agent server (full runt
 > The `[mcp]` extra installs only the FastMCP/FastAPI MCP-server tooling
 > (`agent-utilities[mcp]`) — it excludes the heavy agent runtime (the
 > epistemic-graph engine, `pydantic-ai`, `dspy`, `llama-index`), so it is far
-> smaller. Use `[agent]` only when you run the integrated agent.
+> smaller. Use `[agent]` only when the operator run the integrated agent.
 
 ### Install with `pip`
 
@@ -175,12 +175,12 @@ python -m pip install "hdhomerun-mcp[all]"     # + MCP server + A2A agent + tele
 
 ### Console scripts
 
-After installation the following entry points are available on your `PATH`:
+After installation the following entry points are available on the operator's `PATH`:
 
 | Command | Description |
 |---------|-------------|
-| `hdhomerun-mcp` | Launch the MCP server |
-| `hdhomerun-agent` | Launch the A2A agent server |
+| `hdhomerun-mcp` | Start the MCP server |
+| `hdhomerun-agent` | Start the A2A agent server |
 
 ## Usage
 
