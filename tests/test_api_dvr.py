@@ -37,7 +37,7 @@ def test_add_series_rule_params(client):
 @pytest.mark.concept("HDHR-dvr.cloud.recording-rules")
 def test_delete_rule_without_auth_raises(client):
     """Missing DeviceAuth (client + call site) raises a clear parameter error. CONCEPT:HDHR-dvr.cloud.recording-rules"""
-    from agent_utilities.core.exceptions import ParameterError
+    from agent_connector_sdk.exceptions import ParameterError
 
     client.device_auth = None
     with pytest.raises(ParameterError):

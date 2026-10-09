@@ -19,18 +19,18 @@ freshness check) is also maintained here.
 from __future__ import annotations
 
 import json
+import logging
 import socket
 import time
 from pathlib import Path
 from typing import Any
 
 import requests
-from agent_utilities.base_utilities import get_logger
 
 from . import protocol
 from .api_client_base import HDHomeRunApiBase
 
-logger = get_logger(__name__)
+logger = logging.getLogger(__name__)
 
 CLOUD_DISCOVER_URL = "http://ipv4-api.hdhomerun.com/discover"
 
