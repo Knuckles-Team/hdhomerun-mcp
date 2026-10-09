@@ -59,7 +59,7 @@ def test_build_stream_url_by_frequency(client):
 @pytest.mark.concept("HDHR-http.api.json-interface")
 def test_build_stream_url_rejects_unknown_transcode(client):
     """Unknown transcode profile is rejected before making a request. CONCEPT:HDHR-http.api.json-interface"""
-    from agent_utilities.core.exceptions import ParameterError
+    from agent_connector_sdk.exceptions import ParameterError
 
     with pytest.raises(ParameterError):
         client.build_stream_url("24.1", transcode="bogus")
@@ -83,7 +83,7 @@ def test_scan_start_and_abort_post(client):
 @pytest.mark.concept("HDHR-http.api.json-interface")
 def test_require_url_raises_without_url():
     """A client with no URL configured raises a clear parameter error. CONCEPT:HDHR-http.api.json-interface"""
-    from agent_utilities.core.exceptions import ParameterError
+    from agent_connector_sdk.exceptions import ParameterError
 
     client = ApiClientSystem(url="")
     with pytest.raises(ParameterError):

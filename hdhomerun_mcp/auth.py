@@ -11,7 +11,7 @@ connector's two-tier OIDC/token flow:
 
 1. **OIDC Delegation** (RFC 8693 Token Exchange) — when ``ENABLE_DELEGATION``
    is active, exchanges the IdP-issued user token for a downstream access
-   token via ``agent_utilities.mcp.delegated_auth`` (kept for fleet
+   token via ``agent_connector_sdk.auth.delegation`` (kept for fleet
    consistency; not required for local-LAN device access).
 2. **Fixed credentials** — ``HDHOMERUN_URL`` (required) + optional
    ``HDHOMERUN_DEVICE_AUTH`` (only needed for cloud DVR recording-rules calls).
@@ -22,42 +22,65 @@ instance from ``hdhomerun_instances`` in
 (concept KG-2.9g) for the golden pattern.
 """
 
-from agent_utilities.base_utilities import get_logger
-from agent_utilities.core.config import setting
-from agent_utilities.core.exceptions import AuthError, UnauthorizedError
-from agent_utilities.core.transport_security import (
-    ResolvedTLSProfile,
-    resolve_configured_tls_profile,
-)
+import logging
+
+from agent_connector_sdk.config import setting
+from agent_connector_sdk.exceptions import AuthError, UnauthorizedError
+from agent_connector_sdk.tls.profile import ResolvedTLSProfile
+from agent_connector_sdk.tls.resolve import resolve_tls_profile
 
 from .api import ApiClientSystem
 
-logger = get_logger(__name__)
+logger = logging.getLogger(__name__)
 _client = None
 
 
+def _is_delegation_enabled(config: dict | None) -> bool:
+    """Whether the OIDC delegation path should be attempted.
+
+    An explicit ``config`` dict (test injection only -- no production caller
+    passes one) wins outright; otherwise reads the real ``ENABLE_DELEGATION``
+    setting through ``agent_connector_sdk.auth.delegation.DelegationSettings``.
+    """
+    if config is not None:
+        return bool(config.get("enable_delegation", False))
+    from agent_connector_sdk.auth.delegation import DelegationSettings
+
+    return DelegationSettings.from_settings().enabled
+
+
 def _resolve_delegated_client(
-    config: dict | None, base_url: str, tls_profile: ResolvedTLSProfile
+    base_url: str, tls_profile: ResolvedTLSProfile
 ) -> ApiClientSystem:
-    """Path 1: OIDC Delegation (RFC 8693 Token Exchange)."""
-    from agent_utilities.mcp.delegated_auth import (
-        get_delegated_token,
-        get_user_identity,
+    """Path 1: OIDC Delegation (RFC 8693 Token Exchange).
+
+    Reads delegation settings (``OIDC_TOKEN_URL``/``OIDC_CLIENT_ID``/
+    ``OIDC_CLIENT_SECRET_REF``/``AUDIENCE``/``DELEGATED_SCOPES``) from the
+    process settings via ``agent_connector_sdk.auth.delegation.DelegationSettings``;
+    unlike the old ``agent_utilities`` helper, this has no per-call ``config``
+    override for those fields, only for whether delegation is attempted at all
+    (see :func:`_is_delegation_enabled`).
+    """
+    import httpx
+    from agent_connector_sdk.auth.delegation import (
+        DelegationSettings,
+        current_user_token,
+        exchange_token,
     )
+    from agent_connector_sdk.exceptions import LoginRequiredError
 
     try:
-        delegated_token = get_delegated_token(
-            config=config,
-            audience=(config or {}).get("audience", base_url),
-            scopes=(config or {}).get("delegated_scopes", "api"),
-        )
-        identity = get_user_identity()
-        logger.info(
-            "Using OIDC delegated token",
-            extra={"user_email": identity.get("email"), "url": base_url},
-        )
+        settings = DelegationSettings.from_settings()
+        subject_token = current_user_token()
+        if not subject_token:
+            raise LoginRequiredError("no verified caller token to delegate")
+        with httpx.Client(timeout=30) as http_client:
+            access_token = exchange_token(
+                settings, subject_token=subject_token, http_client=http_client
+            )
+        logger.info("Using OIDC delegated token", extra={"url": base_url})
         return ApiClientSystem(
-            url=base_url, device_auth=delegated_token, tls_profile=tls_profile
+            url=base_url, device_auth=access_token.value, tls_profile=tls_profile
         )
     except Exception as e:
         logger.error(
@@ -112,16 +135,14 @@ def get_client(
     base_url = url or setting("HDHOMERUN_URL", "http://hdhomerun.local")
     device_auth = token or setting("HDHOMERUN_DEVICE_AUTH", "")
     if tls_profile is None:
-        tls_profile = resolve_configured_tls_profile(
+        tls_profile = resolve_tls_profile(
             "hdhomerun",
             profile_name=setting("HDHOMERUN_TLS_PROFILE", "") or None,
             profile_ref=setting("HDHOMERUN_TLS_PROFILE_REF", "") or None,
         )
 
-    from agent_utilities.mcp.delegated_auth import is_delegation_enabled
-
-    if is_delegation_enabled(config):
-        _client = _resolve_delegated_client(config, base_url, tls_profile)
+    if _is_delegation_enabled(config):
+        _client = _resolve_delegated_client(base_url, tls_profile)
         return _client
 
     _client = _resolve_fixed_credentials_client(base_url, device_auth, tls_profile)

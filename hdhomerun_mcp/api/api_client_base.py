@@ -10,17 +10,15 @@ there is no bearer token.
 
 from __future__ import annotations
 
+import logging
 from typing import Any
 
 import requests
-from agent_utilities.base_utilities import get_logger
-from agent_utilities.core.exceptions import ParameterError
-from agent_utilities.core.transport_security import (
-    ResolvedTLSProfile,
-    resolve_configured_tls_profile,
-)
+from agent_connector_sdk.exceptions import ParameterError
+from agent_connector_sdk.tls.profile import ResolvedTLSProfile
+from agent_connector_sdk.tls.resolve import resolve_tls_profile
 
-logger = get_logger(__name__)
+logger = logging.getLogger(__name__)
 
 DEFAULT_TIMEOUT = 10
 
@@ -47,7 +45,7 @@ class HDHomeRunApiBase:
     ):
         self.url = (url or "").rstrip("/")
         self.device_auth = device_auth
-        self.tls_profile = tls_profile or resolve_configured_tls_profile("hdhomerun")
+        self.tls_profile = tls_profile or resolve_tls_profile("hdhomerun")
         self.timeout = timeout
         self._session = self.tls_profile.configure_requests_session(requests.Session())
 

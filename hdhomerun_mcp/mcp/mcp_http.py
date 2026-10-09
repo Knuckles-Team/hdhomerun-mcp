@@ -1,7 +1,7 @@
 import json
 
-from agent_utilities.mcp.action_dispatch import resolve_action
-from agent_utilities.mcp.concurrency import run_blocking
+from agent_connector_sdk.mcp.action_dispatch import resolve_action
+from agent_connector_sdk.mcp.concurrency import run_blocking
 from fastmcp import Context, FastMCP
 from fastmcp.dependencies import Depends
 from pydantic import Field
@@ -49,13 +49,13 @@ async def _stream_url(client, kwargs: dict) -> dict:
 
 async def _ingest_device(client, kwargs: dict) -> dict:
     info = await run_blocking(client.get_discover)
-    return {"ingested": kg_ingest.ingest_device(info)}
+    return {"ingested": await kg_ingest.ingest_device(info)}
 
 
 async def _ingest_lineup(client, kwargs: dict) -> dict:
     info = await run_blocking(client.get_discover)
     channels = await run_blocking(client.get_lineup)
-    return {"ingested": kg_ingest.ingest_lineup(info.get("DeviceID"), channels)}
+    return {"ingested": await kg_ingest.ingest_lineup(info.get("DeviceID"), channels)}
 
 
 # Action name -> handler. Keeps `http_operations` itself to a single

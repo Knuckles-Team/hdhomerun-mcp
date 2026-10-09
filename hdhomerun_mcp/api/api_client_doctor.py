@@ -22,18 +22,18 @@ fail/warn, with a concrete next step.
 
 from __future__ import annotations
 
+import logging
 import time
 from typing import Any
 
 import requests
-from agent_utilities.base_utilities import get_logger
 
 from .api_client_config import HDHomeRunApiConfig
 from .api_client_discovery import DISCOVERY_CACHE_PATH, read_discovery_cache
 from .api_client_dvr import HDHomeRunApiDvr
 from .api_client_http import HDHomeRunApiHttp
 
-logger = get_logger(__name__)
+logger = logging.getLogger(__name__)
 
 STALE_CACHE_SECONDS = 24 * 3600
 

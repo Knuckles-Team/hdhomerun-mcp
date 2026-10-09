@@ -25,50 +25,45 @@ def test_get_client_singleton():
     auth_module._client = None
 
 
-@pytest.mark.concept("HDHR-http.api.json-interface")
-def test_get_client_delegation_uses_canonical_oidc_transport():
-    """Delegation leaves TLS policy to agent-utilities' canonical OIDC client."""
-    auth_module._client = None
-    config = {
-        "audience": "https://hdhomerun.example/api",
-        "delegated_scopes": "dvr.read",
-    }
-    with (
-        patch(
-            "agent_utilities.mcp.delegated_auth.is_delegation_enabled",
-            return_value=True,
-        ),
-        patch(
-            "agent_utilities.mcp.delegated_auth.get_delegated_token",
-            return_value="delegated-token",
-        ) as delegated,
-        patch(
-            "agent_utilities.mcp.delegated_auth.get_user_identity",
-            return_value={"identity_ref": "actor:test"},
-        ),
-        patch("hdhomerun_mcp.auth.ApiClientSystem") as client_cls,
-    ):
-        get_client(url="http://hdhomerun.local", config=config)
+_DELEGATION_SETTINGS_ENV = {
+    "ENABLE_DELEGATION": "true",
+    "OIDC_TOKEN_URL": "https://idp.example.invalid/token",
+    "OIDC_CLIENT_ID": "hdhomerun-mcp",
+    "OIDC_CLIENT_SECRET_REF": "env://TEST_HDHOMERUN_OIDC_SECRET_UNUSED",
+    "AUDIENCE": "https://hdhomerun.example/api",
+}
 
-    delegated.assert_called_once_with(
-        config=config,
-        audience="https://hdhomerun.example/api",
-        scopes="dvr.read",
+
+def _set_delegation_settings_env(monkeypatch) -> None:
+    for key, value in _DELEGATION_SETTINGS_ENV.items():
+        monkeypatch.setenv(key, value)
+
+
+@pytest.mark.concept("HDHR-http.api.json-interface")
+def test_get_client_delegation_uses_canonical_oidc_transport(monkeypatch):
+    """Delegation leaves TLS policy to agent-connector-sdk's canonical OIDC client."""
+    auth_module._client = None
+    monkeypatch.setenv("HDHOMERUN_URL", "http://hdhomerun.local")
+    _set_delegation_settings_env(monkeypatch)
+
+    import agent_connector_sdk.auth.delegation as delegation
+    from agent_connector_sdk.auth.tokens import AccessToken
+
+    monkeypatch.setattr(delegation, "current_user_token", lambda: "caller-token")
+    monkeypatch.setattr(
+        delegation,
+        "exchange_token",
+        lambda settings, *, subject_token, http_client, resolver=None: AccessToken(
+            value="delegated-token", ttl_seconds=3600, expires_at=0.0
+        ),
     )
+    with patch("hdhomerun_mcp.auth.ApiClientSystem") as client_cls:
+        get_client(url="http://hdhomerun.local")
+
     _, client_kwargs = client_cls.call_args
     assert client_kwargs["url"] == "http://hdhomerun.local"
     assert client_kwargs["device_auth"] == "delegated-token"
     assert client_kwargs["tls_profile"].verify_enabled is True
-    auth_module._client = None
-    with patch("hdhomerun_mcp.auth.setting") as mock_setting:
-        mock_setting.side_effect = lambda name, default=None: {
-            "HDHOMERUN_URL": "http://10.0.132.114",
-            "HDHOMERUN_DEVICE_AUTH": "abc",
-        }.get(name, default)
-        client_a = get_client()
-        client_b = get_client()
-        assert client_a is client_b
-        assert client_a.url == "http://10.0.132.114"
     auth_module._client = None
 
 
@@ -110,26 +105,26 @@ def test_get_client_honors_named_tls_profile():
 
 
 @pytest.mark.concept("HDHR-http.api.json-interface")
-def test_get_client_delegation_failure_raises_token_exchange_error():
+def test_get_client_delegation_failure_raises_token_exchange_error(monkeypatch):
     """A broken OIDC token exchange surfaces as a clear RuntimeError, not a
     raw exception or a silently-cached partial client.
 
     CONCEPT:HDHR-http.api.json-interface
     """
     auth_module._client = None
-    config = {"audience": "https://hdhomerun.example/api"}
-    with (
-        patch(
-            "agent_utilities.mcp.delegated_auth.is_delegation_enabled",
-            return_value=True,
-        ),
-        patch(
-            "agent_utilities.mcp.delegated_auth.get_delegated_token",
-            side_effect=Exception("token exchange broke"),
-        ),
-    ):
-        with pytest.raises(RuntimeError) as exc_info:
-            get_client(config=config)
-    assert "Token exchange failed" in str(exc_info.value)
+    monkeypatch.setenv("HDHOMERUN_URL", "http://hdhomerun.local")
+    _set_delegation_settings_env(monkeypatch)
+
+    import agent_connector_sdk.auth.delegation as delegation
+
+    monkeypatch.setattr(delegation, "current_user_token", lambda: "caller-token")
+
+    def _boom(settings, *, subject_token, http_client, resolver=None):
+        raise ValueError("token exchange broke")
+
+    monkeypatch.setattr(delegation, "exchange_token", _boom)
+
+    with pytest.raises(RuntimeError, match="Token exchange failed"):
+        get_client()
     assert auth_module._client is None
     auth_module._client = None
