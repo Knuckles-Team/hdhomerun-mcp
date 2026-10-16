@@ -58,7 +58,7 @@ This repository is actively maintained - Contributions are welcome!
   to multiple underlying operations via an `action` argument, keeping the tool surface small.
 - **Three interfaces, one package** — use it as a Python **API client**, an **MCP server**
   (`stdio` / `streamable-http` / `sse`), or a Pydantic-AI **A2A agent**.
-- **`agent-utilities` native** — built on the shared framework (auth, action router,
+- **`agent-connector-sdk` native** — built on the shared framework (auth, action router,
   telemetry, governance) for fleet consistency.
 - **Per-tool toggles** — enable or disable each tool domain with environment switches.
 - **Enterprise-ready** — OTEL/Langfuse telemetry and optional Eunomia access governance.
@@ -68,7 +68,7 @@ This repository is actively maintained - Contributions are welcome!
 Each tool is **action-routed**: pass an `action` and a JSON `params_json` payload. Tool
 domains can be toggled on or off with the listed environment variable. The table below is
 **auto-generated from the live server** by the `mcp-readme-table` pre-commit hook
-(`python -m agent_utilities.mcp.readme_tools`) — do not edit it by hand.
+(`python -m agent_connector_sdk.mcp.readme_tools`) — do not edit it by hand.
 
 <!-- MCP-TOOLS-TABLE:START -->
 
@@ -162,7 +162,7 @@ uvx --from "hdhomerun-mcp[agent]" hdhomerun-agent  # A2A agent server (full runt
 ```
 
 > The `[mcp]` extra installs only the FastMCP/FastAPI MCP-server tooling
-> (`agent-utilities[mcp]`) — it excludes the heavy agent runtime (the
+> (`agent-connector-sdk`) — it excludes the heavy agent runtime (the
 > epistemic-graph engine, `pydantic-ai`, `dspy`, `llama-index`), so it is far
 > smaller. Use `[agent]` only when the operator run the integrated agent.
 
@@ -255,7 +255,7 @@ The MCP Server can be run in `stdio` (local), `streamable-http` (networked), or
 | `CONFIGTOOL` | `True` |  |
 | `DOCTORTOOL` | `True` |  |
 
-#### Inherited agent-utilities variables (apply to every connector)
+#### Inherited agent-connector-sdk variables (apply to every connector)
 
 | Variable | Example | Description |
 |----------|---------|-------------|
@@ -275,7 +275,7 @@ The MCP Server can be run in `stdio` (local), `streamable-http` (networked), or
 | `MODEL_ID` | — | Operator-configured model id for the agent |
 | `ENABLE_WEB_UI` | `True` | Serve the AG-UI web interface |
 
-_19 package + 15 inherited variable(s). Auto-generated from `.env.example` + the shared agent-utilities set — do not edit._
+_19 package + 15 inherited variable(s). Auto-generated from `.env.example` + the shared agent-connector-sdk set — do not edit._
 <!-- ENV-VARS-TABLE:END -->
 
 
@@ -287,7 +287,7 @@ _19 package + 15 inherited variable(s). Auto-generated from `.env.example` + the
 <!-- MCP-CONFIG-EXAMPLES:START -->
 
 > **Install the connector-focused `[mcp]` extra.** Examples use `hdhomerun-mcp[mcp]` to add
-> FastMCP / FastAPI through `agent-utilities[mcp]`; the required Agent Utilities core
+> FastMCP / FastAPI through `agent-connector-sdk`; the required Agent Connector SDK core
 > still carries `epistemic-graph[full]`. The `[agent-runtime]` extra additionally
 > enables model orchestration.
 
@@ -430,7 +430,7 @@ docker build --target agent -t knucklessg1/hdhomerun-mcp:1.1.0 docker/   # full 
 ## Knowledge-graph database (`epistemic-graph`)
 
 The full agent (`[agent]` / `:1.1.0`) embeds the **epistemic-graph** engine (pulled in via
-`agent-utilities[agent]`). For production — or to share one knowledge graph across multiple
+`agent-connector-sdk`). For production — or to share one knowledge graph across multiple
 agents — run **epistemic-graph as its own database container** and point the agent at it.
 Deployment recipes (single-node + Raft HA), connection config, and the full database
 architecture (with diagrams) are in the

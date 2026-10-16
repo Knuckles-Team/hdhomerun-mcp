@@ -2,7 +2,7 @@
 
 > **Prefix**: `CONCEPT:HDHR-*`
 > **Version**: 0.1.0
-> **Bridge**: ECO-4.0 ([Unified Toolkit Ingestion](https://github.com/Knuckles-Team/agent-utilities/blob/main/docs/concepts.md), agent-utilities)
+> **Bridge**: ECO-4.0 ([Unified Toolkit Ingestion](https://github.com/Knuckles-Team/agent-connector-sdk/blob/main/docs/concepts.md), agent-connector-sdk)
 
 ---
 
@@ -16,10 +16,10 @@
 | `CONCEPT:HDHR-config.protocol.tuner-control` | Tuner Control Protocol | MCP tool domain `config` — the binary hdhomerun_config TCP control protocol (https://info.hdhomerun.com/info/hdhomerun_config), a different wire protocol from the HTTP API |
 | `CONCEPT:HDHR-doctor.diagnostics.health-report` | Doctor Diagnostics | MCP tool domain `doctor` — device reachability, firmware/model, tuner-count-vs-Jellyfin, signal strength, DeviceAuth, discovery-cache-freshness checks |
 
-## Cross-Project References (from agent-utilities)
+## Cross-Project References (from agent-connector-sdk)
 
 | Concept ID | Name | Origin |
 |------------|------|--------|
-| `ECO-4.0` | Unified Toolkit Ingestion | agent-utilities |
-| `ORCH-1.2` | Confidence-Gated Router | agent-utilities |
-| `OS-5.1` | Prompt Injection Defense | agent-utilities |
+| `ECO-4.0` | Unified Toolkit Ingestion | agent-connector-sdk |
+| `ORCH-1.2` | Confidence-Gated Router | agent-connector-sdk |
+| `OS-5.1` | Prompt Injection Defense | agent-connector-sdk |

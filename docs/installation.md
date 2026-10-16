@@ -19,7 +19,7 @@ pip install hdhomerun-mcp
 
 | Extra | Install | Pulls in |
 |---|---|---|
-| `mcp` | `pip install "hdhomerun-mcp[mcp]"` | FastMCP MCP-server runtime (`agent-utilities[mcp]`) |
+| `mcp` | `pip install "hdhomerun-mcp[mcp]"` | FastMCP MCP-server runtime (`agent-connector-sdk`) |
 | `agent` | `pip install "hdhomerun-mcp[agent]"` | Pydantic-AI agent + Logfire tracing |
 | `all` | `pip install "hdhomerun-mcp[all]"` | Everything above |
 

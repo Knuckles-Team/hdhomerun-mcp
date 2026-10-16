@@ -18,7 +18,7 @@ connector's two-tier OIDC/token flow:
 
 For a multi-tuner household, add an ``instances.py`` resolving a named
 instance from ``hdhomerun_instances`` in
-``~/.config/agent-utilities/config.json`` — see ``gitlab_api.instances``
+``~/.config/agent-connector-sdk/config.json`` — see ``gitlab_api.instances``
 (concept KG-2.9g) for the golden pattern.
 """
 
@@ -57,7 +57,7 @@ def _resolve_delegated_client(
     Reads delegation settings (``OIDC_TOKEN_URL``/``OIDC_CLIENT_ID``/
     ``OIDC_CLIENT_SECRET_REF``/``AUDIENCE``/``DELEGATED_SCOPES``) from the
     process settings via ``agent_connector_sdk.auth.delegation.DelegationSettings``;
-    unlike the old ``agent_utilities`` helper, this has no per-call ``config``
+    unlike the old ``agent_connector_sdk`` helper, this has no per-call ``config``
     override for those fields, only for whether delegation is attempted at all
     (see :func:`_is_delegation_enabled`).
     """
