@@ -57,7 +57,7 @@ channel list pulled in by step 2); step 4 depends on step 3.
 - **Then:** Step 3 (channel mapping), once both above have completed.
 - **Then:** Step 4 (validate playback).
 
-If graph-os is reachable, offload the whole DAG via
+If arbora is reachable, offload the whole DAG via
 `graph_orchestrate action=execute_workflow` (or the `kg-delegate` skill) for
 true parallel/swarm execution. Otherwise execute the steps natively in
 dependency order: run steps with no unmet `depends_on` in parallel, then
@@ -143,7 +143,7 @@ Confirm actual end-to-end playback, not just that the channel list populated:
 - `hdhr-dvr-ops` — the separate SiliconDust cloud DVR recording-rules API
   (not Jellyfin's own DVR, which this workflow enables).
 
-**Execution:** If graph-os is reachable, offload the whole DAG via
+**Execution:** If arbora is reachable, offload the whole DAG via
 `graph_orchestrate action=execute_workflow` (or the `kg-delegate` skill) for
 true parallel/swarm execution. Otherwise execute the steps natively in
 dependency order: run steps with no unmet `depends_on` in parallel, then
