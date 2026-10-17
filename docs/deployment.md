@@ -3,7 +3,6 @@
 This page covers running `hdhomerun-mcp` as long-lived servers.
 
 > `hdhomerun-mcp` ships both an **MCP server** (console script `hdhomerun-mcp`) and an
-> **A2A agent server** (console script `hdhomerun-agent`).
 
 <!-- BEGIN GENERATED: deployment-options -->
 ## Deployment Options
@@ -115,7 +114,6 @@ does not require secrets.
 
 ```bash
 docker compose -f docker/mcp.compose.yml up -d      # MCP server only
-docker compose -f docker/agent.compose.yml up -d    # MCP + agent
 ```
 
 ## Run the A2A agent server

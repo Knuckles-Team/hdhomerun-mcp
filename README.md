@@ -1,5 +1,5 @@
 # HDHomeRun MCP
-## CLI or API | MCP | Agent
+## CLI or API | MCP
 
 ![PyPI - Version](https://img.shields.io/pypi/v/hdhomerun-mcp)
 ![MCP Server](https://badge.mcpx.dev?type=server 'MCP Server')
@@ -11,7 +11,6 @@
 *Version: 1.1.0*
 
 > **Documentation** — Installation, deployment, usage across the API, CLI, and MCP
-> interfaces, the integrated A2A agent server, and guidance for provisioning the
 > backing platform are maintained in the
 > [official documentation](https://knuckles-team.github.io/hdhomerun-mcp/).
 
@@ -56,8 +55,8 @@ This repository is actively maintained - Contributions are welcome!
   actionable next step per check.
 - **Action-routed MCP tools** — each domain is exposed as a single MCP tool that routes
   to multiple underlying operations via an `action` argument, keeping the tool surface small.
-- **Three interfaces, one package** — use it as a Python **API client**, an **MCP server**
-  (`stdio` / `streamable-http` / `sse`), or a Pydantic-AI **A2A agent**.
+- **Two interfaces, one package** — use it as a Python **API client**, an **MCP server**
+  (`stdio` / `streamable-http` / `sse`).
 - **`agent-connector-sdk` native** — built on the shared framework (auth, action router,
   telemetry, governance) for fleet consistency.
 - **Per-tool toggles** — enable or disable each tool domain with environment switches.
@@ -158,13 +157,11 @@ _5 action-routed tool(s) · 57 verbose 1:1 tool(s). Each is enabled unless its `
 
 ```bash
 uvx --from "hdhomerun-mcp[mcp]" hdhomerun-mcp      # MCP server (slim deps)
-uvx --from "hdhomerun-mcp[agent]" hdhomerun-agent  # A2A agent server (full runtime)
 ```
 
 > The `[mcp]` extra installs only the FastMCP/FastAPI MCP-server tooling
 > (`agent-connector-sdk`) — it excludes the heavy agent runtime (the
 > epistemic-graph engine, `pydantic-ai`, `dspy`, `llama-index`), so it is far
-> smaller. Use `[agent]` only when the operator run the integrated agent.
 
 ### Install with `pip`
 
@@ -180,7 +177,6 @@ After installation the following entry points are available on the operator's `P
 | Command | Description |
 |---------|-------------|
 | `hdhomerun-mcp` | Start the MCP server |
-| `hdhomerun-agent` | Start the A2A agent server |
 
 ## Usage
 
@@ -413,23 +409,20 @@ copy-paste `mcp_config.json` for all four transports — **stdio**, **streamable
   `https://hdhomerun-mcp.example.invalid/mcp` using the `"url"` key.
 <!-- END GENERATED: additional-deployment-options -->
 
-## Container images (`:mcp` vs `:agent`)
+## Container images (`:mcp`)
 
-One multi-stage `docker/Dockerfile` builds two right-sized images, selected by `--target`:
+One multi-stage `docker/Dockerfile` builds the MCP-only image (`--target mcp`):
 
 | Image tag | Build target | Contents | Entrypoint |
 |-----------|--------------|----------|------------|
 | `knucklessg1/hdhomerun-mcp:mcp` | `--target mcp` | `hdhomerun-mcp[mcp]` — **slim**, no engine/`pydantic-ai`/`dspy`/`llama-index` | `hdhomerun-mcp` |
-| `knucklessg1/hdhomerun-mcp:1.1.0` | `--target agent` (default) | `hdhomerun-mcp[agent]` — **full** agent runtime + epistemic-graph engine | `hdhomerun-agent` |
 
 ```bash
 docker build --target mcp   -t knucklessg1/hdhomerun-mcp:mcp    docker/   # slim MCP server
-docker build --target agent -t knucklessg1/hdhomerun-mcp:1.1.0 docker/   # full agent
 ```
 
 ## Knowledge-graph database (`epistemic-graph`)
 
-The full agent (`[agent]` / `:1.1.0`) embeds the **epistemic-graph** engine (pulled in via
 `agent-connector-sdk`). For production — or to share one knowledge graph across multiple
 agents — run **epistemic-graph as its own database container** and point the agent at it.
 Deployment recipes (single-node + Raft HA), connection config, and the full database
