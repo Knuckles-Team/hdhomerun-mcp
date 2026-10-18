@@ -24,7 +24,9 @@ Every tool takes `action` plus a JSON string `params_json`. See
 ```python
 from hdhomerun_mcp.auth import get_client
 
-client = get_client()  # reads HDHOMERUN_URL / HDHOMERUN_DEVICE_AUTH / HDHOMERUN_TLS_PROFILE
+client = (
+    get_client()
+)  # reads HDHOMERUN_URL / HDHOMERUN_DEVICE_AUTH / HDHOMERUN_TLS_PROFILE
 
 # HTTP JSON API
 info = client.get_discover()
@@ -34,8 +36,8 @@ client.start_scan(source="Antenna")
 url = client.build_stream_url("24.1", tuner=0, duration=30)
 
 # Discovery
-devices = client.discover_local_broadcast(timeout=2.0)     # may be empty across VLANs
-devices = client.discover_cloud(device_id="10ACFCDE")       # cloud fallback
+devices = client.discover_local_broadcast(timeout=2.0)  # may be empty across VLANs
+devices = client.discover_cloud(device_id="10ACFCDE")  # cloud fallback
 
 # hdhomerun_config binary control protocol (TCP :65001)
 tuner_status = client.get_tuner_status(0)

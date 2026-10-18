@@ -8,7 +8,7 @@
 ![PyPI - License](https://img.shields.io/pypi/l/hdhomerun-mcp)
 ![GitHub last commit (by committer)](https://img.shields.io/github/last-commit/Knuckles-Team/hdhomerun-mcp)
 
-*Version: 1.1.0*
+*Version: 1.2.0*
 
 > **Documentation** — Installation, deployment, usage across the API, CLI, and MCP
 > backing platform are maintained in the
@@ -186,10 +186,10 @@ After installation the following entry points are available on the operator's `P
 from hdhomerun_mcp.auth import get_client
 
 client = get_client()  # reads HDHOMERUN_URL / HDHOMERUN_DEVICE_AUTH
-info = client.get_discover()          # device identity + tuner count
-lineup = client.get_lineup()          # channel list
+info = client.get_discover()  # device identity + tuner count
+lineup = client.get_lineup()  # channel list
 stream_url = client.build_stream_url("24.1")  # http://<device>:5004/auto/v24.1
-report = client.run_doctor()          # full health-check sweep
+report = client.run_doctor()  # full health-check sweep
 ```
 
 ### As an MCP server (CLI)
