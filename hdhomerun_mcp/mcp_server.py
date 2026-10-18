@@ -12,7 +12,7 @@ from . import mcp as tool_modules
 from .api import ApiClientSystem
 from .auth import get_client
 
-__version__ = "1.2.1"
+__version__ = "1.3.0"
 
 logger = logging.getLogger("MCP_Server")
 logger.setLevel(logging.INFO)
