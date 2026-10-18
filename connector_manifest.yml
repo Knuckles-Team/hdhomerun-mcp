@@ -56,9 +56,23 @@ actions:
   description: 'Answers epistemic_status/why/what_changed queries over the shared knowledge graph: calibrated
     confidence, evidence/source citations, belief justification trees, bitemporal valid/tx history, and
     policy-redaction-aware provenance.'
+  label: ''
+  parameters: []
+  target_resource: null
+  conflict_policy: null
+  requires_approval: true
+  approval_class: unclassified
+  effects: []
 - id: run_graph_flow
   name: Graph Flow Execution
   description: Execute a workflow through the agent's graph orchestration engine
+  label: ''
+  parameters: []
+  target_resource: null
+  conflict_policy: null
+  requires_approval: true
+  approval_class: unclassified
+  effects: []
 events: []
 identity:
   id_field:
@@ -142,8 +156,8 @@ schema_mappings:
 sync:
 - preset: hdhomerun-lineup
   server: hdhomerun-mcp
-  tool: http_operations
-  action: lineup
+  tool: hdhomerun_get_lineup
+  action: null
   records_path: ''
   id_field: GuideNumber
   title_field: GuideName
@@ -151,17 +165,17 @@ sync:
   updated_field: null
   pagination: null
   doc_type: hdhomerun_channel
-  tool_schema_sha256: 77d4c6fed6858ef287766b76a6b55e871c50020f601ab390cb8089a4f1a2cf91
+  tool_schema_sha256: ''
   raw:
     server: hdhomerun-mcp
-    tool: http_operations
-    action: lineup
+    tool: hdhomerun_get_lineup
     records_path: ''
     id_field: GuideNumber
     title_field: GuideName
     text_field: GuideName
     updated_field: null
     doc_type: hdhomerun_channel
+    params_style: args
 - preset: hdhomerun-recording-rules
   server: hdhomerun-mcp
   tool: dvr_operations
@@ -173,7 +187,7 @@ sync:
   updated_field: null
   pagination: null
   doc_type: hdhomerun_recording_rule
-  tool_schema_sha256: f7a4aa82d180432e7a08b85127c610cec58d33238a5c0fe3008eea2037e27f1c
+  tool_schema_sha256: ''
   raw:
     server: hdhomerun-mcp
     tool: dvr_operations
@@ -186,20 +200,20 @@ sync:
     doc_type: hdhomerun_recording_rule
 provenance:
   generated_by: scripts/generate_connector_manifests.py
-  generated_at: '2026-08-26T13:42:55Z'
+  generated_at: '2026-10-18T00:00:00Z'
   source_artifacts:
   - hdhomerun_mcp/connectors/mcp_source_presets.json
   - hdhomerun_mcp/connectors/tool_schema_fingerprints.json
   - hdhomerun_mcp/ontology/hdhomerun.ttl
   integrity:
     algorithm: urdna2015-sha256
-    hash: 07ff38985435eeb186b8e850b9874d6852f5e3db18aba2ff15f7dcdd16a48737
+    hash: d1a288b16c8df8cb0f77de03372ceb482135eba2af54636784f5fb40858b91aa
     triple_count: 65
   signer: UNSIGNED-PREVIEW
   signature_algorithm: none
   signing_public_key: ''
   signature: null
-  source_commit: f0d9b5790e3ac80fa233f932f61546e4a5d4c2ed
+  source_commit: 54a0c02bd4c4b73cc5ce2618326d057228c2764b
 policy:
   pii_fields: {}
   tenant_boundary: null
