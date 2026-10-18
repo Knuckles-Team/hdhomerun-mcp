@@ -7,7 +7,6 @@
         "hdhomerun-mcp"
       ],
       "env": {
-        "MCP_TOOL_MODE": "intent",
         "CONFIGTOOL": "True",
         "DISCOVERYTOOL": "True",
         "DOCTORTOOL": "True",
