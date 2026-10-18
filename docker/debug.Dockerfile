@@ -32,8 +32,8 @@ WORKDIR /app
 COPY . /app
 
 # Compile and install package in-place. Dev image carries the FULL agent runtime
-# (.[agent], which includes .[mcp]) so it can run either server while debugging.
-RUN uv pip install --system --upgrade --verbose --no-cache --break-system-packages --prerelease=allow .[agent]
+# (.[mcp], which includes .[mcp]) so it can run either server while debugging.
+RUN uv pip install --system --upgrade --verbose --no-cache --break-system-packages --prerelease=allow .[mcp]
 
 COPY docker/starship.toml /root/.config/starship.toml
 

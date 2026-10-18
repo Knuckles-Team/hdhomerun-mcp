@@ -1,5 +1,5 @@
 # HDHomeRun MCP
-## CLI or API | MCP | Agent
+## CLI or API | MCP
 
 ![PyPI - Version](https://img.shields.io/pypi/v/hdhomerun-mcp)
 ![MCP Server](https://badge.mcpx.dev?type=server 'MCP Server')
@@ -8,10 +8,9 @@
 ![PyPI - License](https://img.shields.io/pypi/l/hdhomerun-mcp)
 ![GitHub last commit (by committer)](https://img.shields.io/github/last-commit/Knuckles-Team/hdhomerun-mcp)
 
-*Version: 1.1.0*
+*Version: 1.2.0*
 
 > **Documentation** — Installation, deployment, usage across the API, CLI, and MCP
-> interfaces, the integrated A2A agent server, and guidance for provisioning the
 > backing platform are maintained in the
 > [official documentation](https://knuckles-team.github.io/hdhomerun-mcp/).
 
@@ -56,9 +55,9 @@ This repository is actively maintained - Contributions are welcome!
   actionable next step per check.
 - **Action-routed MCP tools** — each domain is exposed as a single MCP tool that routes
   to multiple underlying operations via an `action` argument, keeping the tool surface small.
-- **Three interfaces, one package** — use it as a Python **API client**, an **MCP server**
-  (`stdio` / `streamable-http` / `sse`), or a Pydantic-AI **A2A agent**.
-- **`agent-utilities` native** — built on the shared framework (auth, action router,
+- **Two interfaces, one package** — use it as a Python **API client**, an **MCP server**
+  (`stdio` / `streamable-http` / `sse`).
+- **`agent-connector-sdk` native** — built on the shared framework (auth, action router,
   telemetry, governance) for fleet consistency.
 - **Per-tool toggles** — enable or disable each tool domain with environment switches.
 - **Enterprise-ready** — OTEL/Langfuse telemetry and optional Eunomia access governance.
@@ -68,7 +67,7 @@ This repository is actively maintained - Contributions are welcome!
 Each tool is **action-routed**: pass an `action` and a JSON `params_json` payload. Tool
 domains can be toggled on or off with the listed environment variable. The table below is
 **auto-generated from the live server** by the `mcp-readme-table` pre-commit hook
-(`python -m agent_utilities.mcp.readme_tools`) — do not edit it by hand.
+(`python -m agent_connector_sdk.mcp.readme_tools`) — do not edit it by hand.
 
 <!-- MCP-TOOLS-TABLE:START -->
 
@@ -158,13 +157,11 @@ _5 action-routed tool(s) · 57 verbose 1:1 tool(s). Each is enabled unless its `
 
 ```bash
 uvx --from "hdhomerun-mcp[mcp]" hdhomerun-mcp      # MCP server (slim deps)
-uvx --from "hdhomerun-mcp[agent]" hdhomerun-agent  # A2A agent server (full runtime)
 ```
 
 > The `[mcp]` extra installs only the FastMCP/FastAPI MCP-server tooling
-> (`agent-utilities[mcp]`) — it excludes the heavy agent runtime (the
+> (`agent-connector-sdk`) — it excludes the heavy agent runtime (the
 > epistemic-graph engine, `pydantic-ai`, `dspy`, `llama-index`), so it is far
-> smaller. Use `[agent]` only when the operator run the integrated agent.
 
 ### Install with `pip`
 
@@ -180,7 +177,6 @@ After installation the following entry points are available on the operator's `P
 | Command | Description |
 |---------|-------------|
 | `hdhomerun-mcp` | Start the MCP server |
-| `hdhomerun-agent` | Start the A2A agent server |
 
 ## Usage
 
@@ -190,10 +186,10 @@ After installation the following entry points are available on the operator's `P
 from hdhomerun_mcp.auth import get_client
 
 client = get_client()  # reads HDHOMERUN_URL / HDHOMERUN_DEVICE_AUTH
-info = client.get_discover()          # device identity + tuner count
-lineup = client.get_lineup()          # channel list
+info = client.get_discover()  # device identity + tuner count
+lineup = client.get_lineup()  # channel list
 stream_url = client.build_stream_url("24.1")  # http://<device>:5004/auto/v24.1
-report = client.run_doctor()          # full health-check sweep
+report = client.run_doctor()  # full health-check sweep
 ```
 
 ### As an MCP server (CLI)
@@ -255,7 +251,7 @@ The MCP Server can be run in `stdio` (local), `streamable-http` (networked), or
 | `CONFIGTOOL` | `True` |  |
 | `DOCTORTOOL` | `True` |  |
 
-#### Inherited agent-utilities variables (apply to every connector)
+#### Inherited agent-connector-sdk variables (apply to every connector)
 
 | Variable | Example | Description |
 |----------|---------|-------------|
@@ -275,7 +271,7 @@ The MCP Server can be run in `stdio` (local), `streamable-http` (networked), or
 | `MODEL_ID` | — | Operator-configured model id for the agent |
 | `ENABLE_WEB_UI` | `True` | Serve the AG-UI web interface |
 
-_19 package + 15 inherited variable(s). Auto-generated from `.env.example` + the shared agent-utilities set — do not edit._
+_19 package + 15 inherited variable(s). Auto-generated from `.env.example` + the shared agent-connector-sdk set — do not edit._
 <!-- ENV-VARS-TABLE:END -->
 
 
@@ -287,7 +283,7 @@ _19 package + 15 inherited variable(s). Auto-generated from `.env.example` + the
 <!-- MCP-CONFIG-EXAMPLES:START -->
 
 > **Install the connector-focused `[mcp]` extra.** Examples use `hdhomerun-mcp[mcp]` to add
-> FastMCP / FastAPI through `agent-utilities[mcp]`; the required Agent Utilities core
+> FastMCP / FastAPI through `agent-connector-sdk`; the required Agent Connector SDK core
 > still carries `epistemic-graph[full]`. The `[agent-runtime]` extra additionally
 > enables model orchestration.
 
@@ -318,7 +314,7 @@ _19 package + 15 inherited variable(s). Auto-generated from `.env.example` + the
 }
 ```
 
-Runtime references require an alias-aware launcher such as GraphOS. Other
+Runtime references require an alias-aware launcher such as Arbora. Other
 launchers must omit those entries and inject the resolved values through their
 own runtime secret boundary.
 
@@ -413,24 +409,21 @@ copy-paste `mcp_config.json` for all four transports — **stdio**, **streamable
   `https://hdhomerun-mcp.example.invalid/mcp` using the `"url"` key.
 <!-- END GENERATED: additional-deployment-options -->
 
-## Container images (`:mcp` vs `:agent`)
+## Container images (`:mcp`)
 
-One multi-stage `docker/Dockerfile` builds two right-sized images, selected by `--target`:
+One multi-stage `docker/Dockerfile` builds the MCP-only image (`--target mcp`):
 
 | Image tag | Build target | Contents | Entrypoint |
 |-----------|--------------|----------|------------|
 | `knucklessg1/hdhomerun-mcp:mcp` | `--target mcp` | `hdhomerun-mcp[mcp]` — **slim**, no engine/`pydantic-ai`/`dspy`/`llama-index` | `hdhomerun-mcp` |
-| `knucklessg1/hdhomerun-mcp:1.1.0` | `--target agent` (default) | `hdhomerun-mcp[agent]` — **full** agent runtime + epistemic-graph engine | `hdhomerun-agent` |
 
 ```bash
 docker build --target mcp   -t knucklessg1/hdhomerun-mcp:mcp    docker/   # slim MCP server
-docker build --target agent -t knucklessg1/hdhomerun-mcp:1.1.0 docker/   # full agent
 ```
 
 ## Knowledge-graph database (`epistemic-graph`)
 
-The full agent (`[agent]` / `:1.1.0`) embeds the **epistemic-graph** engine (pulled in via
-`agent-utilities[agent]`). For production — or to share one knowledge graph across multiple
+`agent-connector-sdk`). For production — or to share one knowledge graph across multiple
 agents — run **epistemic-graph as its own database container** and point the agent at it.
 Deployment recipes (single-node + Raft HA), connection config, and the full database
 architecture (with diagrams) are in the
@@ -462,5 +455,5 @@ historical per-task skill wrappers.
 Runtime endpoints, credentials, certificate trust, tenant identity, retention,
 and observability policy are deployment inputs and are never packaged values.
 See [Configuration, trust, and privacy](docs/configuration.md) before enabling a
-network transport, connector ingestion, GraphOS delegation, or trace export.
+network transport, connector ingestion, Arbora delegation, or trace export.
 <!-- GOVERNED-CAPABILITY:END -->

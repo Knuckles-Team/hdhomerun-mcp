@@ -19,8 +19,7 @@ pip install hdhomerun-mcp
 
 | Extra | Install | Pulls in |
 |---|---|---|
-| `mcp` | `pip install "hdhomerun-mcp[mcp]"` | FastMCP MCP-server runtime (`agent-utilities[mcp]`) |
-| `agent` | `pip install "hdhomerun-mcp[agent]"` | Pydantic-AI agent + Logfire tracing |
+| `mcp` | `pip install "hdhomerun-mcp[mcp]"` | FastMCP MCP-server runtime (`agent-connector-sdk`) |
 | `all` | `pip install "hdhomerun-mcp[all]"` | Everything above |
 
 ## From source
@@ -34,5 +33,5 @@ pip install -e ".[all]"
 ## Docker
 
 ```bash
-docker pull knucklessg1/hdhomerun-mcp:1.1.0
+docker pull knucklessg1/hdhomerun-mcp:1.2.0
 ```

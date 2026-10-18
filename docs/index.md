@@ -1,6 +1,6 @@
 # hdhomerun-mcp
 
-HDHomeRun MCP **API + MCP Server + A2A Agent** for the agent-utilities ecosystem — a
+HDHomeRun MCP **API + MCP Server + A2A Agent** for the agent-connector-sdk ecosystem — a
 typed, action-routed connector.
 
 !!! info "Official documentation"
