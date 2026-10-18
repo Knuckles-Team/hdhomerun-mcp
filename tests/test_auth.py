@@ -53,7 +53,7 @@ def test_get_client_delegation_uses_canonical_oidc_transport(monkeypatch):
     monkeypatch.setattr(
         delegation,
         "exchange_token",
-        lambda settings, *, subject_token, http_client, resolver=None: AccessToken(
+        lambda settings, *, subject_token, http_client, **_: AccessToken(
             value="delegated-token", ttl_seconds=3600, expires_at=0.0
         ),
     )
@@ -119,7 +119,7 @@ def test_get_client_delegation_failure_raises_token_exchange_error(monkeypatch):
 
     monkeypatch.setattr(delegation, "current_user_token", lambda: "caller-token")
 
-    def _boom(settings, *, subject_token, http_client, resolver=None):
+    def _boom(settings, *, subject_token, http_client, **_):
         raise ValueError("token exchange broke")
 
     monkeypatch.setattr(delegation, "exchange_token", _boom)

@@ -33,5 +33,5 @@ pip install -e ".[all]"
 ## Docker
 
 ```bash
-docker pull knucklessg1/hdhomerun-mcp:1.3.0
+docker pull knucklessg1/hdhomerun-mcp:1.3.1
 ```
