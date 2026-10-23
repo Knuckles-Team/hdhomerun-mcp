@@ -36,7 +36,7 @@ SOURCES: tuple[Any, ...] = (
         preset={
             "doc_type": "hdhomerun_recording_rule",
         },
-        records_path="rules",
+        records_path="",
         server="hdhomerun-mcp",
         text_field="Synopsis",
         title_field="Title",
