@@ -1,9 +1,6 @@
 {
   "api_version": "arbora.io/v1",
   "artifacts": {
-    "connector_manifest.yml": "0173f50e6677764c3d9276f6c6daf4def4bc426d2e4d208a1c554e24afb1c459",
-    "hdhomerun_mcp/connectors/mcp_source_presets.json": "c0ca5c6ecacb4aea8f9e9ab93b112767f0aded160dc3c71b84809bcc44cf57a5",
-    "hdhomerun_mcp/connectors/tool_schema_fingerprints.json": "4d0161e4fc6825c5f94692a2e0f083674821695c3046cf0e66aa4db09fdc594b",
     "hdhomerun_mcp/ontology/fixtures/records.json": "5ea68572b9acda1b107c225f557b00309d02cef8d89d1387c5a4a1e94c68dd63",
     "hdhomerun_mcp/ontology/hdhomerun.ttl": "7856d621f5e1eb4aa5457224d493af50bfb009502bd5df90d789551f221aae6f",
     "hdhomerun_mcp/ontology/mappings/source.yaml": "08ba7ffffdce35254a10e3000bdf2e85dea076a8f22bb78b27f92f56bdfe5f3f",

@@ -1,9 +1,0 @@
-{
-  "algorithm": "agent-connector-sdk:mcp-tool-schema-compat:v1",
-  "connector": "hdhomerun-mcp",
-  "schema_version": "1",
-  "tools": {
-    "hdhomerun_get_lineup": "",
-    "dvr_operations": ""
-  }
-}
