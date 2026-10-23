@@ -103,5 +103,7 @@
 
 <http://knuckles.team/kg/hdhomerun> a owl:Ontology ;
     rdfs:label "HDHomeRun MCP Ontology" ;
-    rdfs:comment "HDHomeRun tuner/lineup/DVR domain extensions federated into the KG hub." ;
-    owl:imports <http://knuckles.team/kg> .
+    rdfs:comment "HDHomeRun tuner/lineup/DVR domain extensions federated into the KG hub." .
+
+# ontology-codemod R4
+<http://knuckles.team/kg#Recording> rdfs:subClassOf <http://knuckles.team/kg#CreativeWork> .
