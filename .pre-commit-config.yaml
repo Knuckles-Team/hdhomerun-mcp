@@ -151,3 +151,25 @@ repos:
     language: python
     pass_filenames: false
     always_run: true
+- repo: local
+  hooks:
+  - id: check-atomicity
+    name: atomicity edict (atomic skills + dual-mode workflows)
+    entry: |-
+      bash -c 'd=$(find . -maxdepth 2 -type d -name skills | head -1); if [ -n "$d" ]; then bash scripts/universal_skills_check.sh check_atomicity --root "$d"; fi'
+    language: system
+    pass_filenames: false
+    always_run: true
+  - id: check-frontmatter-portability
+    name: cross-agent frontmatter portability (Codex + fleet)
+    entry: |-
+      bash -c 'd=$(find . -maxdepth 2 -type d -name skills | head -1); if [ -n "$d" ]; then bash scripts/universal_skills_check.sh check_frontmatter_portability "$d" --max-violations 0; fi'
+    language: system
+    pass_filenames: false
+    always_run: true
+  - id: check-path-portability
+    name: cross-platform path portability
+    entry: bash scripts/universal_skills_check.sh check_path_portability . --max-path 200 --max-name 100 --max-violations 0
+    language: system
+    pass_filenames: false
+    always_run: true

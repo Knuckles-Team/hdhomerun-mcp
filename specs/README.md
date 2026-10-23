@@ -12,4 +12,5 @@ Read the existing specs first. Extend the spec that owns the behavior. Create a 
 
 ## Local specifications
 
-This repository has no local spec yet.
+- [`connector-content`](connector-content/spec.md): `CONN-HDHOMERUN-MCP-CONNECTOR-CONTENT`, the connector serves its packaged content.
+- [`skill-checks`](skill-checks/spec.md): `CONN-HDHOMERUN-MCP-SKILL-CHECKS`, the skill checks run on every runner.
