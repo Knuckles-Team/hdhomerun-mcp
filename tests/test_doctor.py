@@ -57,7 +57,7 @@ def test_check_tuner_count_vs_jellyfin_mismatch_warns(client):
     response.raise_for_status.return_value = None
     with patch("requests.get", return_value=response):
         result = client.check_tuner_count_vs_jellyfin(
-            "http://jellyfin.arpa",
+            "http://jellyfin.example",
             "api-key",
             "10ACFCDE",
             info={"DeviceID": "10ACFCDE", "TunerCount": 4},

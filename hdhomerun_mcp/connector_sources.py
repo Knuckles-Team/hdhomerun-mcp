@@ -9,9 +9,6 @@ from __future__ import annotations
 from typing import Any
 
 from agent_connector_sdk.ingest.live_declaration import source_meta
-from agent_connector_sdk.ingest.sources import IngestSourceDeclaration, IngestSourceSpec
-
-CONNECTOR: str = "hdhomerun-mcp"
 
 SOURCES: tuple[Any, ...] = (
     source_meta(
@@ -43,82 +40,46 @@ SOURCES: tuple[Any, ...] = (
     ),
 )
 
+SCHEMA_VERSION = 2
+
+FIELD_SETS: dict[str, dict[str, str]] = {
+    "fields_1": {
+        "deviceAuth": "xsd:string",
+        "deviceId": "xsd:string",
+        "guideName": "xsd:string",
+        "guideNumber": "xsd:string",
+        "seriesId": "xsd:string",
+        "tunerCount": "xsd:integer",
+    },
+}
+
 SCHEMA_MAPPINGS: dict[str, Any] = {
     "Channel": {
-        "fields": {
-            "deviceAuth": "xsd:string",
-            "deviceId": "xsd:string",
-            "guideName": "xsd:string",
-            "guideNumber": "xsd:string",
-            "seriesId": "xsd:string",
-            "tunerCount": "xsd:integer",
-        },
+        "field_sets": ["fields_1"],
         "ontology_class": None,
     },
     "DiscoveredDevice": {
-        "fields": {
-            "deviceAuth": "xsd:string",
-            "deviceId": "xsd:string",
-            "guideName": "xsd:string",
-            "guideNumber": "xsd:string",
-            "seriesId": "xsd:string",
-            "tunerCount": "xsd:integer",
-        },
+        "field_sets": ["fields_1"],
         "ontology_class": None,
     },
     "Lineup": {
-        "fields": {
-            "deviceAuth": "xsd:string",
-            "deviceId": "xsd:string",
-            "guideName": "xsd:string",
-            "guideNumber": "xsd:string",
-            "seriesId": "xsd:string",
-            "tunerCount": "xsd:integer",
-        },
+        "field_sets": ["fields_1"],
         "ontology_class": None,
     },
     "Recording": {
-        "fields": {
-            "deviceAuth": "xsd:string",
-            "deviceId": "xsd:string",
-            "guideName": "xsd:string",
-            "guideNumber": "xsd:string",
-            "seriesId": "xsd:string",
-            "tunerCount": "xsd:integer",
-        },
+        "field_sets": ["fields_1"],
         "ontology_class": None,
     },
     "RecordingRule": {
-        "fields": {
-            "deviceAuth": "xsd:string",
-            "deviceId": "xsd:string",
-            "guideName": "xsd:string",
-            "guideNumber": "xsd:string",
-            "seriesId": "xsd:string",
-            "tunerCount": "xsd:integer",
-        },
+        "field_sets": ["fields_1"],
         "ontology_class": "GovernanceRule",
     },
     "Tuner": {
-        "fields": {
-            "deviceAuth": "xsd:string",
-            "deviceId": "xsd:string",
-            "guideName": "xsd:string",
-            "guideNumber": "xsd:string",
-            "seriesId": "xsd:string",
-            "tunerCount": "xsd:integer",
-        },
+        "field_sets": ["fields_1"],
         "ontology_class": None,
     },
     "TunerHost": {
-        "fields": {
-            "deviceAuth": "xsd:string",
-            "deviceId": "xsd:string",
-            "guideName": "xsd:string",
-            "guideNumber": "xsd:string",
-            "seriesId": "xsd:string",
-            "tunerCount": "xsd:integer",
-        },
+        "field_sets": ["fields_1"],
         "ontology_class": "Server",
     },
 }
@@ -160,23 +121,3 @@ RESOURCES: tuple[dict[str, str], ...] = (
         "name": "TunerHost",
     },
 )
-
-
-def declaration() -> IngestSourceDeclaration:
-    """The declaration the server assembles from this module."""
-    specs: list[IngestSourceSpec] = []
-    for item in SOURCES:
-        for entry in item["connector_sources"]:
-            body: dict[str, Any] = {
-                k: v for k, v in entry.items() if k not in ("tool", "mapping")
-            }
-            spec = {**body, "tools": (entry["tool"],)}
-            specs.append(IngestSourceSpec.model_validate(spec))
-    return IngestSourceDeclaration.model_validate(
-        {
-            "connector": CONNECTOR,
-            "sources": specs,
-            "schema_mappings": SCHEMA_MAPPINGS,
-            "resources": RESOURCES,
-        }
-    )
