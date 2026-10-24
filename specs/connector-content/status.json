@@ -4,7 +4,8 @@
   "owner_repo": "hdhomerun-mcp",
   "delivery_state": "VERIFIED",
   "requirement_ids": [
-    "CONN-HDHOMERUN-MCP-CONNECTOR-CONTENT-R001"
+    "CONN-HDHOMERUN-MCP-CONNECTOR-CONTENT-R001",
+    "CONN-HDHOMERUN-MCP-CONNECTOR-CONTENT-R002"
   ],
   "requirements": [
     {
@@ -16,6 +17,17 @@
       ],
       "verified_by": [
         "tests/test_default_content_surfaces.py:15"
+      ]
+    },
+    {
+      "id": "CONN-HDHOMERUN-MCP-CONNECTOR-CONTENT-R002",
+      "title": "Recording-rules source reads the served tool's own result",
+      "delivery_state": "VERIFIED",
+      "landed_in": [
+        "2839ca93c86e"
+      ],
+      "verified_by": [
+        "tests/test_connector_sources.py:10"
       ]
     }
   ]
