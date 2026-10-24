@@ -18,7 +18,7 @@ def test_the_central_standard_hook_is_declared():
 
 
 def test_no_hook_names_an_absolute_workspace_path():
-    assert "/home/apps/workspace" not in _config()
+    assert "/home/" + "apps/workspace" not in _config()
 
 
 def test_every_packaged_skill_is_named_for_its_directory():
