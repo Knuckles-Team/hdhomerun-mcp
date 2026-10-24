@@ -4,4 +4,4 @@ Governing spec: [spec.md](spec.md).
 
 ## Architecture
 
-Three local hooks in `.pre-commit-config.yaml` call `scripts/universal_skills_check.sh`. The helper runs the gate script from `UNIVERSAL_SKILLS_SCRIPTS`, then the workspace checkout, then the published universal-skills `main` downloaded to the cache. No hook names an absolute workspace path.
+`connector-standard` in `.pre-commit-config.yaml` runs the pipelines skill gates (atomicity, frontmatter portability, path portability) over the packaged skills; the repository holds no hook and no helper script. No hook names an absolute workspace path.
