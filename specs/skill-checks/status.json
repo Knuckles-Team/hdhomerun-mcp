@@ -15,7 +15,7 @@
         "5d1124e716a8"
       ],
       "verified_by": [
-        "tests/test_skill_check_hooks.py:9"
+        "tests/test_skill_check_hooks.py:7"
       ]
     }
   ]
