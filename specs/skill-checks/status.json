@@ -12,8 +12,7 @@
       "title": "Skill checks on every runner",
       "delivery_state": "VERIFIED",
       "landed_in": [
-        "5d1124e716a8",
-        "fa8ace145b41"
+        "5d1124e716a8"
       ],
       "verified_by": [
         "tests/test_skill_check_hooks.py:9"
