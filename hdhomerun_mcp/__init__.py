@@ -51,3 +51,17 @@ for module_name, extra_name in OPTIONAL_MODULES.items():
         globals()[f"_{extra_name.upper()}_AVAILABLE"] = False
 
 __all__.extend(["_MCP_AVAILABLE"])
+
+from agent_connector_sdk.connector import Connector
+
+from hdhomerun_mcp.api import ApiClientSystem
+from hdhomerun_mcp.auth import get_client
+
+connector = Connector(
+    api=ApiClientSystem,
+    get_client=get_client,
+    tools="hdhomerun_mcp.mcp",
+    instructions="HDHomeRun MCP MCP Server — condensed and verbose tool surfaces.",
+)
+
+__all__ = ["connector"]

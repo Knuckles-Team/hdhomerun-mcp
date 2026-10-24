@@ -78,7 +78,7 @@ their dependents.
   "IgnoreDts": true
 }
 ```
-Prefer `http://hdhomerun.arpa` (a stable hostname) over the raw device IP
+Prefer `http://hdhomerun.example` (a stable hostname) over the raw device IP
 when one is available on your network — the IP is often a DHCP lease that
 can change; `Url` accepts either.
 

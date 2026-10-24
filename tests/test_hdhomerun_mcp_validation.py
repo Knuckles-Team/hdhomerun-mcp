@@ -1,6 +1,6 @@
 import pytest
 
-from hdhomerun_mcp.mcp_server import get_mcp_instance
+from agent_connector_sdk.connector import build_server
 
 
 @pytest.mark.concept("HDHR-http.api.json-interface")
@@ -10,5 +10,5 @@ def test_mcp_instance_registration(monkeypatch):
     CONCEPT:HDHR-http.api.json-interface
     """
     monkeypatch.setattr("sys.argv", ["hdhomerun-mcp"])
-    mcp, args, middlewares = get_mcp_instance()
+    _, mcp = build_server("hdhomerun_mcp", command_args=[])
     assert mcp is not None

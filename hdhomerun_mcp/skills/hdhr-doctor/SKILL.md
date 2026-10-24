@@ -73,7 +73,7 @@ Full sweep, no Jellyfin pairing, no invasive signal check:
 ```
 Full sweep including the Jellyfin tuner-count comparison:
 ```json
-{"action": "run", "params_json": "{\"jellyfin_url\": \"http://jellyfin.arpa\", \"jellyfin_api_key\": \"<key>\"}"}
+{"action": "run", "params_json": "{\"jellyfin_url\": \"http://jellyfin.example\", \"jellyfin_api_key\": \"<key>\"}"}
 ```
 Full sweep including a signal-strength sample on two channels (interrupts
 whatever tuner 0 is doing):
