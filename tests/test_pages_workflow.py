@@ -48,3 +48,7 @@ def test_dashboard_reads_only_canonical_spec_status_files() -> None:
         "version": 1,
         "sources": [{"glob": "specs/*/status.json", "kind": "spec"}],
     }
+
+
+def test_legacy_mkdocs_publisher_is_absent() -> None:
+    assert not (ROOT / ".github/workflows/docs.yml").exists()
