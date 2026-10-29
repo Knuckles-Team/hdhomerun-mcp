@@ -17,9 +17,9 @@ class _FakeTransport:
         self.requests: list[Any] = []
 
     async def source_status(self, connector: str, stream: str) -> Any:
-
-        del connector, stream
-        return SimpleNamespace(connector=connector, stream=stream, accepted_checkpoint=None)
+        return SimpleNamespace(
+            connector=connector, stream=stream, accepted_checkpoint=None
+        )
 
     async def submit(self, request: Any) -> Any:
         self.requests.append(request)
@@ -44,7 +44,9 @@ def _entities(transport: _FakeTransport) -> dict[str, dict[str, Any]]:
 
 def _edges(transport: _FakeTransport) -> dict[tuple[str, str], str]:
     return {
-        (r.source.record_id, r.target.record_id): r.relation_reference.rsplit("/", 1)[-1]
+        (r.source.record_id, r.target.record_id): r.relation_reference.rsplit("/", 1)[
+            -1
+        ]
         for r in transport.requests[-1].relationships
     }
 
@@ -74,7 +76,9 @@ async def test_ingest_lineup_maps_channels_and_edges(ingest):
     assert "hdhomerun:lineup:10ACFCDE" in _entities(transport)
     assert "hdhomerun:channel:10ACFCDE:24.1" in _entities(transport)
     edges = _edges(transport)
-    assert edges[("hdhomerun:device:10ACFCDE", "hdhomerun:lineup:10ACFCDE")] == "hasLineup"
+    assert (
+        edges[("hdhomerun:device:10ACFCDE", "hdhomerun:lineup:10ACFCDE")] == "hasLineup"
+    )
     assert (
         edges[("hdhomerun:lineup:10ACFCDE", "hdhomerun:channel:10ACFCDE:24.1")]
         == "includesChannel"
