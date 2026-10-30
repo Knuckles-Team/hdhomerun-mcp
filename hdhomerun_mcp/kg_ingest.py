@@ -4,7 +4,7 @@ CONCEPT:AU-KG.ingest.enterprise-source-extractor. The package natively pushes
 its OWN data into the ONE engine, in every modality that applies (the
 "maximum ingestion" bar): typed OWL nodes (:DiscoveredDevice/:Lineup/
 :Channel/:RecordingRule), documents (:Document), and raw blobs
-(:Blob/:MediaAsset). Thin mapper over the ``agent_connector_sdk.ingest``
+(:Blob/:MediaAsset). Thin mapper over the ``scion_sdk.ingest``
 knowledge-ingest facade — every entry point here is best-effort and
 dependency-guarded: no reachable engine, no entities to write, or an engine
 rejection all no-op (return ``None``, never raise). Node ids:
@@ -16,7 +16,7 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from agent_connector_sdk.ingest import (
+from scion_sdk.ingest import (
     ChangeSet,
     Document,
     Entity,

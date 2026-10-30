@@ -19,7 +19,7 @@ pip install hdhomerun-mcp
 
 | Extra | Install | Pulls in |
 |---|---|---|
-| `mcp` | `pip install "hdhomerun-mcp[mcp]"` | FastMCP MCP-server runtime (`agent-connector-sdk`) |
+| `mcp` | `pip install "hdhomerun-mcp[mcp]"` | FastMCP MCP-server runtime (`scion-sdk`) |
 | `all` | `pip install "hdhomerun-mcp[all]"` | Everything above |
 
 ## From source

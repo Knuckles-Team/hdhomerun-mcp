@@ -15,7 +15,7 @@ description: >-
 license: MIT
 tags: [hdhomerun, control-protocol, tuner, signal, mcp]
 metadata:
-  author: Genius
+  author: Knuckles-Team
   version: '1.0.0'
 ---
 # HDHomeRun Tuner Control (hdhomerun_config protocol)

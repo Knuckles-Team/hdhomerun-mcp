@@ -41,13 +41,13 @@ def _set_delegation_settings_env(monkeypatch) -> None:
 
 @pytest.mark.concept("HDHR-http.api.json-interface")
 def test_get_client_delegation_uses_canonical_oidc_transport(monkeypatch):
-    """Delegation leaves TLS policy to agent-connector-sdk's canonical OIDC client."""
+    """Delegation leaves TLS policy to scion-sdk's canonical OIDC client."""
     auth_module._client = None
     monkeypatch.setenv("HDHOMERUN_URL", "http://hdhomerun.local")
     _set_delegation_settings_env(monkeypatch)
 
-    import agent_connector_sdk.auth.delegation as delegation
-    from agent_connector_sdk.auth.tokens import AccessToken
+    import scion_sdk.auth.delegation as delegation
+    from scion_sdk.auth.tokens import AccessToken
 
     monkeypatch.setattr(delegation, "current_user_token", lambda: "caller-token")
     monkeypatch.setattr(
@@ -115,7 +115,7 @@ def test_get_client_delegation_failure_raises_token_exchange_error(monkeypatch):
     monkeypatch.setenv("HDHOMERUN_URL", "http://hdhomerun.local")
     _set_delegation_settings_env(monkeypatch)
 
-    import agent_connector_sdk.auth.delegation as delegation
+    import scion_sdk.auth.delegation as delegation
 
     monkeypatch.setattr(delegation, "current_user_token", lambda: "caller-token")
 

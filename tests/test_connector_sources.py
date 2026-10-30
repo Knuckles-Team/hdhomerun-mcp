@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from agent_connector_sdk.ingest import load_declaration
+from scion_sdk.ingest import load_declaration
 
 
 @pytest.mark.spec("CONN-HDHOMERUN-MCP-CONNECTOR-CONTENT-R002")

@@ -14,7 +14,7 @@ description: >-
 license: MIT
 tags: [hdhomerun, http-api, lineup, scan, mcp]
 metadata:
-  author: Genius
+  author: Knuckles-Team
   version: '1.0.0'
 ---
 # HDHomeRun HTTP API Operations

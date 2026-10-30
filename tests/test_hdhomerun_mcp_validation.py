@@ -1,6 +1,6 @@
 import pytest
 
-from agent_connector_sdk.connector import build_server
+from scion_sdk.connector import build_server
 
 
 @pytest.mark.concept("HDHR-http.api.json-interface")

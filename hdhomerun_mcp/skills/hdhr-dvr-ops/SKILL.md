@@ -14,7 +14,7 @@ description: >-
 license: MIT
 tags: [hdhomerun, dvr, recording-rules, record-engine, mcp]
 metadata:
-  author: Genius
+  author: Knuckles-Team
   version: '1.0.0'
 ---
 # HDHomeRun DVR Operations

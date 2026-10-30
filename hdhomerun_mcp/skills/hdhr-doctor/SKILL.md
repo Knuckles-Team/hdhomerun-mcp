@@ -14,7 +14,7 @@ description: >-
 license: MIT
 tags: [hdhomerun, doctor, diagnostics, health-check, mcp]
 metadata:
-  author: Genius
+  author: Knuckles-Team
   version: '1.0.0'
 ---
 # HDHomeRun Doctor
@@ -64,7 +64,7 @@ Connect via the `mcp-client` skill against the **`hdhomerun-mcp`** MCP server.
 5. **device_auth** — DeviceAuth present in `discover.json`; optionally
    validated live against the cloud recording-rules API.
 6. **discovery_cache_freshness** — age of
-   `~/.config/agent-connector-sdk/hdhomerun_discovery_cache.json`; warns past 24h.
+   `~/.config/scion-sdk/hdhomerun_discovery_cache.json`; warns past 24h.
 
 ## Recipes (`params_json`)
 Full sweep, no Jellyfin pairing, no invasive signal check:
