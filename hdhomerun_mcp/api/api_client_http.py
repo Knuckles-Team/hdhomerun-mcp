@@ -18,7 +18,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from agent_connector_sdk.exceptions import ParameterError
+from scion_sdk.exceptions import ParameterError
 
 from .api_client_base import HDHomeRunApiBase
 

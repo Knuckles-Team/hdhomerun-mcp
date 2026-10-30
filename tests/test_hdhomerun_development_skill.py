@@ -42,6 +42,6 @@ def test_development_skill_has_rapid_contract_and_package_binding() -> None:
     assert "--no-verify" not in text
     package_data = project["tool"]["setuptools"]["package-data"]["hdhomerun_mcp"]
     assert "skills/**" in package_data
-    assert project["project"]["entry-points"]["agent_connector_sdk.connector"] == {
+    assert project["project"]["entry-points"]["scion_sdk.connector"] == {
         "hdhomerun-mcp": "hdhomerun_mcp:connector"
     }

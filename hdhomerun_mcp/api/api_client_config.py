@@ -24,7 +24,7 @@ from __future__ import annotations
 
 import socket
 
-from agent_connector_sdk.exceptions import ParameterError
+from scion_sdk.exceptions import ParameterError
 
 from . import protocol
 from .api_client_base import HDHomeRunApiBase

@@ -14,7 +14,7 @@ description: >-
 license: MIT
 tags: [hdhomerun, discovery, udp, network, mcp]
 metadata:
-  author: Genius
+  author: Knuckles-Team
   version: '1.0.0'
 ---
 # HDHomeRun Discovery Operations
@@ -81,7 +81,7 @@ Cloud discovery by DeviceID (works across VLANs, no broadcast needed):
   device's **current LAN IP** by DeviceID — genuinely useful after a DHCP
   re-lease moved the device to a new address.
 - Every successful discovery call refreshes
-  `~/.config/agent-connector-sdk/hdhomerun_discovery_cache.json`; `hdhr-doctor`'s
+  `~/.config/scion-sdk/hdhomerun_discovery_cache.json`; `hdhr-doctor`'s
   `cache_freshness` check reads this file's age.
 
 ## Related

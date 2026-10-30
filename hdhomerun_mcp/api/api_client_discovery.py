@@ -34,9 +34,9 @@ logger = logging.getLogger(__name__)
 
 CLOUD_DISCOVER_URL = "http://ipv4-api.hdhomerun.com/discover"
 
-#: Discovery-cache location: `~/.config/agent-connector-sdk/hdhomerun_discovery_cache.json`.
+#: Discovery-cache location: `~/.config/scion-sdk/hdhomerun_discovery_cache.json`.
 DISCOVERY_CACHE_PATH = (
-    Path.home() / ".config" / "agent-connector-sdk" / "hdhomerun_discovery_cache.json"
+    Path.home() / ".config" / "scion-sdk" / "hdhomerun_discovery_cache.json"
 )
 
 

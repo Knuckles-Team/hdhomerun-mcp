@@ -15,7 +15,7 @@ description: >-
 license: MIT
 tags: [hdhomerun, jellyfin, live-tv, xmltv, workflow]
 metadata:
-  author: Genius
+  author: Knuckles-Team
   version: '1.0.0'
 ---
 # HDHomeRun -> Jellyfin Live TV Setup
