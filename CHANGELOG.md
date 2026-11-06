@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.10] - 2026-11-06
+
+### Fixed
+- `hdhomerun_set_lockkey` locks a tuner with the caller's 32-bit key (random when omitted, returned) and releases it with `none` plus that key; it previously sent the literal `set` and the device answered `invalid lockkey` (CONN-HDHOMERUN-MCP-CONNECTOR-CONTENT-R003).
+- Require `scion-sdk>=0.6.5` so destructive tools accept `confirm=true`.
+
 ## [Unreleased]
 
 ### Added
