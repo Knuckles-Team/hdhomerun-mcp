@@ -22,6 +22,7 @@ supports before assuming an item exists.
 
 from __future__ import annotations
 
+import random
 import socket
 
 from scion_sdk.exceptions import ParameterError
@@ -192,10 +193,23 @@ class HDHomeRunApiConfig(HDHomeRunApiBase):
         return self.get_item(f"/tuner{tuner}/lockkey")
 
     def set_lockkey(self, tuner: int, lock: bool, lockkey: int | None = None) -> str:
-        """``/tuner<n>/lockkey`` set/clear — pass ``lock=False`` to release."""
-        return self.set_item(
-            f"/tuner{tuner}/lockkey", "set" if lock else "none", lockkey=lockkey
-        )
+        """``/tuner<n>/lockkey`` lock or release a tuner.
+
+        The device lock is taken by setting the item to the caller's own 32-bit key
+        (a random key is generated when none is given and returned as the result, so
+        the caller can release it). Releasing sets the item to ``none`` while
+        presenting the same key.
+        """
+        path = f"/tuner{tuner}/lockkey"
+        if lock:
+            key = (
+                lockkey
+                if lockkey is not None
+                else random.SystemRandom().randrange(1, 2**32)
+            )
+            self.set_item(path, str(key))
+            return str(key)
+        return self.set_item(path, "none", lockkey=lockkey)
 
     # -- IR / lineup / system -------------------------------------------------
 
