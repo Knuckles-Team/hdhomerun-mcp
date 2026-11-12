@@ -5,18 +5,19 @@ calls, as a **Python API** the operator import, and as a **CLI**.
 
 ## As an MCP server
 
-Once [deployed](deployment.md), the server registers five action-routed tool
-modules, each independently togglable with a `*TOOL` environment flag:
+Once [deployed](deployment.md), the server registers one typed tool per HDHomeRun
+operation, named `hdhomerun_<operation>`:
 
-| Tool | Toggle env var | Default | Actions |
-|------|-----------------|---------|---------|
-| `http_operations` | `HTTPTOOL` | `True` | `discover`, `lineup`, `lineup_status`, `scan_start`, `scan_abort`, `stream_url`, `ingest_device`, `ingest_lineup` |
-| `discovery_operations` | `DISCOVERYTOOL` | `True` | `broadcast`, `targeted`, `cloud`, `cache` |
-| `dvr_operations` | `DVRTOOL` | `True` | `list_rules`, `add_series_rule`, `add_datetime_rule`, `change_rule`, `delete_rule`, `record_engine_status`, `recorded_files`, `poke`, `delete_recording`, `live_tv_url`, `ingest_rules` |
-| `config_operations` | `CONFIGTOOL` | `True` | `get_item`, `set_item`, `help`, `tuner_status`, `tuner_vstatus`, `tuner_streaminfo`, `tuner_debug`, `get_channel`, `set_channel`, `stop_tuner`, `get_channelmap`, `set_channelmap`, `get_filter`, `set_filter`, `get_program`, `set_program`, `get_target`, `set_target`, `get_lockkey`, `set_lockkey`, `get_ir_target`, `set_ir_target`, `set_lineup_location`, `disable_lineup_location`, `sys_model`, `sys_features`, `sys_version`, `sys_copyright`, `sys_debug`, `restart` |
-| `doctor_operations` | `DOCTORTOOL` | `True` | `run`, `device_reachable`, `firmware_model`, `tuner_count_vs_jellyfin`, `signal_strength`, `device_auth`, `cache_freshness` |
+| Area | Tools |
+|------|-------|
+| HTTP API | `hdhomerun_get_discover`, `hdhomerun_get_lineup`, `hdhomerun_get_lineup_status`, `hdhomerun_start_scan`, `hdhomerun_abort_scan`, `hdhomerun_build_stream_url` |
+| Discovery | `hdhomerun_discover_local_broadcast`, `hdhomerun_discover_local_targeted`, `hdhomerun_discover_cloud`, `hdhomerun_read_discovery_cache` |
+| Cloud DVR | `hdhomerun_list_recording_rules`, `hdhomerun_add_series_rule`, `hdhomerun_add_datetime_rule`, `hdhomerun_change_rule`, `hdhomerun_delete_rule`, `hdhomerun_get_record_engine_status`, `hdhomerun_get_recorded_files`, `hdhomerun_poke_record_engine`, `hdhomerun_delete_recording`, `hdhomerun_build_live_tv_url` |
+| Tuner control | `hdhomerun_get_item`, `hdhomerun_set_item`, `hdhomerun_get_help`, `hdhomerun_get_tuner_status`, `hdhomerun_set_channel`, `hdhomerun_stop_tuner`, `hdhomerun_get_lockkey`, `hdhomerun_set_lockkey`, and the other tuner and device items |
+| Doctor | `hdhomerun_run_doctor`, `hdhomerun_check_device_reachable`, `hdhomerun_check_firmware_model`, `hdhomerun_check_tuner_count_vs_jellyfin`, `hdhomerun_check_signal_strength`, `hdhomerun_check_device_auth`, `hdhomerun_check_discovery_cache_freshness` |
+| Knowledge graph | `hdhomerun_ingest_device`, `hdhomerun_ingest_lineup`, `hdhomerun_ingest_recording_rules` |
 
-Every tool takes `action` plus a JSON string `params_json`. See
+Every tool takes its arguments by name. See
 `hdhomerun_mcp/skills/hdhr-*` for per-domain recipes and gotchas.
 
 ## As a Python API

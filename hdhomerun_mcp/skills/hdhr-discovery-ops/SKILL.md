@@ -41,12 +41,16 @@ No credentials are required for discovery.
 
 | Variable | Required | Notes |
 |----------|----------|-------|
-| `DISCOVERYTOOL` | optional | Toggle this tool domain (default enabled) |
 
-## Tools & actions
-| Condensed tool | Actions |
-|----------------|---------|
-| `discovery_operations` | `broadcast`, `targeted`, `cloud`, `cache` |
+## Tools
+One typed tool per discovery path; pass each argument by name.
+
+| Tool | Use |
+|------|-----|
+| `hdhomerun_discover_local_broadcast` | Local UDP broadcast on port 65001 |
+| `hdhomerun_discover_local_targeted` | Targeted UDP to a known IP |
+| `hdhomerun_discover_cloud` | The SiliconDust cloud discovery endpoint |
+| `hdhomerun_read_discovery_cache` | The on-disk cache of the last discovery |
 
 ### Key parameters
 - `broadcast`: `{"timeout": 2.0, "device_id": <int, optional wildcard match>}`.
@@ -58,18 +62,18 @@ No credentials are required for discovery.
 - `cache`: `{}` — reads the last cached discovery result (used by
   `hdhr-doctor`'s freshness check) without hitting the network.
 
-## Recipes (`params_json`)
+## Recipes (tool arguments)
 Broadcast discovery on the local subnet:
 ```json
-{"action": "broadcast", "params_json": "{\"timeout\": 2.0}"}
+{"tool": "hdhomerun_discover_local_broadcast", "arguments": {"timeout": 2.0}}
 ```
 Rediscover a device you know the (possibly stale) IP for:
 ```json
-{"action": "targeted", "params_json": "{\"ip\": \"10.0.132.114\"}"}
+{"tool": "hdhomerun_discover_local_targeted", "arguments": {"ip": "10.0.132.114"}}
 ```
 Cloud discovery by DeviceID (works across VLANs, no broadcast needed):
 ```json
-{"action": "cloud", "params_json": "{\"device_id\": \"10ACFCDE\"}"}
+{"tool": "hdhomerun_discover_cloud", "arguments": {"device_id": "10ACFCDE"}}
 ```
 
 ## Gotchas

@@ -55,7 +55,7 @@ The repository pre-commit hooks apply: `ruff-format`, `connector-standard`, `sec
 ## Production caller chain
 
 1. `CONN-HDHOMERUN-MCP-CONNECTOR-CONTENT-R001`: The `hdhomerun-mcp` console script in pyproject.toml runs `scion_sdk.cli:serve`, which loads the `scion_sdk.connector` entry point `hdhomerun-mcp = hdhomerun_mcp:connector` and builds the server from `hdhomerun_mcp/__init__.py::connector`.
-2. `CONN-HDHOMERUN-MCP-CONNECTOR-CONTENT-R002`: Arbora reads the `hdhomerun-recording-rules` source declared in `hdhomerun_mcp/connector_sources.py::SOURCES` (tool=`hdhomerun_list_recording_rules`, records_path empty), served through `hdhomerun_mcp/__init__.py::connector`; today the registered tool is `dvr_operations` in `hdhomerun_mcp/mcp/mcp_dvr.py`, whose `_list_recording_rules` (line 27) still returns a `rules` wrapper.
+2. `CONN-HDHOMERUN-MCP-CONNECTOR-CONTENT-R002`: Arbora reads the `hdhomerun-recording-rules` source declared in `hdhomerun_mcp/connector_sources.py::SOURCES` (tool=`hdhomerun_list_recording_rules`, records_path empty), served through `hdhomerun_mcp/__init__.py::connector`; the served tool is the typed `hdhomerun_list_recording_rules` client-method tool, which returns the rule list itself.
 
 ## Cross-repo seams
 

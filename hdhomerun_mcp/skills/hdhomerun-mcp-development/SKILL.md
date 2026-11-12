@@ -16,7 +16,7 @@ metadata:
 
 # hdhomerun-mcp development
 
-This repository owns the HDHomeRun device and cloud DVR API calls, MCP action
+This repository owns the HDHomeRun device and cloud DVR API calls, MCP tool
 mapping, connector source declarations, ontology mappings, and packaged
 content. The connector SDK owns shared transports, TLS policy, credential
 helpers, and artifact contracts; admission and durable graph state belong to
@@ -32,7 +32,7 @@ generated runtime state out of source, fixtures, logs, and this skill.
 - `hdhomerun_mcp/api/` owns the modular HTTP, discovery, DVR, doctor, and
   protocol clients. `hdhomerun_mcp/api_client.py` is only the compatibility
   facade; do not create a second client plane.
-- `hdhomerun_mcp/mcp/` owns action-routed tools. Keep tool names, request and
+- `hdhomerun_mcp/mcp/` owns the hand-written ingest and cache tools. Keep tool names, request and
   response models, device discovery, lineup, tuner, DVR, and doctor behavior
   aligned with the API modules.
 - `hdhomerun_mcp/auth.py` resolves `HDHOMERUN_URL`,

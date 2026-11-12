@@ -49,47 +49,53 @@ Connect via the `mcp-client` skill against the **`hdhomerun-mcp`** MCP server.
 | Variable | Required | Notes |
 |----------|----------|-------|
 | `HDHOMERUN_URL` | ✅ | Used to derive the control-protocol IP (host portion) |
-| `CONFIGTOOL` | optional | Toggle this tool domain (default enabled) |
 
 **Supported item paths are device/firmware-dependent** — always call `help`
 first on a device you haven't used before rather than assuming an item is
 supported (e.g. `vstatus` and `get`-ting `lineup/location` both returned
 "ERROR: unknown getset variable" on this package's own live FLEX 4K).
 
-## Tools & actions
-| Condensed tool | Actions |
-|----------------|---------|
-| `config_operations` | `get_item`, `set_item`, `help`, `tuner_status`, `tuner_vstatus`, `tuner_streaminfo`, `tuner_debug`, `get_channel`, `set_channel`, `stop_tuner`, `get_channelmap`, `set_channelmap`, `get_filter`, `set_filter`, `get_program`, `set_program`, `get_target`, `set_target`, `get_lockkey`, `set_lockkey`, `get_ir_target`, `set_ir_target`, `set_lineup_location`, `disable_lineup_location`, `sys_model`, `sys_features`, `sys_version`, `sys_copyright`, `sys_debug`, `restart` |
+## Tools
+One typed tool per control item; pass each argument by name.
+
+| Area | Tools |
+|------|-------|
+| Raw items | `hdhomerun_get_item`, `hdhomerun_set_item`, `hdhomerun_get_help` |
+| Tuner state | `hdhomerun_get_tuner_status`, `hdhomerun_get_tuner_vstatus`, `hdhomerun_get_tuner_streaminfo`, `hdhomerun_get_tuner_debug`, `hdhomerun_parse_tuner_status` |
+| Tuning | `hdhomerun_get_channel`, `hdhomerun_set_channel`, `hdhomerun_stop_tuner`, `hdhomerun_get_channelmap`, `hdhomerun_set_channelmap` |
+| Streams | `hdhomerun_get_filter`, `hdhomerun_set_filter`, `hdhomerun_get_program`, `hdhomerun_set_program`, `hdhomerun_get_target`, `hdhomerun_set_target` |
+| Locking | `hdhomerun_get_lockkey`, `hdhomerun_set_lockkey` |
+| Device | `hdhomerun_get_ir_target`, `hdhomerun_set_ir_target`, `hdhomerun_set_lineup_location`, `hdhomerun_disable_lineup_location`, `hdhomerun_get_sys_model`, `hdhomerun_get_sys_features`, `hdhomerun_get_sys_version`, `hdhomerun_get_sys_copyright`, `hdhomerun_get_sys_debug`, `hdhomerun_restart_device` |
 
 ### Key parameters
-- Tuner-scoped actions take `{"tuner": <0-based index>}`.
+- Tuner-scoped tools take `{"tuner": <0-based index>}`.
 - `set_channel`: `{"tuner", "modulation": "auto", "freq_or_channel": "60"}`
   (RF channel number or Hz frequency — **not** a virtual channel like `24.1`).
 - `set_program`: `{"tuner", "program_number"}` — sub-channel MPEG filter.
 - `set_target`: `{"tuner", "target": "udp://<ip>:<port>"}`.
 - `get_item`/`set_item`: raw escape hatch — `{"name": "/tuner0/channelmap",
-  "value"?}` for any item not covered by a typed action.
+  "value"?}` for any item not covered by a typed tool.
 
-## Recipes (`params_json`)
+## Recipes (tool arguments)
 Discover what a device supports before assuming an item exists:
 ```json
-{"action": "help", "params_json": "{}"}
+{"tool": "hdhomerun_get_help", "arguments": {}}
 ```
 Read current tuner status (signal strength etc.):
 ```json
-{"action": "tuner_status", "params_json": "{\"tuner\": 0}"}
+{"tool": "hdhomerun_get_tuner_status", "arguments": {"tuner": 0}}
 ```
 Tune to a physical RF channel:
 ```json
-{"action": "set_channel", "params_json": "{\"tuner\": 0, \"modulation\": \"auto\", \"freq_or_channel\": \"60\"}"}
+{"tool": "hdhomerun_set_channel", "arguments": {"tuner": 0, "modulation": "auto", "freq_or_channel": "60"}}
 ```
 Release the tuner when done:
 ```json
-{"action": "stop_tuner", "params_json": "{\"tuner\": 0}"}
+{"tool": "hdhomerun_stop_tuner", "arguments": {"tuner": 0}}
 ```
 Read firmware/model info:
 ```json
-{"action": "sys_model", "params_json": "{}"}
+{"tool": "hdhomerun_get_sys_model", "arguments": {}}
 ```
 
 ## Gotchas

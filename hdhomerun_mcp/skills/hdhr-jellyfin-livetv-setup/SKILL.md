@@ -38,7 +38,7 @@ Jellyfin 10.11.11 server serving an Austin, TX OTA market.
   separate system from the SiliconDust cloud rules in `hdhr-dvr-ops`.
 
 ## Prerequisites
-- A reachable HDHomeRun tuner (`hdhr-http-api-ops`'s `discover` action
+- A reachable HDHomeRun tuner (`hdhr-http-api-ops`'s `hdhomerun_get_discover` tool
   confirms this) with its `DeviceID` and `TunerCount` known.
 - A Jellyfin server with an API key (`X-Emby-Token`). If you don't have one,
   the `jellyfin-mcp` MCP server's `jell__system` tool exposes a `get_keys`
@@ -90,7 +90,7 @@ For users without Schedules Direct, add a free XMLTV source:
 ```
 
 ### Step 3: map_channels [depends_on: add_tuner_host, add_guide_data]
-Match the tuner's lineup (`hdhr-http-api-ops`'s `lineup` action —
+Match the tuner's lineup (`hdhr-http-api-ops`'s `hdhomerun_get_lineup` tool —
 `GuideNumber`/`GuideName`) to the XMLTV feed's `<channel>` entries by call
 sign. Jellyfin does most of this automatically once both the tuner and the
 XMLTV listing provider are configured, matching on call sign / channel

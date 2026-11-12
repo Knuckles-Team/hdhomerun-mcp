@@ -46,12 +46,17 @@ Connect via the `mcp-client` skill against the **`hdhomerun-mcp`** MCP server.
 |----------|----------|-------|
 | `HDHOMERUN_URL` | ✅ | Device base URL, e.g. `http://10.0.132.114` or `http://hdhomerun.example` |
 | `HDHOMERUN_TLS_PROFILE` / `HDHOMERUN_TLS_PROFILE_REF` | optional | Named outbound TLS policy (local devices are plain HTTP; only the cloud recording-rules API is affected; verification is mandatory) |
-| `HTTPTOOL` | optional | Toggle this tool domain (default enabled) |
 
-## Tools & actions
-| Condensed tool | Actions |
-|----------------|---------|
-| `http_operations` | `discover`, `lineup`, `lineup_status`, `scan_start`, `scan_abort`, `stream_url` |
+## Tools
+One typed tool per operation; pass each argument by name.
+
+| Tool | Use |
+|------|-----|
+| `hdhomerun_get_discover` | The device description (`discover.json`) |
+| `hdhomerun_get_lineup`, `hdhomerun_get_lineup_status` | The channel lineup and the scan state |
+| `hdhomerun_start_scan`, `hdhomerun_abort_scan` | Start or stop a channel scan |
+| `hdhomerun_build_stream_url` | The stream URL of a channel |
+| `hdhomerun_ingest_device`, `hdhomerun_ingest_lineup` | Push the device and lineup into the knowledge graph |
 
 ### Key parameters
 - `lineup`: `{"fmt": "json"\|"xml"\|"m3u"}` (default `json`).
@@ -61,26 +66,26 @@ Connect via the `mcp-client` skill against the **`hdhomerun-mcp`** MCP server.
   "duration"?, "transcode"?}`. `transcode` (EXTEND models only) must be one of
   `heavy`/`mobile`/`internet540`/`internet480`/`internet360`/`internet240`.
 
-## Recipes (`params_json`)
+## Recipes (tool arguments)
 Get device identity:
 ```json
-{"action": "discover", "params_json": "{}"}
+{"tool": "hdhomerun_get_discover", "arguments": {}}
 ```
 List the channel lineup:
 ```json
-{"action": "lineup", "params_json": "{\"fmt\": \"json\"}"}
+{"tool": "hdhomerun_get_lineup", "arguments": {"fmt": "json"}}
 ```
 Check/monitor a scan:
 ```json
-{"action": "lineup_status", "params_json": "{}"}
+{"tool": "hdhomerun_get_lineup_status", "arguments": {}}
 ```
 Start a fresh antenna scan:
 ```json
-{"action": "scan_start", "params_json": "{\"source\": \"Antenna\"}"}
+{"tool": "hdhomerun_start_scan", "arguments": {"source": "Antenna"}}
 ```
 Build a stream URL for a specific tuner and duration-limited test clip:
 ```json
-{"action": "stream_url", "params_json": "{\"channel\": \"24.1\", \"tuner\": 1, \"duration\": 30}"}
+{"tool": "hdhomerun_build_stream_url", "arguments": {"channel": "24.1", "tuner": 1, "duration": 30}}
 ```
 
 ## Gotchas

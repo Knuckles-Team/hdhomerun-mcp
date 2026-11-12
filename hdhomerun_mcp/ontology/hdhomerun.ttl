@@ -107,3 +107,10 @@
 
 # ontology-codemod R4
 <http://knuckles.team/kg#Recording> rdfs:subClassOf <http://knuckles.team/kg#CreativeWork> .
+
+# connector-surface core roll-up
+<http://knuckles.team/kg#DiscoveredDevice> rdfs:subClassOf <http://knuckles.team/kg#ConfigurationItem> .
+<http://knuckles.team/kg#Tuner> rdfs:subClassOf <http://knuckles.team/kg#ConfigurationItem> .
+<http://knuckles.team/kg#TunerHost> rdfs:subClassOf <http://knuckles.team/kg#Server> .
+<http://knuckles.team/kg#Lineup> rdfs:subClassOf <http://knuckles.team/kg#ChannelLineup> .
+<http://knuckles.team/kg#Channel> rdfs:subClassOf <http://knuckles.team/kg#BroadcastChannel> .

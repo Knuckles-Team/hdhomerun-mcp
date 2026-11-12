@@ -43,46 +43,37 @@ Connect via the `mcp-client` skill against the **`hdhomerun-mcp`** MCP server.
 |----------|----------|-------|
 | `HDHOMERUN_URL` | ✅ | Device to diagnose |
 | `HDHOMERUN_DEVICE_AUTH` | optional | Enables deeper `device_auth` cloud validation |
-| `DOCTORTOOL` | optional | Toggle this tool domain (default enabled) |
 
-## Tools & actions
-| Condensed tool | Actions |
-|----------------|---------|
-| `doctor_operations` | `run` (full suite, recommended), or a single check: `device_reachable`, `firmware_model`, `tuner_count_vs_jellyfin`, `signal_strength`, `device_auth`, `cache_freshness` |
+## Tools
+One typed tool per check; pass each argument by name.
 
-### Checks performed by `run`
-1. **device_reachable** — `GET discover.json` succeeds.
-2. **firmware_model** — reports ModelNumber/FirmwareName/FirmwareVersion; warns
-   if either field is missing (very old/legacy firmware).
-3. **tuner_count_vs_jellyfin** — compares the device's `TunerCount` to a
-   paired Jellyfin `TunerHost` entry matched by `DeviceId`; **skipped** (not
-   failed) when no `jellyfin_url`/`jellyfin_api_key` is supplied.
-4. **signal_strength** — for each requested channel: briefly tunes it, reads
-   `ss`/`snq`/`seq` via the control protocol, then releases the tuner; warns
-   on `ss < 40`. **Skipped** when no channels are requested (it is invasive —
-   it uses a tuner — so it is opt-in).
-5. **device_auth** — DeviceAuth present in `discover.json`; optionally
-   validated live against the cloud recording-rules API.
-6. **discovery_cache_freshness** — age of
-   `~/.config/scion-sdk/hdhomerun_discovery_cache.json`; warns past 24h.
+| Tool | Check |
+|------|-------|
+| `hdhomerun_run_doctor` | The full suite (recommended) |
+| `hdhomerun_check_device_reachable` | The device answers on its HTTP port |
+| `hdhomerun_check_firmware_model` | Firmware and model against the supported set |
+| `hdhomerun_check_tuner_count_vs_jellyfin` | Tuner count against the Live TV host |
+| `hdhomerun_check_signal_strength` | Signal quality on the given channels |
+| `hdhomerun_check_device_auth` | The household device authorization |
+| `hdhomerun_check_discovery_cache_freshness` | Age of the discovery cache |
 
-## Recipes (`params_json`)
+## Recipes (tool arguments)
 Full sweep, no Jellyfin pairing, no invasive signal check:
 ```json
-{"action": "run", "params_json": "{}"}
+{"tool": "hdhomerun_run_doctor", "arguments": {}}
 ```
 Full sweep including the Jellyfin tuner-count comparison:
 ```json
-{"action": "run", "params_json": "{\"jellyfin_url\": \"http://jellyfin.example\", \"jellyfin_api_key\": \"<key>\"}"}
+{"tool": "hdhomerun_run_doctor", "arguments": {"jellyfin_url": "http://jellyfin.example", "jellyfin_api_key": "<key>"}}
 ```
 Full sweep including a signal-strength sample on two channels (interrupts
 whatever tuner 0 is doing):
 ```json
-{"action": "run", "params_json": "{\"signal_channels\": [\"24.1\", \"18.1\"]}"}
+{"tool": "hdhomerun_run_doctor", "arguments": {"signal_channels": ["24.1", "18.1"]}}
 ```
 Just check DeviceAuth, and validate it against the live cloud API:
 ```json
-{"action": "device_auth", "params_json": "{\"validate_cloud\": true}"}
+{"tool": "hdhomerun_check_device_auth", "arguments": {"validate_cloud": true}}
 ```
 
 ## Gotchas
