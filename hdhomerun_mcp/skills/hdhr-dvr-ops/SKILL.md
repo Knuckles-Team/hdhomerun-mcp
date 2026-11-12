@@ -46,16 +46,20 @@ Connect via the `mcp-client` skill against the **`hdhomerun-mcp`** MCP server.
 
 | Variable | Required | Notes |
 |----------|----------|-------|
-| `HDHOMERUN_DEVICE_AUTH` | ✅ (rule actions) | Concatenation of every household tuner's `DeviceAuth` (from each tuner's `discover.json`) |
-| `DVRTOOL` | optional | Toggle this tool domain (default enabled) |
+| `HDHOMERUN_DEVICE_AUTH` | ✅ (rule tools) | Concatenation of every household tuner's `DeviceAuth` (from each tuner's `discover.json`) |
 
-## Tools & actions
-| Condensed tool | Actions |
-|----------------|---------|
-| `dvr_operations` | `list_rules`, `add_series_rule`, `add_datetime_rule`, `change_rule`, `delete_rule`, `record_engine_status`, `recorded_files`, `poke`, `delete_recording`, `live_tv_url` |
+## Tools
+One typed tool per operation; pass each argument by name.
+
+| Tool | Use |
+|------|-----|
+| `hdhomerun_list_recording_rules`, `hdhomerun_add_series_rule`, `hdhomerun_add_datetime_rule`, `hdhomerun_change_rule`, `hdhomerun_delete_rule` | Cloud DVR recording rules |
+| `hdhomerun_get_record_engine_status`, `hdhomerun_get_recorded_files`, `hdhomerun_poke_record_engine`, `hdhomerun_delete_recording` | The local record engine and its recordings |
+| `hdhomerun_build_live_tv_url` | Buffered Live TV URL for a channel |
+| `hdhomerun_ingest_recording_rules` | Push the rules into the knowledge graph |
 
 ### Key parameters
-- Rule actions share `device_auth` (optional — defaults to the client's
+- Rule tools share `device_auth` (optional — defaults to the client's
   configured `HDHOMERUN_DEVICE_AUTH`), `series_id`/`recording_rule_id`,
   `channel_only`, `team_only`, `recent_only`, `after_original_airdate_only`,
   `start_padding`/`end_padding` (seconds), and `date_time_only` (unixtime) for
@@ -70,22 +74,22 @@ Connect via the `mcp-client` skill against the **`hdhomerun-mcp`** MCP server.
   "session_id"}` — `client_id` stable per app instance, `session_id` unique
   per new channel request.
 
-## Recipes (`params_json`)
+## Recipes (tool arguments)
 Add a series recording rule:
 ```json
-{"action": "add_series_rule", "params_json": "{\"series_id\": \"11579711\", \"recent_only\": true}"}
+{"tool": "hdhomerun_add_series_rule", "arguments": {"series_id": "11579711", "recent_only": true}}
 ```
 Add a one-off DateTimeOnly-ChannelOnly rule:
 ```json
-{"action": "add_datetime_rule", "params_json": "{\"series_id\": \"11579711\", \"date_time_only\": 1751328000, \"channel_only\": \"24.1\"}"}
+{"tool": "hdhomerun_add_datetime_rule", "arguments": {"series_id": "11579711", "date_time_only": 1751328000, "channel_only": "24.1"}}
 ```
 List current rules:
 ```json
-{"action": "list_rules", "params_json": "{}"}
+{"tool": "hdhomerun_list_recording_rules", "arguments": {}}
 ```
 Delete a recording (no re-record):
 ```json
-{"action": "delete_recording", "params_json": "{\"cmd_url\": \"<CmdURL from recorded_files>\"}"}
+{"tool": "hdhomerun_delete_recording", "arguments": {"cmd_url": "<CmdURL from recorded_files>"}}
 ```
 
 ## Gotchas

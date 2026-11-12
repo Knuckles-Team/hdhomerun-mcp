@@ -46,13 +46,13 @@ This repository is actively maintained - Contributions are welcome!
 
 - **All four HDHomeRun interfaces, one package** — HTTP JSON API, DVR API,
   Discovery API (local UDP + cloud), and the binary hdhomerun_config control
-  protocol, each its own action-routed tool domain.
+  protocol, each served as typed tools.
 - **`doctor` diagnostics** — one call checks device reachability, firmware/model,
   tuner count vs. a paired Jellyfin instance, per-channel signal strength,
   DeviceAuth presence/validity, and discovery-cache freshness — pass/fail with an
   actionable next step per check.
-- **Action-routed MCP tools** — each domain is exposed as a single MCP tool that routes
-  to multiple underlying operations via an `action` argument, keeping the tool surface small.
+- **Typed MCP tools** — one tool per HDHomeRun operation (`hdhomerun_get_lineup`,
+  `hdhomerun_set_channel`, `hdhomerun_run_doctor`, ...), each taking its arguments by name.
 - **Two interfaces, one package** — use it as a Python **API client**, an **MCP server**
   (`stdio` / `streamable-http` / `sse`).
 - **`scion-sdk` native** — built on the shared framework (auth, action router,
@@ -62,24 +62,13 @@ This repository is actively maintained - Contributions are welcome!
 
 ## Available MCP Tools
 
-Each tool is **action-routed**: pass an `action` and a JSON `params_json` payload. Tool
-domains can be toggled on or off with the listed environment variable. The table below is
+Each tool is typed: pass its arguments by name. The table below is
 **auto-generated from the live server** by the `mcp-readme-table` pre-commit hook
 (`python -m scion_sdk.mcp.readme_tools`) — do not edit it by hand.
 
 <!-- MCP-TOOLS-TABLE:START -->
 
-#### Condensed action-routed tools (`MCP_TOOL_MODE=condensed`)
-
-| MCP Tool | Toggle Env Var | Description |
-|----------|----------------|-------------|
-| `config_operations` | `CONFIGTOOL` | Query/control a tuner via the binary hdhomerun_config TCP control |
-| `discovery_operations` | `DISCOVERYTOOL` | Discover HDHomeRun devices on the network — local UDP broadcast |
-| `doctor_operations` | `DOCTORTOOL` | Diagnose an HDHomeRun deployment: device reachability, firmware/model, |
-| `dvr_operations` | `DVRTOOL` | Manage the SiliconDust cloud DVR recording-rules API and the local |
-| `http_operations` | `HTTPTOOL` | Query the HDHomeRun device HTTP JSON API — discover.json, channel |
-
-#### Verbose 1:1 API-mapped tools (`MCP_TOOL_MODE=verbose` or `both`)
+#### Typed tools, one per operation
 
 <details>
 <summary>57 per-operation tools — one per public API method (click to expand)</summary>
@@ -202,15 +191,12 @@ hdhomerun-mcp --transport streamable-http --host 0.0.0.0 --port 8000
 
 ### Calling an MCP tool
 
-Tools are action-routed — pass an `action` plus a JSON `params_json` string:
+Each tool takes its arguments by name:
 
 ```json
 {
-  "tool": "http_operations",
-  "arguments": {
-    "action": "discover",
-    "params_json": "{}"
-  }
+  "tool": "hdhomerun_get_discover",
+  "arguments": {}
 }
 ```
 

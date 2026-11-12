@@ -61,7 +61,7 @@ connector = Connector(
     api=ApiClientSystem,
     get_client=get_client,
     tools="hdhomerun_mcp.mcp",
-    instructions="HDHomeRun MCP MCP Server — condensed and verbose tool surfaces.",
+    instructions="HDHomeRun MCP MCP Server — one typed tool per HDHomeRun operation.",
 )
 
 __all__ = ["connector"]
