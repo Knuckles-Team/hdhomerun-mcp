@@ -9,7 +9,7 @@ description = "HDHomeRun HTTP/DVR/Discovery API + hdhomerun_config protocol clie
 readme = "README.md"
 classifiers = [ "Development Status :: 4 - Beta", "License :: OSI Approved :: MIT License", "Environment :: Console", "Operating System :: POSIX :: Linux", "Programming Language :: Python :: 3",]
 requires-python = ">=3.12"
-dependencies = [ "scion-sdk[mcp]>=0.10.1,<0.11", "python-dotenv>=1.2.4", "requests>=2.34.2",]
+dependencies = [ "scion-sdk[mcp]>=0.11.0,<0.12", "python-dotenv>=1.2.4", "requests>=2.34.2",]
 [[project.authors]]
 name = "Repository Maintainers"
 email = "maintainers@knuckles.team"
@@ -26,7 +26,7 @@ hdhomerun-mcp = "scion_sdk.cli:serve"
 
 # Fleet contribution (CONCEPT:OS-5.52 / AU-KG.ontology.federation-provider-leg): advertise this
 # package's skills, prompts, OWL/RDF ontology, and source-connector presets so
-# scion-sdk discovers + federates them without importing this package's agent code.
+# scion-sdk>=0.11.0,<0.12 discovers + federates them without importing this package's agent code.
 
 # The one declared connector identity: the fleet name (SCION-CONNECTOR-CONTROL-R071).
 [project.entry-points."scion_sdk.connector"]

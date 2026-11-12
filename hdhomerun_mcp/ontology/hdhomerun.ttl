@@ -1,4 +1,5 @@
-@prefix : <http://knuckles.team/kg#> .
+@prefix : <https://knuckles-team.github.io/ontology/connector/hdhomerun#> .
+@prefix core: <https://knuckles-team.github.io/ontology/core#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
@@ -28,6 +29,7 @@
     rdfs:comment "One entry in a HDHomeRun lineup (GuideNumber/GuideName/URL)." .
 
 :RecordingRule a owl:Class ;
+    rdfs:subClassOf core:RecordingRule ;
     rdfs:label "HDHomeRun DVR Recording Rule" ;
     rdfs:comment "A SiliconDust cloud DVR recording rule (Series, Movie, or DateTimeOnly-ChannelOnly)." .
 
@@ -63,7 +65,7 @@
     rdfs:label "recording media" ;
     rdfs:comment "Links a Recording to its stored media payload (reuses the shared :MediaAsset class)." ;
     rdfs:domain :Recording ;
-    rdfs:range :MediaAsset .
+    rdfs:range core:MediaFile .
 
 :deviceId a owl:DatatypeProperty ;
     rdfs:label "device id" ;
@@ -101,16 +103,16 @@
     rdfs:domain :RecordingRule ;
     rdfs:range xsd:string .
 
-<http://knuckles.team/kg/hdhomerun> a owl:Ontology ;
+<https://knuckles-team.github.io/ontology/connector/hdhomerun> a owl:Ontology ;
     rdfs:label "HDHomeRun MCP Ontology" ;
     rdfs:comment "HDHomeRun tuner/lineup/DVR domain extensions federated into the KG hub." .
 
 # ontology-codemod R4
-<http://knuckles.team/kg#Recording> rdfs:subClassOf <http://knuckles.team/kg#CreativeWork> .
+<https://knuckles-team.github.io/ontology/connector/hdhomerun#Recording> rdfs:subClassOf <https://knuckles-team.github.io/ontology/core#CreativeWork> .
 
 # connector-surface core roll-up
-<http://knuckles.team/kg#DiscoveredDevice> rdfs:subClassOf <http://knuckles.team/kg#ConfigurationItem> .
-<http://knuckles.team/kg#Tuner> rdfs:subClassOf <http://knuckles.team/kg#ConfigurationItem> .
-<http://knuckles.team/kg#TunerHost> rdfs:subClassOf <http://knuckles.team/kg#Server> .
-<http://knuckles.team/kg#Lineup> rdfs:subClassOf <http://knuckles.team/kg#ChannelLineup> .
-<http://knuckles.team/kg#Channel> rdfs:subClassOf <http://knuckles.team/kg#BroadcastChannel> .
+<https://knuckles-team.github.io/ontology/connector/hdhomerun#DiscoveredDevice> rdfs:subClassOf <https://knuckles-team.github.io/ontology/core#ConfigurationItem> .
+<https://knuckles-team.github.io/ontology/connector/hdhomerun#Tuner> rdfs:subClassOf <https://knuckles-team.github.io/ontology/core#ConfigurationItem> .
+<https://knuckles-team.github.io/ontology/connector/hdhomerun#TunerHost> rdfs:subClassOf <https://knuckles-team.github.io/ontology/core#Server> .
+<https://knuckles-team.github.io/ontology/connector/hdhomerun#Lineup> rdfs:subClassOf <https://knuckles-team.github.io/ontology/core#ChannelLineup> .
+<https://knuckles-team.github.io/ontology/connector/hdhomerun#Channel> rdfs:subClassOf <https://knuckles-team.github.io/ontology/core#BroadcastChannel> .
