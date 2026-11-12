@@ -1,4 +1,4 @@
-"""Native epistemic-graph ingestion for HDHomeRun MCP records.
+"""Native medulla ingestion for HDHomeRun MCP records.
 
 CONCEPT:AU-KG.ingest.enterprise-source-extractor. The package natively pushes
 its OWN data into the ONE engine, in every modality that applies (the
@@ -72,7 +72,7 @@ async def ingest_entities(
     *,
     ingest: KnowledgeIngest | None = None,
 ) -> dict[str, int] | None:
-    """Write typed nodes (+ edges) into epistemic-graph. Best-effort; never raises."""
+    """Write typed nodes (+ edges) into medulla. Best-effort; never raises."""
     if not entities:
         return None
     service = await _service(ingest)
