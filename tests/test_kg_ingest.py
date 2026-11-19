@@ -1,4 +1,4 @@
-"""Native epistemic-graph ingestion — Wire-First coverage (fake SDK transport; no
+"""Native medulla ingestion — Wire-First coverage (fake SDK transport; no
 engine). CONCEPT:HDHR-kg.ingest.native-push"""
 
 from __future__ import annotations

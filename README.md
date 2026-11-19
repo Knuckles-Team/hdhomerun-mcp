@@ -148,7 +148,7 @@ uvx --from "hdhomerun-mcp[mcp]" hdhomerun-mcp      # MCP server (slim deps)
 
 > The `[mcp]` extra installs only the FastMCP/FastAPI MCP-server tooling
 > (`scion-sdk`) — it excludes the heavy agent runtime (the
-> epistemic-graph engine, `pydantic-ai`, `dspy`, `llama-index`), so it is far
+> medulla engine, `pydantic-ai`, `dspy`, `llama-index`), so it is far
 
 ### Install with `pip`
 
@@ -268,7 +268,7 @@ _19 package + 15 inherited variable(s). Auto-generated from `.env.example` + the
 
 > **Install the connector-focused `[mcp]` extra.** Examples use `hdhomerun-mcp[mcp]` to add
 > FastMCP / FastAPI through `scion-sdk`; the required Scion SDK core
-> still carries `epistemic-graph[full]`. The `[agent-runtime]` extra additionally
+> still carries `medulla[full]`. The `[agent-runtime]` extra additionally
 > enables model orchestration.
 
 #### stdio Transport (local IDEs — Cursor, Claude Desktop, VS Code)
@@ -405,13 +405,13 @@ One multi-stage `docker/Dockerfile` builds the MCP-only image (`--target mcp`):
 docker build --target mcp   -t knucklessg1/hdhomerun-mcp:mcp    docker/   # slim MCP server
 ```
 
-## Knowledge-graph database (`epistemic-graph`)
+## Knowledge-graph database (`medulla`)
 
 `scion-sdk`). For production — or to share one knowledge graph across multiple
-agents — run **epistemic-graph as its own database container** and point the agent at it.
+agents — run **medulla as its own database container** and point the agent at it.
 Deployment recipes (single-node + Raft HA), connection config, and the full database
 architecture (with diagrams) are in the
-[epistemic-graph deployment guide](https://knuckles-team.github.io/epistemic-graph/deployment/).
+[medulla deployment guide](https://knuckles-team.github.io/medulla/deployment/).
 The slim `[mcp]` server does **not** require the database.
 
 ## Documentation
