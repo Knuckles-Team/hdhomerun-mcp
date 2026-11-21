@@ -57,6 +57,7 @@ The repository pre-commit hooks apply: `ruff-format`, `connector-standard`, `sec
 1. `CONN-HDHOMERUN-MCP-CONNECTOR-CONTENT-R001`: The `hdhomerun-mcp` console script in pyproject.toml runs `scion_sdk.cli:serve`, which loads the `scion_sdk.connector` entry point `hdhomerun-mcp = hdhomerun_mcp:connector` and builds the server from `hdhomerun_mcp/__init__.py::connector`.
 2. `CONN-HDHOMERUN-MCP-CONNECTOR-CONTENT-R002`: Arbora reads the `hdhomerun-recording-rules` source declared in `hdhomerun_mcp/connector_sources.py::SOURCES` (tool=`hdhomerun_list_recording_rules`, records_path empty), served through `hdhomerun_mcp/__init__.py::connector`; the served tool is the typed `hdhomerun_list_recording_rules` client-method tool, which returns the rule list itself.
 3. `CONN-HDHOMERUN-MCP-CONNECTOR-CONTENT-R004`: the `hdhomerun-mcp` console script (pyproject.toml) loads the `scion_sdk.connector` entry point -> hdhomerun_mcp/__init__.py::connector -> the SDK default content registration serves the ontology modules, whose root classes extend core classes.
+4. `CONN-HDHOMERUN-MCP-CONNECTOR-CONTENT-R005`: the ontology loader reads `hdhomerun_mcp/ontology/` at server start; the engine imports the served pack and finds no redeclared core term.
 
 ## Cross-repo seams
 
