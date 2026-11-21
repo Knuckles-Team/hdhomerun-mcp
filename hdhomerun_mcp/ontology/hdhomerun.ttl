@@ -28,15 +28,6 @@
     rdfs:label "HDHomeRun Channel" ;
     rdfs:comment "One entry in a HDHomeRun lineup (GuideNumber/GuideName/URL)." .
 
-:RecordingRule a owl:Class ;
-    rdfs:subClassOf core:RecordingRule ;
-    rdfs:label "HDHomeRun DVR Recording Rule" ;
-    rdfs:comment "A SiliconDust cloud DVR recording rule (Series, Movie, or DateTimeOnly-ChannelOnly)." .
-
-:Recording a owl:Class ;
-    rdfs:label "HDHomeRun DVR Recording" ;
-    rdfs:comment "A completed recording tracked by a local HDHomeRun record engine. Its media payload is modeled via the shared :MediaAsset/:Blob classes, not redefined here." .
-
 :hasTuner a owl:ObjectProperty ;
     rdfs:label "has tuner" ;
     rdfs:comment "Links a device to one of its physical tuners." ;
@@ -55,16 +46,10 @@
     rdfs:domain :Lineup ;
     rdfs:range :Channel .
 
-:producesRecording a owl:ObjectProperty ;
-    rdfs:label "produces recording" ;
-    rdfs:comment "Links a recording rule to a recording it triggered." ;
-    rdfs:domain :RecordingRule ;
-    rdfs:range :Recording .
-
 :recordingMedia a owl:ObjectProperty ;
     rdfs:label "recording media" ;
     rdfs:comment "Links a Recording to its stored media payload (reuses the shared :MediaAsset class)." ;
-    rdfs:domain :Recording ;
+    rdfs:domain core:Recording ;
     rdfs:range core:MediaFile .
 
 :deviceId a owl:DatatypeProperty ;
@@ -100,7 +85,7 @@
 :seriesId a owl:DatatypeProperty ;
     rdfs:label "series id" ;
     rdfs:comment "SiliconDust SeriesID identifying the series/movie a recording rule targets." ;
-    rdfs:domain :RecordingRule ;
+    rdfs:domain core:RecordingRule ;
     rdfs:range xsd:string .
 
 <https://knuckles-team.github.io/ontology/connector/hdhomerun> a owl:Ontology ;

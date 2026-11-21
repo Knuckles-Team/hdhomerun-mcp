@@ -7,3 +7,4 @@ Each task line reads `- [ ] T001 [P] [US1] <ID>-R012.4 description`. Order is pr
 - [x] T001 [US1] CONN-HDHOMERUN-MCP-CONNECTOR-CONTENT-R001 Default content.
 - [ ] T002 [US1] CONN-HDHOMERUN-MCP-CONNECTOR-CONTENT-R002 Recording-rules source reads the served tool's own result.
 - [x] T003 [US1] CONN-HDHOMERUN-MCP-CONNECTOR-CONTENT-R004 Ontology rolls up to core.
+- [x] T004 [US2] CONN-HDHOMERUN-MCP-CONNECTOR-CONTENT-R005 The pack extends only the core ontology.
