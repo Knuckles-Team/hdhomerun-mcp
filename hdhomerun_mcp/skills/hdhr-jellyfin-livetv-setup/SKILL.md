@@ -2,16 +2,11 @@
 name: hdhr-jellyfin-livetv-setup
 skill_type: workflow
 description: >-
-  Wire a real HDHomeRun tuner into Jellyfin Live TV end-to-end: add it as a
-  TunerHost, add free XMLTV guide data for users without a Schedules Direct
-  subscription, map the tuner's lineup to XMLTV channels by call sign/
-  GuideNumber, and validate live playback. Grounded in a verified real setup
-  (HDHomeRun FLEX 4K + Jellyfin 10.11.11, Austin TX OTA market) — not
-  speculative. Use when the agent must onboard an HDHomeRun into Jellyfin
-  Live TV or diagnose why channels/guide data aren't showing up. Do NOT use
-  this to fix jellyfin-mcp's own dynamic-router bugs (out of scope; documented
-  as a Gotcha with a workaround) or for SiliconDust cloud DVR recording rules
-  (use hdhr-dvr-ops instead — this workflow is about Jellyfin's own Live TV/DVR).
+  Wire an HDHomeRun tuner into Jellyfin Live TV end to end: add the TunerHost,
+  add free XMLTV guide data, map lineup to guide channels, and validate
+  playback. Use to onboard a tuner or diagnose missing channels or guide data.
+  Do NOT use to fix jellyfin-mcp router bugs or for SiliconDust cloud DVR
+  rules (hdhr-dvr-ops).
 license: MIT
 tags: [hdhomerun, jellyfin, live-tv, xmltv, workflow]
 metadata:
@@ -19,6 +14,8 @@ metadata:
   version: '1.0.0'
 ---
 # HDHomeRun -> Jellyfin Live TV Setup
+
+Scope: Wire a real HDHomeRun tuner into Jellyfin Live TV end-to-end: add it as a TunerHost, add free XMLTV guide data for users without a Schedules Direct subscription, map the tuner's lineup to XMLTV channels by call sign/ GuideNumber, and validate live playback. Grounded in a verified real setup (HDHomeRun FLEX 4K + Jellyfin 10.11.11, Austin TX OTA market) — not speculative. Use when the agent must onboard an HDHomeRun into Jellyfin Live TV or diagnose why channels/guide data aren't showing up. Do NOT use this to fix jellyfin-mcp's own dynamic-router bugs (out of scope; documented as a Gotcha with a workaround) or for SiliconDust cloud DVR recording rules (use hdhr-dvr-ops instead — this workflow is about Jellyfin's own Live TV/DVR).
 
 A verified, four-step workflow to wire an HDHomeRun tuner into Jellyfin Live
 TV, including free (non-Schedules-Direct) guide data. Every step below was
@@ -47,6 +44,22 @@ Jellyfin 10.11.11 server serving an Austin, TX OTA market.
   working: `https://epgshare01.online/epgshare01/epg_ripper_US_LOCALS1.xml.gz`
   (confirmed to include call-sign-matched entries like `KVUE-DT`, `KLRU-DT`,
   `KEYE-DT`, `KAKW-DT`, `KNVA-DT`, `KBVO-DT`/`CD`, `KION-DT`).
+
+## Steps
+
+1. Read the tuner identity with `hdhomerun_get_discover`, and verify `DeviceID` and `TunerCount` are known.
+2. Add the tuner with `POST /LiveTv/TunerHosts` using the Step 1 body, and verify the response returns the new tuner host id.
+3. Add guide data with `POST /LiveTv/ListingProviders` using the Step 2 body, and verify the listing provider is returned.
+4. Compare `hdhomerun_get_lineup` with `GET /LiveTv/Channels`, and verify major channels carry a `CurrentProgram`.
+5. Open a live stream for one channel, and verify bytes flow from `stream.ts` rather than an empty 200 response.
+
+## Failure recovery
+
+| Failure | Cause | Recovery |
+|---|---|---|
+| TunerHosts call returns 404 through the MCP router | Request-building bug in the dynamic router for this action | Call `POST /LiveTv/TunerHosts` directly with the server API key from the `get_keys` action |
+| Channels list but no guide data | XMLTV feed lacks call signs for the diginet subchannels | Treat sparse diginet guide data as expected with free XMLTV, and verify the main network affiliates are mapped |
+| Playback fails | All tuners busy or weak signal | Run `hdhomerun_run_doctor` with `signal_channels` for the channel and check the tuner count |
 
 ## Execution
 Steps 1 and 2 are independent of each other and can run in parallel; step 3

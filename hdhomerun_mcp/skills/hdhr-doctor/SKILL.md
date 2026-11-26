@@ -3,14 +3,10 @@ name: hdhr-doctor
 skill_type: skill
 description: >-
   Run an actionable pass/fail health check on an HDHomeRun deployment via the
-  hdhomerun-mcp MCP server's doctor tool — device reachability, firmware/model
-  info, tuner count vs. a paired Jellyfin TunerHost, per-channel signal
-  strength, DeviceAuth presence/validity, and discovery-cache freshness. Use
-  when the agent must diagnose "Live TV isn't working" style problems, verify
-  a fresh setup before wiring it into Jellyfin, or produce a status report for
-  the user. Do NOT use for routine channel/tuning operations (use
-  hdhr-http-api-ops/hdhr-tuner-control) — this skill is diagnostic-only and
-  composes those, matching the fleet's cm_doctor convention (container-manager-mcp).
+  hdhomerun-mcp doctor tool: reachability, firmware, tuner count vs Jellyfin,
+  signal strength, DeviceAuth, discovery cache age. Use to diagnose Live TV
+  problems or verify a new setup. Do NOT use for routine tuning (hdhr-http-
+  api-ops, hdhr-tuner-control).
 license: MIT
 tags: [hdhomerun, doctor, diagnostics, health-check, mcp]
 metadata:
@@ -18,6 +14,8 @@ metadata:
   version: '1.0.0'
 ---
 # HDHomeRun Doctor
+
+Scope: Run an actionable pass/fail health check on an HDHomeRun deployment via the hdhomerun-mcp MCP server's doctor tool — device reachability, firmware/model info, tuner count vs. a paired Jellyfin TunerHost, per-channel signal strength, DeviceAuth presence/validity, and discovery-cache freshness. Use when the agent must diagnose "Live TV isn't working" style problems, verify a fresh setup before wiring it into Jellyfin, or produce a status report for the user. Do NOT use for routine channel/tuning operations (use hdhr-http-api-ops/hdhr-tuner-control) — this skill is diagnostic-only and composes those, matching the fleet's cm_doctor convention (container-manager-mcp).
 
 A single diagnostic sweep over an HDHomeRun deployment, matching this fleet's
 "doctor" pattern (e.g. `container-manager-mcp`'s `cm_doctor`). Every check
@@ -43,6 +41,22 @@ Connect via the `mcp-client` skill against the **`hdhomerun-mcp`** MCP server.
 |----------|----------|-------|
 | `HDHOMERUN_URL` | ✅ | Device to diagnose |
 | `HDHOMERUN_DEVICE_AUTH` | optional | Enables deeper `device_auth` cloud validation |
+
+## Steps
+
+1. Run `hdhomerun_run_doctor` with empty arguments, and verify each check reports pass, fail, warn or skip.
+2. Read the `action` field on every non-pass check, and verify you have a concrete next step for each.
+3. Pass `jellyfin_url` and `jellyfin_api_key` to `hdhomerun_run_doctor` to compare tuner counts, and verify the `tuner_count_vs_jellyfin` check is no longer skipped.
+4. Sample signal with `signal_channels` such as `["24.1"]` only when the tuner is idle, and verify the signal check returns strength values.
+5. Re-run the single failing check, for example `hdhomerun_check_device_auth`, after the fix, and verify it now reports pass.
+
+## Failure recovery
+
+| Failure | Cause | Recovery |
+|---|---|---|
+| Device unreachable | `HDHOMERUN_URL` wrong or the device is off the network | Find the current address with `hdhomerun_discover_cloud` and update `HDHOMERUN_URL` |
+| device_auth check fails | `HDHOMERUN_DEVICE_AUTH` missing or rotated | Read a fresh DeviceAuth from `hdhomerun_get_discover` and set `HDHOMERUN_DEVICE_AUTH`, then run `hdhomerun_check_device_auth` with `validate_cloud` true |
+| Tuner count check skipped | No Jellyfin URL or key supplied | Pass `jellyfin_url` and `jellyfin_api_key` in the arguments |
 
 ## Tools
 One typed tool per check; pass each argument by name.

@@ -66,6 +66,22 @@ generated runtime state out of source, fixtures, logs, and this skill.
    SHA succeeds, verify `/spec-delivery/`, its `index.html`, and `snapshot.json`
    over HTTPS. Do not claim publication from local source inspection alone.
 
+## Steps
+
+1. Create a worktree from `origin/main` with `git worktree add`, and verify `git status --short` is clean.
+2. Find the owning row with `git grep -n "<term>" -- specs`, and verify the row ID exists for the commit trailer.
+3. Run the focused tests with `uv run --locked --extra test pytest -q tests/test_hdhomerun_development_skill.py`, and verify they pass.
+4. Run `uvx pre-commit run --all-files`, and verify every hook reports Passed before committing.
+5. Review the change with `git diff --stat`, and verify it touches only connector-owned files.
+
+## Failure recovery
+
+| Failure | Cause | Recovery |
+|---|---|---|
+| Pre-commit hook fails | A shared connector-standard, secrets or spec hook found an issue | Fix the named file and rerun `uvx pre-commit run --all-files`; never bypass a hook |
+| No owning spec row | The term is not in `specs/` | Extend the existing owning spec rather than creating a new directory, and cite its ID |
+| Packaged content missing from the wheel | Package-data declaration does not cover the file | Inspect the built wheel and add the path to the declared package data in `pyproject.toml` |
+
 ## Focused commands
 
 From the repository root:
