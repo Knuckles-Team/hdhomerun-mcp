@@ -5,24 +5,24 @@
 ![MCP Server](https://badge.mcpx.dev?type=server 'MCP Server')
 ![PyPI - Downloads](https://img.shields.io/pypi/dd/hdhomerun-mcp)
 ![GitHub Repo stars](https://img.shields.io/github/stars/Knuckles-Team/hdhomerun-mcp)
+![GitHub forks](https://img.shields.io/github/forks/Knuckles-Team/hdhomerun-mcp)
+![GitHub contributors](https://img.shields.io/github/contributors/Knuckles-Team/hdhomerun-mcp)
 ![PyPI - License](https://img.shields.io/pypi/l/hdhomerun-mcp)
+![GitHub](https://img.shields.io/github/license/Knuckles-Team/hdhomerun-mcp)
 ![GitHub last commit (by committer)](https://img.shields.io/github/last-commit/Knuckles-Team/hdhomerun-mcp)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/Knuckles-Team/hdhomerun-mcp)
+![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed/Knuckles-Team/hdhomerun-mcp)
+![GitHub issues](https://img.shields.io/github/issues/Knuckles-Team/hdhomerun-mcp)
+![GitHub top language](https://img.shields.io/github/languages/top/Knuckles-Team/hdhomerun-mcp)
+![GitHub language count](https://img.shields.io/github/languages/count/Knuckles-Team/hdhomerun-mcp)
+![GitHub repo size](https://img.shields.io/github/repo-size/Knuckles-Team/hdhomerun-mcp)
+![GitHub repo file count (file type)](https://img.shields.io/github/directory-file-count/Knuckles-Team/hdhomerun-mcp)
+![PyPI - Wheel](https://img.shields.io/pypi/wheel/hdhomerun-mcp)
+![PyPI - Implementation](https://img.shields.io/pypi/implementation/hdhomerun-mcp)
 
-> **Documentation** — Installation, deployment, usage across the API, CLI, and MCP
-> backing platform are maintained in the
+> **Documentation** — Installation, deployment, and usage across the API, CLI, MCP,
+> and A2A agent interfaces are maintained in the
 > [official documentation](https://knuckles-team.github.io/hdhomerun-mcp/).
-
----
-
-## Table of Contents
-
-- [Overview](#overview)
-- [Key Features](#key-features)
-- [Available MCP Tools](#available-mcp-tools)
-- [Installation](#installation)
-- [Usage](#usage)
-- [MCP](#mcp)
-- [Documentation](#documentation)
 
 ---
 
@@ -42,6 +42,8 @@ tool matching this fleet's `cm_doctor` convention.
 
 This repository is actively maintained - Contributions are welcome!
 
+---
+
 ## Key Features
 
 - **All four HDHomeRun interfaces, one package** — HTTP JSON API, DVR API,
@@ -60,145 +62,7 @@ This repository is actively maintained - Contributions are welcome!
 - **Per-tool toggles** — enable or disable each tool domain with environment switches.
 - **Enterprise-ready** — OTEL/Langfuse telemetry and optional Eunomia access governance.
 
-## Available MCP Tools
-
-Each tool is typed: pass its arguments by name. The table below is
-**auto-generated from the live server** by the `mcp-readme-table` pre-commit hook
-(`python -m scion_sdk.mcp.readme_tools`) — do not edit it by hand.
-
-<!-- MCP-TOOLS-TABLE:START -->
-
-#### Typed tools, one per operation
-
-<details>
-<summary>57 per-operation tools — one per public API method (click to expand)</summary>
-
-| MCP Tool | Toggle Env Var | Description |
-|----------|----------------|-------------|
-| `hdhomerun_abort_scan` | `HTTPTOOL` | POST /lineup.post?scan=abort — cancel an in-progress channel scan. |
-| `hdhomerun_add_datetime_rule` | `DVRTOOL` | Add a DateTimeOnly-ChannelOnly rule (record one specific airing). |
-| `hdhomerun_add_series_rule` | `DVRTOOL` | Add a Series (or Movie) recording rule for a SeriesID. |
-| `hdhomerun_build_live_tv_url` | `DVRTOOL` | Build a record-engine buffered Live TV URL. |
-| `hdhomerun_build_stream_url` | `HTTPTOOL` | Build a live-stream URL: /{auto\|tuner<n>}/{v<channel>\|ch<freq>[-<program>]}. |
-| `hdhomerun_change_rule` | `DVRTOOL` | Modify a rule, or reprioritize it via ``after_recording_rule_id``. |
-| `hdhomerun_check_device_auth` | `DOCTORTOOL` | Invoke the check_device_auth operation. |
-| `hdhomerun_check_device_reachable` | `DOCTORTOOL` | Invoke the check_device_reachable operation. |
-| `hdhomerun_check_discovery_cache_freshness` | `DOCTORTOOL` | Invoke the check_discovery_cache_freshness operation. |
-| `hdhomerun_check_firmware_model` | `DOCTORTOOL` | Invoke the check_firmware_model operation. |
-| `hdhomerun_check_signal_strength` | `DOCTORTOOL` | Briefly tune each channel and sample ss/snq/seq, then release the tuner. |
-| `hdhomerun_check_tuner_count_vs_jellyfin` | `DOCTORTOOL` | Invoke the check_tuner_count_vs_jellyfin operation. |
-| `hdhomerun_delete_recording` | `DVRTOOL` | POST <CmdURL from recorded_files.json> cmd=delete[&rerecord=1]. |
-| `hdhomerun_delete_rule` | `DVRTOOL` | Delete a Series/Movie rule (by RecordingRuleID or SeriesID) or a |
-| `hdhomerun_disable_lineup_location` | `CONFIGTOOL` | Disable the lineup-server connection (``/lineup/location disabled``). |
-| `hdhomerun_discover_cloud` | `DISCOVERYTOOL` | GET http://ipv4-api.hdhomerun.com/discover[?DeviceID=<id>]. |
-| `hdhomerun_discover_local_broadcast` | `DISCOVERYTOOL` | Broadcast a DISCOVER_REQ on UDP port 65001 and collect DISCOVER_RPY replies. |
-| `hdhomerun_discover_local_targeted` | `DISCOVERYTOOL` | Send a DISCOVER_REQ directly to a known IP (works across VLANs). |
-| `hdhomerun_get_channel` | `CONFIGTOOL` | ``/tuner<n>/channel`` — current ``<modulation>:<frequency>`` or ``none``. |
-| `hdhomerun_get_channelmap` | `CONFIGTOOL` | ``/tuner<n>/channelmap`` — the configured channel-to-frequency map. |
-| `hdhomerun_get_discover` | `HTTPTOOL` | GET /discover.json — FriendlyName/ModelNumber/FirmwareVersion/DeviceID/ |
-| `hdhomerun_get_filter` | `CONFIGTOOL` | ``/tuner<n>/filter`` — the current PID filter (default ``0x0000-0x1FFF``). |
-| `hdhomerun_get_help` | `CONFIGTOOL` | ``get help`` — the list of get/set item paths this device supports. |
-| `hdhomerun_get_ir_target` | `CONFIGTOOL` | ``/ir/target`` — the configured IR-blaster target IP:port. |
-| `hdhomerun_get_item` | `CONFIGTOOL` | ``hdhomerun_config <id> get <item>`` — raw get of any supported item path. |
-| `hdhomerun_get_lineup` | `HTTPTOOL` | GET /lineup.{json,xml,m3u} — the channel list. |
-| `hdhomerun_get_lineup_status` | `HTTPTOOL` | GET /lineup_status.json — scan state. |
-| `hdhomerun_get_lockkey` | `CONFIGTOOL` | ``/tuner<n>/lockkey`` — current tuner lock owner (``none`` if unlocked). |
-| `hdhomerun_get_program` | `CONFIGTOOL` | ``/tuner<n>/program`` — the current MPEG program (sub-channel) filter. |
-| `hdhomerun_get_record_engine_status` | `DVRTOOL` | GET <storage engine BaseURL>/discover.json — FriendlyName/Version/ |
-| `hdhomerun_get_recorded_files` | `DVRTOOL` | GET <StorageURL> (``recorded_files.json``) — the list of recordings |
-| `hdhomerun_get_sys_copyright` | `CONFIGTOOL` | ``/sys/copyright`` — the firmware copyright notice. |
-| `hdhomerun_get_sys_debug` | `CONFIGTOOL` | ``/sys/debug`` — device-wide debug info. |
-| `hdhomerun_get_sys_features` | `CONFIGTOOL` | ``/sys/features`` — supported channelmaps/modulations for this device. |
-| `hdhomerun_get_sys_model` | `CONFIGTOOL` | ``/sys/model`` — the device model name. |
-| `hdhomerun_get_sys_version` | `CONFIGTOOL` | ``/sys/version`` — the firmware version string. |
-| `hdhomerun_get_target` | `CONFIGTOOL` | ``/tuner<n>/target`` — the current UDP/RTP streaming target. |
-| `hdhomerun_get_tuner_debug` | `CONFIGTOOL` | ``/tuner<n>/debug`` — extended tun/dev/ts/flt/net diagnostic counters. |
-| `hdhomerun_get_tuner_status` | `CONFIGTOOL` | ``/tuner<n>/status`` — ``ch=... lock=... ss=... snq=... seq=... bps=... pps=...``. |
-| `hdhomerun_get_tuner_streaminfo` | `CONFIGTOOL` | ``/tuner<n>/streaminfo`` — detected programs: ``<num>: <major>.<minor> [name]``. |
-| `hdhomerun_get_tuner_vstatus` | `CONFIGTOOL` | ``/tuner<n>/vstatus`` — virtual-channel auth/CCI/CGMS status (model/firmware |
-| `hdhomerun_list_recording_rules` | `DVRTOOL` | List all recording rules for the household's DeviceAuth(s). |
-| `hdhomerun_parse_tuner_status` | `CONFIGTOOL` | Parse a ``ch=... lock=... ss=... snq=... seq=... bps=... pps=...`` status line. |
-| `hdhomerun_poke_record_engine` | `DVRTOOL` | POST <storage engine BaseURL>/recording_events.post?sync. |
-| `hdhomerun_restart_device` | `CONFIGTOOL` | ``/sys/restart self`` — reboot the HDHomeRun. Destructive; use with care. |
-| `hdhomerun_run_doctor` | `DOCTORTOOL` | Run every check and return the aggregate report. |
-| `hdhomerun_set_channel` | `CONFIGTOOL` | ``/tuner<n>/channel`` set — e.g. ``auto:651000000`` or ``auto:60``; ``none`` to stop. |
-| `hdhomerun_set_channelmap` | `CONFIGTOOL` | ``/tuner<n>/channelmap`` set — e.g. ``us-bcast``/``us-cable``/``us-hrc``/``us-irc``. |
-| `hdhomerun_set_filter` | `CONFIGTOOL` | ``/tuner<n>/filter`` set — e.g. ``0x0000-0x1FFF`` or a space-separated PID list. |
-| `hdhomerun_set_ir_target` | `CONFIGTOOL` | ``/ir/target`` set — ``<ip>:<port>``. |
-| `hdhomerun_set_item` | `CONFIGTOOL` | ``hdhomerun_config <id> set <item> <value>`` — raw set (implicit get-back). |
-| `hdhomerun_set_lineup_location` | `CONFIGTOOL` | ``/lineup/location`` set — ``<countrycode>:<postcode>`` (or set to "disabled"). |
-| `hdhomerun_set_lockkey` | `CONFIGTOOL` | ``/tuner<n>/lockkey`` set/clear — pass ``lock=False`` to release. |
-| `hdhomerun_set_program` | `CONFIGTOOL` | ``/tuner<n>/program`` set — filter to a single program (sub-channel) number. |
-| `hdhomerun_set_target` | `CONFIGTOOL` | ``/tuner<n>/target`` set — e.g. ``udp://192.168.1.100:5000`` or ``rtp://...``. |
-| `hdhomerun_start_scan` | `HTTPTOOL` | POST /lineup.post?scan=start[&source=<Source>] — begin a channel scan. |
-| `hdhomerun_stop_tuner` | `CONFIGTOOL` | Set ``/tuner<n>/channel none`` — release the tuner. |
-
-</details>
-
-_5 action-routed tool(s) · 57 verbose 1:1 tool(s). Each is enabled unless its `<DOMAIN>TOOL` toggle is set false; `MCP_TOOL_MODE` selects the surface (**`intent` default** — the six verb-tools, granular set loaded on demand · `condensed` action-routed · `verbose` 1:1 · `both`). Auto-generated — do not edit._
-<!-- MCP-TOOLS-TABLE:END -->
-
-## Installation
-
-### Install with `uvx` (no install — run on demand)
-
-```bash
-uvx --from "hdhomerun-mcp[mcp]" hdhomerun-mcp      # MCP server (slim deps)
-```
-
-> The `[mcp]` extra installs only the FastMCP/FastAPI MCP-server tooling
-> (`scion-sdk`) — it excludes the heavy agent runtime (the
-> medulla engine, `pydantic-ai`, `dspy`, `llama-index`), so it is far
-
-### Install with `pip`
-
-```bash
-python -m pip install hdhomerun-mcp            # core (API client)
-python -m pip install "hdhomerun-mcp[all]"     # + MCP server + A2A agent + telemetry
-```
-
-### Console scripts
-
-After installation the following entry points are available on the operator's `PATH`:
-
-| Command | Description |
-|---------|-------------|
-| `hdhomerun-mcp` | Start the MCP server |
-
-## Usage
-
-### As a Python API client
-
-```python
-from hdhomerun_mcp.auth import get_client
-
-client = get_client()  # reads HDHOMERUN_URL / HDHOMERUN_DEVICE_AUTH
-info = client.get_discover()  # device identity + tuner count
-lineup = client.get_lineup()  # channel list
-stream_url = client.build_stream_url("24.1")  # http://<device>:5004/auto/v24.1
-report = client.run_doctor()  # full health-check sweep
-```
-
-### As an MCP server (CLI)
-
-```bash
-# Local stdio (for IDEs)
-hdhomerun-mcp
-
-# Networked streamable-http
-hdhomerun-mcp --transport streamable-http --host 0.0.0.0 --port 8000
-```
-
-### Calling an MCP tool
-
-Each tool takes its arguments by name:
-
-```json
-{
-  "tool": "hdhomerun_get_discover",
-  "arguments": {}
-}
-```
+---
 
 ## MCP
 
@@ -393,7 +257,85 @@ copy-paste `mcp_config.json` for all four transports — **stdio**, **streamable
   `https://hdhomerun-mcp.example.invalid/mcp` using the `"url"` key.
 <!-- END GENERATED: additional-deployment-options -->
 
-## Container images (`:mcp`)
+### Available MCP Tools
+
+Each tool is typed: pass its arguments by name. The table below is
+**auto-generated from the live server** by the `mcp-readme-table` pre-commit hook
+(`python -m scion_sdk.mcp.readme_tools`) — do not edit it by hand.
+
+<!-- MCP-TOOLS-TABLE:START -->
+
+#### Typed tools, one per operation
+
+<details>
+<summary>57 per-operation tools — one per public API method (click to expand)</summary>
+
+| MCP Tool | Toggle Env Var | Description |
+|----------|----------------|-------------|
+| `hdhomerun_abort_scan` | `HTTPTOOL` | POST /lineup.post?scan=abort — cancel an in-progress channel scan. |
+| `hdhomerun_add_datetime_rule` | `DVRTOOL` | Add a DateTimeOnly-ChannelOnly rule (record one specific airing). |
+| `hdhomerun_add_series_rule` | `DVRTOOL` | Add a Series (or Movie) recording rule for a SeriesID. |
+| `hdhomerun_build_live_tv_url` | `DVRTOOL` | Build a record-engine buffered Live TV URL. |
+| `hdhomerun_build_stream_url` | `HTTPTOOL` | Build a live-stream URL: /{auto\|tuner<n>}/{v<channel>\|ch<freq>[-<program>]}. |
+| `hdhomerun_change_rule` | `DVRTOOL` | Modify a rule, or reprioritize it via ``after_recording_rule_id``. |
+| `hdhomerun_check_device_auth` | `DOCTORTOOL` | Invoke the check_device_auth operation. |
+| `hdhomerun_check_device_reachable` | `DOCTORTOOL` | Invoke the check_device_reachable operation. |
+| `hdhomerun_check_discovery_cache_freshness` | `DOCTORTOOL` | Invoke the check_discovery_cache_freshness operation. |
+| `hdhomerun_check_firmware_model` | `DOCTORTOOL` | Invoke the check_firmware_model operation. |
+| `hdhomerun_check_signal_strength` | `DOCTORTOOL` | Briefly tune each channel and sample ss/snq/seq, then release the tuner. |
+| `hdhomerun_check_tuner_count_vs_jellyfin` | `DOCTORTOOL` | Invoke the check_tuner_count_vs_jellyfin operation. |
+| `hdhomerun_delete_recording` | `DVRTOOL` | POST <CmdURL from recorded_files.json> cmd=delete[&rerecord=1]. |
+| `hdhomerun_delete_rule` | `DVRTOOL` | Delete a Series/Movie rule (by RecordingRuleID or SeriesID) or a |
+| `hdhomerun_disable_lineup_location` | `CONFIGTOOL` | Disable the lineup-server connection (``/lineup/location disabled``). |
+| `hdhomerun_discover_cloud` | `DISCOVERYTOOL` | GET http://ipv4-api.hdhomerun.com/discover[?DeviceID=<id>]. |
+| `hdhomerun_discover_local_broadcast` | `DISCOVERYTOOL` | Broadcast a DISCOVER_REQ on UDP port 65001 and collect DISCOVER_RPY replies. |
+| `hdhomerun_discover_local_targeted` | `DISCOVERYTOOL` | Send a DISCOVER_REQ directly to a known IP (works across VLANs). |
+| `hdhomerun_get_channel` | `CONFIGTOOL` | ``/tuner<n>/channel`` — current ``<modulation>:<frequency>`` or ``none``. |
+| `hdhomerun_get_channelmap` | `CONFIGTOOL` | ``/tuner<n>/channelmap`` — the configured channel-to-frequency map. |
+| `hdhomerun_get_discover` | `HTTPTOOL` | GET /discover.json — FriendlyName/ModelNumber/FirmwareVersion/DeviceID/ |
+| `hdhomerun_get_filter` | `CONFIGTOOL` | ``/tuner<n>/filter`` — the current PID filter (default ``0x0000-0x1FFF``). |
+| `hdhomerun_get_help` | `CONFIGTOOL` | ``get help`` — the list of get/set item paths this device supports. |
+| `hdhomerun_get_ir_target` | `CONFIGTOOL` | ``/ir/target`` — the configured IR-blaster target IP:port. |
+| `hdhomerun_get_item` | `CONFIGTOOL` | ``hdhomerun_config <id> get <item>`` — raw get of any supported item path. |
+| `hdhomerun_get_lineup` | `HTTPTOOL` | GET /lineup.{json,xml,m3u} — the channel list. |
+| `hdhomerun_get_lineup_status` | `HTTPTOOL` | GET /lineup_status.json — scan state. |
+| `hdhomerun_get_lockkey` | `CONFIGTOOL` | ``/tuner<n>/lockkey`` — current tuner lock owner (``none`` if unlocked). |
+| `hdhomerun_get_program` | `CONFIGTOOL` | ``/tuner<n>/program`` — the current MPEG program (sub-channel) filter. |
+| `hdhomerun_get_record_engine_status` | `DVRTOOL` | GET <storage engine BaseURL>/discover.json — FriendlyName/Version/ |
+| `hdhomerun_get_recorded_files` | `DVRTOOL` | GET <StorageURL> (``recorded_files.json``) — the list of recordings |
+| `hdhomerun_get_sys_copyright` | `CONFIGTOOL` | ``/sys/copyright`` — the firmware copyright notice. |
+| `hdhomerun_get_sys_debug` | `CONFIGTOOL` | ``/sys/debug`` — device-wide debug info. |
+| `hdhomerun_get_sys_features` | `CONFIGTOOL` | ``/sys/features`` — supported channelmaps/modulations for this device. |
+| `hdhomerun_get_sys_model` | `CONFIGTOOL` | ``/sys/model`` — the device model name. |
+| `hdhomerun_get_sys_version` | `CONFIGTOOL` | ``/sys/version`` — the firmware version string. |
+| `hdhomerun_get_target` | `CONFIGTOOL` | ``/tuner<n>/target`` — the current UDP/RTP streaming target. |
+| `hdhomerun_get_tuner_debug` | `CONFIGTOOL` | ``/tuner<n>/debug`` — extended tun/dev/ts/flt/net diagnostic counters. |
+| `hdhomerun_get_tuner_status` | `CONFIGTOOL` | ``/tuner<n>/status`` — ``ch=... lock=... ss=... snq=... seq=... bps=... pps=...``. |
+| `hdhomerun_get_tuner_streaminfo` | `CONFIGTOOL` | ``/tuner<n>/streaminfo`` — detected programs: ``<num>: <major>.<minor> [name]``. |
+| `hdhomerun_get_tuner_vstatus` | `CONFIGTOOL` | ``/tuner<n>/vstatus`` — virtual-channel auth/CCI/CGMS status (model/firmware |
+| `hdhomerun_list_recording_rules` | `DVRTOOL` | List all recording rules for the household's DeviceAuth(s). |
+| `hdhomerun_parse_tuner_status` | `CONFIGTOOL` | Parse a ``ch=... lock=... ss=... snq=... seq=... bps=... pps=...`` status line. |
+| `hdhomerun_poke_record_engine` | `DVRTOOL` | POST <storage engine BaseURL>/recording_events.post?sync. |
+| `hdhomerun_restart_device` | `CONFIGTOOL` | ``/sys/restart self`` — reboot the HDHomeRun. Destructive; use with care. |
+| `hdhomerun_run_doctor` | `DOCTORTOOL` | Run every check and return the aggregate report. |
+| `hdhomerun_set_channel` | `CONFIGTOOL` | ``/tuner<n>/channel`` set — e.g. ``auto:651000000`` or ``auto:60``; ``none`` to stop. |
+| `hdhomerun_set_channelmap` | `CONFIGTOOL` | ``/tuner<n>/channelmap`` set — e.g. ``us-bcast``/``us-cable``/``us-hrc``/``us-irc``. |
+| `hdhomerun_set_filter` | `CONFIGTOOL` | ``/tuner<n>/filter`` set — e.g. ``0x0000-0x1FFF`` or a space-separated PID list. |
+| `hdhomerun_set_ir_target` | `CONFIGTOOL` | ``/ir/target`` set — ``<ip>:<port>``. |
+| `hdhomerun_set_item` | `CONFIGTOOL` | ``hdhomerun_config <id> set <item> <value>`` — raw set (implicit get-back). |
+| `hdhomerun_set_lineup_location` | `CONFIGTOOL` | ``/lineup/location`` set — ``<countrycode>:<postcode>`` (or set to "disabled"). |
+| `hdhomerun_set_lockkey` | `CONFIGTOOL` | ``/tuner<n>/lockkey`` set/clear — pass ``lock=False`` to release. |
+| `hdhomerun_set_program` | `CONFIGTOOL` | ``/tuner<n>/program`` set — filter to a single program (sub-channel) number. |
+| `hdhomerun_set_target` | `CONFIGTOOL` | ``/tuner<n>/target`` set — e.g. ``udp://192.168.1.100:5000`` or ``rtp://...``. |
+| `hdhomerun_start_scan` | `HTTPTOOL` | POST /lineup.post?scan=start[&source=<Source>] — begin a channel scan. |
+| `hdhomerun_stop_tuner` | `CONFIGTOOL` | Set ``/tuner<n>/channel none`` — release the tuner. |
+
+</details>
+
+_5 action-routed tool(s) · 57 verbose 1:1 tool(s). Each is enabled unless its `<DOMAIN>TOOL` toggle is set false; `MCP_TOOL_MODE` selects the surface (**`intent` default** — the six verb-tools, granular set loaded on demand · `condensed` action-routed · `verbose` 1:1 · `both`). Auto-generated — do not edit._
+<!-- MCP-TOOLS-TABLE:END -->
+
+### Container images (`:mcp`)
 
 One multi-stage `docker/Dockerfile` builds the MCP-only image (`--target mcp`):
 
@@ -405,6 +347,8 @@ One multi-stage `docker/Dockerfile` builds the MCP-only image (`--target mcp`):
 docker build --target mcp   -t knucklessg1/hdhomerun-mcp:mcp    docker/   # slim MCP server
 ```
 
+---
+
 ## Knowledge-graph database (`medulla`)
 
 `scion-sdk`). For production — or to share one knowledge graph across multiple
@@ -413,6 +357,74 @@ Deployment recipes (single-node + Raft HA), connection config, and the full data
 architecture (with diagrams) are in the
 [medulla deployment guide](https://knuckles-team.github.io/medulla/deployment/).
 The slim `[mcp]` server does **not** require the database.
+
+---
+
+## Installation
+
+### Install with `uvx` (no install — run on demand)
+
+```bash
+uvx --from "hdhomerun-mcp[mcp]" hdhomerun-mcp      # MCP server (slim deps)
+```
+
+> The `[mcp]` extra installs only the FastMCP/FastAPI MCP-server tooling
+> (`scion-sdk`) — it excludes the heavy agent runtime (the
+> medulla engine, `pydantic-ai`, `dspy`, `llama-index`), so it is far
+
+### Install with `pip`
+
+```bash
+python -m pip install hdhomerun-mcp            # core (API client)
+python -m pip install "hdhomerun-mcp[all]"     # + MCP server + A2A agent + telemetry
+```
+
+### Console scripts
+
+After installation the following entry points are available on the operator's `PATH`:
+
+| Command | Description |
+|---------|-------------|
+| `hdhomerun-mcp` | Start the MCP server |
+
+---
+
+## Usage
+
+### As a Python API client
+
+```python
+from hdhomerun_mcp.auth import get_client
+
+client = get_client()  # reads HDHOMERUN_URL / HDHOMERUN_DEVICE_AUTH
+info = client.get_discover()  # device identity + tuner count
+lineup = client.get_lineup()  # channel list
+stream_url = client.build_stream_url("24.1")  # http://<device>:5004/auto/v24.1
+report = client.run_doctor()  # full health-check sweep
+```
+
+### As an MCP server (CLI)
+
+```bash
+# Local stdio (for IDEs)
+hdhomerun-mcp
+
+# Networked streamable-http
+hdhomerun-mcp --transport streamable-http --host 0.0.0.0 --port 8000
+```
+
+### Calling an MCP tool
+
+Each tool takes its arguments by name:
+
+```json
+{
+  "tool": "hdhomerun_get_discover",
+  "arguments": {}
+}
+```
+
+---
 
 ## Documentation
 
@@ -425,6 +437,25 @@ Full documentation is published to the GitHub Pages site and mirrored under `doc
 - [Deployment](docs/deployment.md)
 - [Platform](docs/platform.md)
 - [Concept Registry](docs/concepts.md)
+
+---
+
+## Repository Owners
+
+<img width="100%" height="180em" src="https://github-readme-stats.vercel.app/api?username=example&show_icons=true&hide_border=true&&count_private=true&include_all_commits=true" />
+
+![GitHub followers](https://img.shields.io/github/followers/example)
+![GitHub User's stars](https://img.shields.io/github/stars/example)
+
+---
+
+## Contribute
+
+Contributions are welcome! Please ensure code quality by running local checks before submitting pull requests:
+- Format code using `ruff format .`
+- Lint code using `ruff check .`
+- Validate type-safety with `mypy .`
+- Run test suites using `pytest`
 
 <!-- GOVERNED-CAPABILITY:START -->
 ## Governed capability contract
