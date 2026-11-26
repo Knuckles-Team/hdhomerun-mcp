@@ -2,15 +2,11 @@
 name: hdhr-http-api-ops
 skill_type: skill
 description: >-
-  Query and control an HDHomeRun tuner's HTTP JSON API via the hdhomerun-mcp
-  MCP server — discover.json device identity, the lineup.json/lineup_status.json
-  channel list and scan state, scan start/abort control, and building
-  auto/tuner<n> live-stream URLs. Use when the agent needs the channel lineup,
-  device firmware/tuner-count info, or to kick off/monitor a channel scan on a
-  known device URL. Do NOT use for local network discovery of an unknown
-  device (use hdhr-discovery-ops), DVR recording rules/record-engine calls
-  (use hdhr-dvr-ops), per-tuner signal/status/tuning via the binary control
-  protocol (use hdhr-tuner-control), or aggregate health checks (use hdhr-doctor).
+  Query and control an HDHomeRun tuner HTTP JSON API via the hdhomerun-mcp MCP
+  server: discover.json identity, lineup and scan status, scan start and
+  abort, and stream URLs. Use for the channel lineup, firmware and tuner
+  count, or scans on a known device URL. Do NOT use to find unknown devices
+  (hdhr-discovery-ops) or per-tuner signal (hdhr-tuner-control).
 license: MIT
 tags: [hdhomerun, http-api, lineup, scan, mcp]
 metadata:
@@ -18,6 +14,8 @@ metadata:
   version: '1.0.0'
 ---
 # HDHomeRun HTTP API Operations
+
+Scope: Query and control an HDHomeRun tuner's HTTP JSON API via the hdhomerun-mcp MCP server — discover.json device identity, the lineup.json/lineup_status.json channel list and scan state, scan start/abort control, and building auto/tuner<n> live-stream URLs. Use when the agent needs the channel lineup, device firmware/tuner-count info, or to kick off/monitor a channel scan on a known device URL. Do NOT use for local network discovery of an unknown device (use hdhr-discovery-ops), DVR recording rules/record-engine calls (use hdhr-dvr-ops), per-tuner signal/status/tuning via the binary control protocol (use hdhr-tuner-control), or aggregate health checks (use hdhr-doctor).
 
 Direct access to the HDHomeRun **HTTP JSON API**
 (https://info.hdhomerun.com/info/http_api) for a device at a known URL:
@@ -46,6 +44,22 @@ Connect via the `mcp-client` skill against the **`hdhomerun-mcp`** MCP server.
 |----------|----------|-------|
 | `HDHOMERUN_URL` | ✅ | Device base URL, e.g. `http://10.0.132.114` or `http://hdhomerun.example` |
 | `HDHOMERUN_TLS_PROFILE` / `HDHOMERUN_TLS_PROFILE_REF` | optional | Named outbound TLS policy (local devices are plain HTTP; only the cloud recording-rules API is affected; verification is mandatory) |
+
+## Steps
+
+1. Fetch device identity with `hdhomerun_get_discover`, and verify `DeviceID`, `FirmwareVersion` and `TunerCount` are present.
+2. Read the lineup with `hdhomerun_get_lineup` and `fmt` json, and verify entries have `GuideNumber` and `GuideName`.
+3. Start a scan with `hdhomerun_start_scan` and `source` only when the lineup is stale, and verify `hdhomerun_get_lineup_status` shows scanning in progress.
+4. Poll `hdhomerun_get_lineup_status` until the scan ends, and verify the scan flag is cleared and the lineup count is above zero.
+5. Build a playback URL with `hdhomerun_build_stream_url` and `channel`, and verify the URL points at the device host.
+
+## Failure recovery
+
+| Failure | Cause | Recovery |
+|---|---|---|
+| Connection refused or timeout | `HDHOMERUN_URL` wrong or the device changed IP | Locate the device with `hdhomerun_discover_cloud` and set the new `HDHOMERUN_URL` |
+| Lineup is empty | No channel scan has been run or the antenna source is wrong | Run `hdhomerun_start_scan` with `source` set to Antenna or Cable and wait for completion |
+| Transcode value rejected | Unsupported profile or non-EXTEND model | Use one of heavy, mobile, internet540, internet480, internet360, internet240 only on EXTEND models, or omit `transcode` |
 
 ## Tools
 One typed tool per operation; pass each argument by name.

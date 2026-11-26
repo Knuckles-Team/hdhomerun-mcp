@@ -2,16 +2,12 @@
 name: hdhr-tuner-control
 skill_type: skill
 description: >-
-  Query and control individual HDHomeRun tuners via the binary
-  hdhomerun_config TCP control protocol (port 65001 — a DIFFERENT wire
-  protocol from the HTTP JSON API) through the hdhomerun-mcp MCP server:
-  per-tuner status/vstatus/streaminfo/debug, channel/channelmap/filter/program/
-  target get-set, tuner lock, IR target, lineup location, and /sys/ firmware
-  info. Use when the agent needs raw signal metrics (ss/snq/seq), to tune a
-  physical RF channel directly, set a PID/program filter, or stream to a UDP/
-  RTP target — the same operations the official hdhomerun_config CLI performs.
-  Do NOT use for the channel lineup or HTTP streaming URLs (use
-  hdhr-http-api-ops) or DVR recording rules (use hdhr-dvr-ops).
+  Query and control individual HDHomeRun tuners over the binary
+  hdhomerun_config control protocol (port 65001) via the hdhomerun-mcp MCP
+  server: status, channel, filter, program, target, lock, IR, firmware. Use
+  for raw signal metrics, direct RF tuning, PID filters or UDP targets. Do NOT
+  use for lineup or stream URLs (hdhr-http-api-ops) or DVR rules (hdhr-dvr-
+  ops).
 license: MIT
 tags: [hdhomerun, control-protocol, tuner, signal, mcp]
 metadata:
@@ -19,6 +15,8 @@ metadata:
   version: '1.0.0'
 ---
 # HDHomeRun Tuner Control (hdhomerun_config protocol)
+
+Scope: Query and control individual HDHomeRun tuners via the binary hdhomerun_config TCP control protocol (port 65001 — a DIFFERENT wire protocol from the HTTP JSON API) through the hdhomerun-mcp MCP server: per-tuner status/vstatus/streaminfo/debug, channel/channelmap/filter/program/ target get-set, tuner lock, IR target, lineup location, and /sys/ firmware info. Use when the agent needs raw signal metrics (ss/snq/seq), to tune a physical RF channel directly, set a PID/program filter, or stream to a UDP/ RTP target — the same operations the official hdhomerun_config CLI performs. Do NOT use for the channel lineup or HTTP streaming URLs (use hdhr-http-api-ops) or DVR recording rules (use hdhr-dvr-ops).
 
 Speaks the same binary get/set protocol as the official `hdhomerun_config` CLI
 (https://info.hdhomerun.com/info/hdhomerun_config) — TCP port 65001, TLV
@@ -54,6 +52,21 @@ Connect via the `mcp-client` skill against the **`hdhomerun-mcp`** MCP server.
 first on a device you haven't used before rather than assuming an item is
 supported (e.g. `vstatus` and `get`-ting `lineup/location` both returned
 "ERROR: unknown getset variable" on this package's own live FLEX 4K).
+
+## Steps
+
+1. Call `hdhomerun_get_help` on the device first, and verify the item you need is listed as supported.
+2. Read signal metrics with `hdhomerun_get_tuner_status` and `tuner`, and verify `ss`, `snq` and `seq` values are returned.
+3. Tune with `hdhomerun_set_channel` using `tuner`, `modulation` and `freq_or_channel`, and verify `hdhomerun_get_channel` returns the new value.
+4. Release the tuner with `hdhomerun_stop_tuner`, and verify `hdhomerun_get_tuner_status` shows no active channel.
+
+## Failure recovery
+
+| Failure | Cause | Recovery |
+|---|---|---|
+| Item reported as unknown getset variable | Item unsupported on this model or firmware | Check `hdhomerun_get_help` and use `hdhomerun_get_item` only for listed names |
+| Tuner is locked | Another client holds the lockkey | Read `hdhomerun_get_lockkey`, wait for the owner to release, or pick another `tuner` index |
+| Tuning rejected | A virtual channel such as 24.1 was given instead of an RF channel | Pass the RF channel number or Hz frequency in `freq_or_channel` |
 
 ## Tools
 One typed tool per control item; pass each argument by name.

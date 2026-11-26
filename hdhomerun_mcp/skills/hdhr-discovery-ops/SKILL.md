@@ -2,15 +2,11 @@
 name: hdhr-discovery-ops
 skill_type: skill
 description: >-
-  Find HDHomeRun tuner devices on the network via the hdhomerun-mcp MCP
-  server — local UDP broadcast/targeted discovery on port 65001, and the
-  SiliconDust cloud discovery endpoint (http://ipv4-api.hdhomerun.com/discover)
-  for when broadcast can't reach the device (different VLAN/subnet). Use when
-  the agent doesn't yet know a device's IP, or a previously-known IP may have
-  changed (DHCP re-lease). Do NOT use once you have a working device URL — go
-  straight to hdhr-http-api-ops/hdhr-tuner-control; and do NOT use for DVR
-  record-engine discovery (that is a per-record-engine discover.json call
-  documented under hdhr-dvr-ops).
+  Find HDHomeRun tuners on the network via the hdhomerun-mcp MCP server: local
+  UDP broadcast, targeted UDP to a known IP, or the SiliconDust cloud endpoint
+  when broadcast cannot cross VLANs. Use when a device IP is unknown or may
+  have changed. Do NOT use once a device URL works (hdhr-http-api-ops) or for
+  DVR record engines (hdhr-dvr-ops).
 license: MIT
 tags: [hdhomerun, discovery, udp, network, mcp]
 metadata:
@@ -18,6 +14,8 @@ metadata:
   version: '1.0.0'
 ---
 # HDHomeRun Discovery Operations
+
+Scope: Find HDHomeRun tuner devices on the network via the hdhomerun-mcp MCP server — local UDP broadcast/targeted discovery on port 65001, and the SiliconDust cloud discovery endpoint (http://ipv4-api.hdhomerun.com/discover) for when broadcast can't reach the device (different VLAN/subnet). Use when the agent doesn't yet know a device's IP, or a previously-known IP may have changed (DHCP re-lease). Do NOT use once you have a working device URL — go straight to hdhr-http-api-ops/hdhr-tuner-control; and do NOT use for DVR record-engine discovery (that is a per-record-engine discover.json call documented under hdhr-dvr-ops).
 
 Locates HDHomeRun tuner devices per
 https://info.hdhomerun.com/info/discovery_api — local UDP broadcast (port
@@ -41,6 +39,21 @@ No credentials are required for discovery.
 
 | Variable | Required | Notes |
 |----------|----------|-------|
+
+## Steps
+
+1. Run `hdhomerun_discover_local_broadcast` with `timeout` 2.0, and verify the result lists a device with a DeviceID and IP.
+2. If the list is empty, run `hdhomerun_discover_cloud` with the known `device_id`, and verify the response carries the device LAN IP.
+3. Confirm a stale IP with `hdhomerun_discover_local_targeted` and `ip`, and verify the device answers with the same DeviceID.
+4. Read `hdhomerun_read_discovery_cache` to confirm what was stored, and verify the cached entry matches the device just found.
+
+## Failure recovery
+
+| Failure | Cause | Recovery |
+|---|---|---|
+| Broadcast returns an empty list | Router does not forward UDP broadcast across VLANs | Call `hdhomerun_discover_cloud` with the DeviceID, or `hdhomerun_discover_local_targeted` with the last known IP |
+| Targeted discovery times out | The IP changed after a DHCP re-lease | Run `hdhomerun_discover_cloud` to get the current LAN IP and repeat the targeted call with it |
+| Cloud discovery returns no device | DeviceID mistyped or device never registered | Omit `device_id` to list every device seen, and copy the correct hex DeviceID |
 
 ## Tools
 One typed tool per discovery path; pass each argument by name.

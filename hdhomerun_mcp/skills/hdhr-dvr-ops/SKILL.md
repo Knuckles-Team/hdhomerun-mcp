@@ -2,15 +2,11 @@
 name: hdhr-dvr-ops
 skill_type: skill
 description: >-
-  Manage HDHomeRun DVR recording rules (SiliconDust cloud API,
-  api.hdhomerun.com/api/recording_rules) and local record-engine operations
-  (status, recorded_files listing, poke-after-rule-change, delete-a-recording,
-  buffered Live TV URLs) via the hdhomerun-mcp MCP server. Use when the agent
-  must add/change/delete a Series/Movie/DateTimeOnly recording rule, list or
-  delete recordings, or build a Live TV playback URL against a SiliconDust
-  cloud DVR (Scribe/Server/Connect+storage) setup. Do NOT use for tuner-only
-  hardware with no DVR/record-engine (this package's own test device is
-  tuner-only) — that's a hard prerequisite failure, not a usage error.
+  Manage HDHomeRun DVR recording rules (SiliconDust cloud API) and local
+  record-engine operations through the hdhomerun-mcp MCP server: rules,
+  status, recorded files, poke, delete, live TV URLs. Use to add, change or
+  delete rules or recordings. Do NOT use for tuner-only hardware with no
+  record engine or for lineup and scans (hdhr-http-api-ops).
 license: MIT
 tags: [hdhomerun, dvr, recording-rules, record-engine, mcp]
 metadata:
@@ -18,6 +14,8 @@ metadata:
   version: '1.0.0'
 ---
 # HDHomeRun DVR Operations
+
+Scope: Manage HDHomeRun DVR recording rules (SiliconDust cloud API, api.hdhomerun.com/api/recording_rules) and local record-engine operations (status, recorded_files listing, poke-after-rule-change, delete-a-recording, buffered Live TV URLs) via the hdhomerun-mcp MCP server. Use when the agent must add/change/delete a Series/Movie/DateTimeOnly recording rule, list or delete recordings, or build a Live TV playback URL against a SiliconDust cloud DVR (Scribe/Server/Connect+storage) setup. Do NOT use for tuner-only hardware with no DVR/record-engine (this package's own test device is tuner-only) — that's a hard prerequisite failure, not a usage error.
 
 Two distinct DVR surfaces per https://info.hdhomerun.com/info/dvr_api:
 SiliconDust's **cloud recording-rules API**, and the **local record-engine**
@@ -47,6 +45,22 @@ Connect via the `mcp-client` skill against the **`hdhomerun-mcp`** MCP server.
 | Variable | Required | Notes |
 |----------|----------|-------|
 | `HDHOMERUN_DEVICE_AUTH` | ✅ (rule tools) | Concatenation of every household tuner's `DeviceAuth` (from each tuner's `discover.json`) |
+
+## Steps
+
+1. Check `HDHOMERUN_DEVICE_AUTH` is set, and verify `hdhomerun_list_recording_rules` returns without an auth error.
+2. Add a rule with `hdhomerun_add_series_rule` or `hdhomerun_add_datetime_rule`, and verify the new rule appears in `hdhomerun_list_recording_rules`.
+3. Notify the engine with `hdhomerun_poke_record_engine` and `storage_engine_base_url`, and verify `hdhomerun_get_record_engine_status` shows the rule applied.
+4. List recordings with `hdhomerun_get_recorded_files` and `storage_url`, and verify the entries carry a `CmdURL`.
+5. Delete a recording with `hdhomerun_delete_recording` and `cmd_url` after explicit approval, and verify it is gone from `hdhomerun_get_recorded_files`.
+
+## Failure recovery
+
+| Failure | Cause | Recovery |
+|---|---|---|
+| Rule call returns an auth error | `HDHOMERUN_DEVICE_AUTH` missing, rotated, or not concatenated for every tuner | Read each tuner `DeviceAuth` from `hdhomerun_get_discover`, join them, and set `HDHOMERUN_DEVICE_AUTH` |
+| Record engine calls fail | No local record engine exists on the network | Confirm the engine with its own discover.json and use the correct `storage_engine_base_url`; cloud rule tools still work |
+| Delete returns 400 | The CmdURL was fetched with GET | Use `hdhomerun_delete_recording`, which issues the required POST, with the `cmd_url` from `hdhomerun_get_recorded_files` |
 
 ## Tools
 One typed tool per operation; pass each argument by name.
